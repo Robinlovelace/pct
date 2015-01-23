@@ -1,3 +1,5 @@
+<script type="text/javascript" src="http://www.math.union.edu/~dpvc/transfer/mathjax/mathjax-in-github.user.js"></script>
+
 # pct: Propensity to cycle tool
 
 This repository allows users to estimate the 'propensity to cycle' between
