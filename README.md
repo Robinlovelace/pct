@@ -37,9 +37,8 @@ leeds <- readOGR("pct-data/leeds/", "leeds-central-sample")
 Now we can estimate propensity to cycle, by using the distance
 decay function from [(Iacono et al. 2010)](http://linkinghub.elsevier.com/retrieve/pii/S0966692309000210):
 
-$$
- p = \alpha \times e^{- \beta \times d}
-$$
+
+<img src="http://www.sciweavers.org/tex2img.php?eq=p%20%3D%20%5Calpha%20%5Ctimes%20e%5E%7B-%20%5Cbeta%20%5Ctimes%20d%7D&bc=White&fc=Black&im=jpg&fs=12&ff=arev&edit=0" align="center" border="0" alt="p = \alpha \times e^{- \beta \times d}" width="117" height="24" />
 
 where $\alpha$, the proportion of made for the shortest distances
 and $\beta$, the rate of decay
