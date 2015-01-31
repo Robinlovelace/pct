@@ -92,18 +92,37 @@ fleeds$n_cycle <- fleeds$p_cycle * fleeds$All.categories..Method.of.travel.to.wo
 fleeds$pc1 <- fleeds$n_cycle - fleeds$Bicycle
 summary(fleeds$pc1)
 
-write.csv(fleeds, "pct-data/leeds/sample-leeds-centre-dists.csv")
+# write.csv(fleeds, "pct-data/leeds/sample-leeds-centre-dists.csv")
+d0 <- fleeds$dist == 0 # internal flows
+flow <- fleeds[ !d0, ]
 
-# Test plotting
+# All flows
 plot(leeds)
-# for(i in 1:nrow(fleeds)){
-for(i in 1:20){
-  from <- leeds$geo_code %in% fleeds$Area.of.residence[i]
-  to <- leeds$geo_code %in% fleeds$Area.of.workplace[i]
+for(i in 1:nrow(flow)){
+# for(i in 1:20){
+  from <- leeds$geo_code %in% flow$Area.of.residence[i]
+  to <- leeds$geo_code %in% flow$Area.of.workplace[i]
   x <- coordinates(leeds[from, ])
   y <- coordinates(leeds[to, ])
-  lines(c(x[1], y[1]), c(x[2], y[2]), lwd = fleeds$pc1[i] )
+  lines(c(x[1], y[1]), c(x[2], y[2]), lwd = flow$pc1[i] / 10 )
 }
+
+# Create SpatialLines
+l <- vector("list", nrow(flow))
+
+for(i in 1:nrow(flow)){
+  from <- leeds$geo_code %in% flow$Area.of.residence[i]
+  to <- leeds$geo_code %in% flow$Area.of.workplace[i]
+  x <- coordinates(leeds[from, ])
+  y <- coordinates(leeds[to, ])
+  l[[i]] <- Lines(list(Line(rbind(x, y))), as.character(i))
+}
+
+l <- SpatialLines(l)
+l <- SpatialLinesDataFrame(l, data = flow, match.ID = F)
+plot(l)
+
+writeOGR(l, "/tmp/", layer = "testlines", "ESRI Shapefile")
 
 
 
