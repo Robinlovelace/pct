@@ -1,5 +1,8 @@
 # Project settings - libraries you'll need to load
-pkgs <- c("rgdal", "dplyr", "rgeos")
+# NB: you'll need to use devtools::install_github for an early version of pctpack
+library(devtools)
+install_github("robinlovelace/pctpack")
+pkgs <- c("rgdal", "dplyr", "rgeos", "pctpack")
 lapply(pkgs, library, character.only = TRUE)
 
 # Load publicly available test data

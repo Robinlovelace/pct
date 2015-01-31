@@ -1,0 +1,80 @@
+---
+title: "Regression to find distance decay parameters"
+author: "Robin Lovelace"
+date: "01/27/2015"
+output: pdf_document
+---
+
+The aim of this vignette is to demonstrate how the parameters of distance decay
+can be estimated using a regression model on census flow data on travel to work.
+
+The first thing is to load the data:
+
+```{r, message=FALSE}
+if( grepl("vig", getwd())) setwd("../")
+source("set-up.R")
+# load some flow data
+flow <- read.csv("pct-data/leeds/sample-leeds-centre-dists.csv")
+# load the zones
+leeds <- readOGR("pct-data/leeds/", "leeds-central-sample")
+```
+
+Let's see what the flow data contain:
+
+```{r}
+head(flow)[c(1,2,3,4,10,14)]
+```
+
+Next step: calculate the proportion who cycle:
+
+```{r}
+flow$pcycle <- flow$Bicycle / flow$All.categories..Method.of.travel.to.work
+```
+
+Now lets find the determinants of propensity to cycle with linear regression.
+First we linearize the equation: 
+
+$$
+p = \alpha * exp(-\beta d) (log both sides)
+$$
+
+$$
+log(p) = -\beta d + log(\alpha)
+$$
+
+Now we can just run a linear model on the log of p, after subsetting to only include
+distance values above 1 and adjusting p = 0 to be p = 0.001
+
+```{r}
+summary(flow$dist)
+flow <- flow[ !flow$dist <= 0, ]
+flow  <- flow[!flow$pcycle == 0, ] 
+flow$dist <- flow$dist / 1000
+plot(flow$dist, log(flow$pcycle))
+plot(flow$dist, flow$pcycle)
+```
+
+Now we can run a linear models on this
+
+```{r}
+model1 <- lm(log(pcycle) ~ dist, data = flow ) 
+summary(model1)
+```
+
+Next we can look at the dependency of these values on socio-demographic groups...
+
+But to view the results of the model, let's make some graphs:
+
+```{r}
+alpha <- exp(model1$coefficients[1])
+beta <- -model1$coefficients[2]
+pred  <- alpha * exp(-beta * flow$dist )
+hist(flow$pcycle, xlab = "Distance (km)")
+hist(exp(pred))
+```
+
+
+
+
+
+

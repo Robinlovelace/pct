@@ -1,6 +1,8 @@
+notes.Rmd
 .Rproj.user
 .Rhistory
 .RData
 pct-data/
 *.html
 *.pdf
+*shinyapps*

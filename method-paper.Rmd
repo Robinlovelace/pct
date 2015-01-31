@@ -1,0 +1,50 @@
+---
+title: '"Propensity to cycle": a general method to estimate mode-specific flows between
+  origin-destination pairs'
+author: "Robin Lovelace"
+output: pdf_document
+---
+
+# Introduction
+
+This research has many motivations: methodological, empirical and applied.
+Recent scientific suggesting that
+less than half of economically viable reserves can be burned to avoid dangerous
+climate change []...
+
+# Theory
+
+## Flows over geographical space
+
+Geographical space is usually divided into mutually exclusive irregular
+tesselations for the purposes of administrative data (Figure 1).
+The set of origin points ($O$).
+
+## Distance decay
+
+## Mode-specific rates of flow
+
+From the previous section it is clear that flows between origin-destination
+pairs will tend to be greater the closer they are together. However,
+this rate of flow is clearly mode-dependent: in many instances flows
+that are possible by wheeled vehicles are deemed impossible to walk, at least
+in a reasonably short period of time. Thus the distance decay function
+has a mode dependency. Clearly this mode-dependency will depend on many characteristics
+of the mode related case-specific circumstances: how
+frequently is the given mode *available*? is the local travel infracture suitable?
+what are the abilities of the users of each mode (i.e. how fit are they for
+walking and cycling)? To simplify, we can reduce these characteristics down
+to a single continuous variable: average speed by mode ($v_m$). Clearly this
+will also be context-specific ($v_m = f(Z, I)$, where $Z$ and $I$ are the
+characteristics of the zones and individuals in the study area), but it
+it a useful simplifying assumption nonetheless:
+
+$$
+DD_m = f(d, v_m)
+$$
+
+
+# Data
+
+# Method
+
