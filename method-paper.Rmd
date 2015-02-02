@@ -3,14 +3,66 @@ title: '"Propensity to cycle": a general method to estimate mode-specific flows 
   origin-destination pairs'
 author: "Robin Lovelace"
 output: pdf_document
+bibliography: ~/Documents/Transport.bib
 ---
 
 # Introduction
 
-This research has many motivations: methodological, empirical and applied.
-Recent scientific suggesting that
-less than half of economically viable reserves can be burned to avoid dangerous
-climate change []...
+```{r, echo=FALSE}
+# This research has many motivations: methodological, empirical and applied.
+# Recent research suggests that less than half of economically viable reserves
+# of fossil fuels can be burned to avoid dangerous
+# climate change []. Given the various shortcomings of biofuels
+# [], this provides an obvious imperative to transition away
+# from reliance on energy converters that burns carbon-based matter,
+# including thermal power stations, fossil-fueled heaters and the internal
+# combustion engine (ICE) [].
+# 
+# In parallel to evidence that we are using *too much* energy in our technological
+# systems, a recent spate of evidence has highlighted that humans are using
+# *too little* energy in our bodies. The mechanisation of everyday tasks, from
+# transport to food preparation, has led to sedentary lifestyles becoming the
+# norm. A host of noncommunicable diseases has followed, including depression, cardiovascular
+# diseases, diabetes and cancer [@Lee2012]. This paradox of energy overuse in
+# technical systems coupled with energy underuse in human behaviour suggests
+# a single solution: replace machines with muscles in appropriate sectors of the
+# economy. There are many reasons With its requirements for low and variable power inputs, the benefits
+# the weight savings of not transporting a motor and the user skill and enjoyment
+# of navigating a complex urban environment, transport stands out as the
+# obvious sector where muscles can replace machines.
+# 
+# As the most energy efficient mode of transport known to man (measured in
+# MJ kinetic energy input per passenger kilometer --- MJ/pkm~kinetic~) [@Komanoff2004],
+# cycling provides an obvious win-win solution from health and environmental
+# perspectives.
+```
+
+## Definitions
+
+- **The rate of cycling** is the measure of cycling activity. It can be measured
+  in terms of the number of regular cyclists ($NC$) --- such as the number who regularly
+  cycle to work ($NC~commute~$) or the number who would classify themselves as
+  leisure cyclists ($NC~leisure~$) --- or in terms of the number of trips per year
+  or week ($NT~yr~$ or $NT~wk~$)
+- **Propensity to cycle** ($PC$) is the *expected* rate of cycling in given area or between
+  origin-destination pairs. This propensity is calculated using a model and can
+  incorporate the impact of socio-demographic variables on willingness to cycle
+  long distances (i.e. see *distance decay*, below), the predicted influence of
+  the transport network (e.g. *circuity* and the presence of dedicated cycle paths)
+  and other place-specific variables.
+- **Extra cycling potential** ($ECP$) is the number of additional trips or cyclists
+  that can be expected in a given scenario of the future.
+- **Distance decay** ($DD$) is function that relates the distance of a trip
+  the probability of it being made by a specific mode of travel (e.g. by bicycle):
+  
+$$
+DD = f(d, X)
+$$
+
+  - **Circuity**:
+
+  
+
 
 # Theory
 

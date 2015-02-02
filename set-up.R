@@ -1,10 +1,13 @@
 # Project settings - libraries you'll need to load
 # NB: you'll need to use devtools::install_github for an early version of pctpack
 library(devtools)
-install_github("robinlovelace/pctpack")
+if(!require(pctpack)) install_github("robinlovelace/pctpack")
 pkgs <- c("rgdal", "dplyr", "rgeos", "pctpack")
-lapply(pkgs, library, character.only = TRUE)
-
+require(pkgs, character.only = T)
+# Which packages do we require?
+reqs <- as.numeric(lapply(pkgs, require, character.only = TRUE))
+# Install packages we require
+if(sum(!reqs) > 0) install.packages(pkgs[!reqs])
 # Load publicly available test data
 
 # Option 1: clone the repository directly - if you have git installed
