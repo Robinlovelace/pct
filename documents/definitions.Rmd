@@ -5,14 +5,21 @@ output: word_document
 bibliography: ~/Documents/Transport.bib
 ---
 
-- **The rate of cycling** is the measure of cycling activity. It can be measured
-  in terms of the number of regular cyclists (*NC*) --- such as the number who regularly
+## Concepts and measures of cycling we may want to discuss, calculate and present
+
+- **Current level of cycling** refers to the amount of current cycling activity.
+  It can be measured as a proportion (or prevalence) in terms of the number of
+  regular cyclists (*NC*) --- e.g. the number who regularly
   cycle to work (*NC~commute~*) or the number who would classify themselves as
-  leisure cyclists (*NC~leisure~*) --- or in terms of the number of trips per year
+  leisure cyclists (*NC~leisure~*). Alternatively it can be measured as a rate,
+  as the number of trips per year
   or week (*NT~yr~* or *NT~wk~*).
   
-- **Propensity to cycle** (*PC*) is the *expected* rate of cycling in given area or between
-  origin-destination pairs. This propensity is calculated using a model and can
+- **Potential level of cycling** (*PC*)
+  is the *expected* rate of cycling in given area or between
+  origin-destination pairs, under a certain set of assumptions of assuming
+  a given background cycling modal share.
+  This potential level is calculated using a model and can 
   incorporate the impact of socio-demographic variables on willingness to cycle
   long distances (i.e. see *distance decay*, below), the predicted influence of
   the transport network (e.g. *circuity* and the presence of dedicated cycle paths)
@@ -20,7 +27,7 @@ bibliography: ~/Documents/Transport.bib
   
 - **Extra cycling potential** (*ECP*) is the number of additional trips or cyclists
   that can be expected in a given scenario of the future. Formally, this can be 
-  defined as the expected rate of cycling (under a set of assumptions) minus
+  defined as the *potential level of cycling* (under a set of assumptions) minus
   the current rate of cycling. For the number of people who regularly cycle to work,
   for example, *ECP* would be defined as follows:
   
@@ -35,9 +42,11 @@ $$
 $$
 PIC = \frac{PC}{NC}
 $$
+
+## Other definitions
   
 - **Distance decay** (*DD*) is function that relates the distance (*d*) of a trip to
-  the probability of it being made by a specific mode of travel (e.g. by bicycle) with
+  the probability (or odds) of it being made by a specific mode of travel (e.g. by bicycle) with
   respect to predefined set of explanatory variables (*X*)
   such as the person's socio-demographic group and the hilliness of the local area.
   
@@ -45,7 +54,7 @@ $$
 DD = f(d, X)
 $$
 
-- **Circuity** ($Q$) is the actual length of a trip along the transport network compared
+- **Circuity** (*Q*) is the actual length of a trip along the transport network compared
     with the straight-line (*Euclidean*) distance. Formally,
     
 $$
