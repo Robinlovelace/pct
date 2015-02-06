@@ -10,7 +10,7 @@ l <- readRDS("l.Rds")
 function(input, output){
   map = leaflet(data = l) %>%
     addTiles() %>%
-    setView(lng = map_centre[1], lat = map_centre[2], zoom = 15) %>%
+    setView(lng = map_centre[1], lat = map_centre[2], zoom = 10) %>%
     addPolylines()
 #     addPopups(-1.549, 53.8, 'First ever popup in leaflet') # add popup
 

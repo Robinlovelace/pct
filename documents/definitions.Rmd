@@ -1,11 +1,11 @@
 ---
 title: "Definitions for the propensity to cycle project"
 author: "Robin Lovelace"
-output: word_document
+output: pdf_document
 bibliography: ~/Documents/Transport.bib
 ---
 
-## Concepts and measures of cycling we may want to discuss, calculate and present
+## Concepts and measures on level of cycling
 
 - **Current level of cycling** refers to the amount of current cycling activity.
   It can be measured as a proportion (or prevalence) in terms of the number of
