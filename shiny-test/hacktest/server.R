@@ -19,5 +19,4 @@ function(input, output){
   #     addPopups(-1.549, 53.8, 'First ever popup in leaflet') # add popup
 
   output$myMap = renderLeaflet(map)
-
 }
