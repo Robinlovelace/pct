@@ -15,15 +15,17 @@ bibliography: ~/Documents/Transport.bib
   as the number of trips per year
   or week (*NT~yr~* or *NT~wk~*).
   
-- **Potential level of cycling** (*PC*)
+- **Potential level of cycling** (*PLC*)
   is the *expected* rate of cycling in given area or between
   origin-destination pairs, under a certain set of assumptions of assuming
   a given background cycling modal share.
-  This potential level is calculated using a model and can 
-  incorporate the impact of socio-demographic variables on willingness to cycle
-  long distances (i.e. see *distance decay*, below), the predicted influence of
+  This potential level is calculated using a model which
+  incorporates the impact of distance (see *distance decay*, below),
+  socio-demographics (and its influence on distance decay)
   the transport network (e.g. *circuity* and the presence of dedicated cycle paths)
-  and other place-specific variables.
+  and other place-specific variables such as hilliness. *PLC* can be projected
+  into the future based on assumptions about the overall rate of cycling, likelihood
+  to shift to cycling and changes in distance decay by socio-demographic group.
   
 - **Extra cycling potential** (*ECP*) is the number of additional trips or cyclists
   that can be expected in a given scenario of the future. Formally, this can be 

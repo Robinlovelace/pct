@@ -53,12 +53,15 @@ fmanc$ecp <- fmanc$n_cycle - fmanc$Bicycle
 summary(fmanc$ecp)
 summary(fmanc$Bicycle)
 
-write.csv(fmanc, "pct-data/manchester/manc-msoas-dists.csv")
+# write.csv(fmanc, "pct-data/manchester/manc-msoas-dists.csv")
+summary(fmanc$dist)
+# remove 0 distance points
+fmanc <- fmanc[fmanc$dist > 0, ]
 
 # Test plotting
 plot(manc)
 # for(i in 1:nrow(fmanc)){
-for(i in 1:20){
+for(i in 70:100){
   from <- manc$geo_code %in% fmanc$Area.of.residence[i]
   to <- manc$geo_code %in% fmanc$Area.of.workplace[i]
   x <- coordinates(manc[from, ])
