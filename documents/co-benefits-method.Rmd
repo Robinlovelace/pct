@@ -1,0 +1,24 @@
+---
+title: "Co-benefits methodology"
+author: "Robin Lovelace"
+date: "February 6, 2015"
+output: word_document
+bibliography: ~/Documents/Transport.bib
+---
+
+To estimate the relative health/carbon benefits of different scenarios of
+behavioural change in the transport sector we use a multilevel model
+based on the National Travel Survey (NTS) which provides information at
+the regional, household, trip and stage level. The method could be used to
+assess the impacts of a wide range of future scenarios. In this paper
+we focus on the impacts of cycling uptake under a range of assumptions
+about the types of people who are most likely to start cycling.
+
+The method builds on @Crawford2014 but instead of predetermining model outcomes
+by fixing the final rate of cycling, each different scenario is based on
+different parameters determining *distance decay*. @Crawford used a very
+simple formula for distance decay and did not optimise the parameters
+$\alpha$ and $\beta$
+
+
+# References
