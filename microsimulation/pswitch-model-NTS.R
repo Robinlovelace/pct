@@ -3,9 +3,9 @@
 # # # # # # # # # # # # # # # # # # # # #
 
 # Dependencies: libraries we'll be using
+source("set-up.R") # installs pctpack package
 pkgs <- c("foreign", "dplyr", "birk")
 lapply(pkgs, library, character.only = TRUE)
-source("functions/distance-decay-functions.R") # load functions
 
 # # # # # # # # # # # # # #
 # Stage 1: Load the data  #

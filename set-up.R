@@ -1,6 +1,6 @@
 # Project settings - libraries you'll need to load
 # NB: you'll need to use devtools::install_github for an early version of pctpack
-library(devtools)
+if(!require(devtools)) install.packages("devtools")
 if(!require(pctpack)) install_github("robinlovelace/pctpack")
 pkgs <- c("rgdal", "dplyr", "rgeos", "pctpack")
 require(pkgs, character.only = T)
