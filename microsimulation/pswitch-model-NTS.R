@@ -18,6 +18,7 @@ lapply(pkgs, library, character.only = TRUE)
 
 # # Set the data directory for the NTS data in spss format
 # data_dir <- "/media/robin/data/data/UKDA-5340-spss/spss/spss19/"
+# list.files(data_dir) # check which files are available
 #
 # # Data source: National Travel Survey
 # # Source: http://discover.ukdataservice.ac.uk/series/?sn=2000037
@@ -102,5 +103,5 @@ sum(tsam$now_cycle) # number of additional cyclists
 ggplot(tsam) +
   geom_histogram(aes(JD, fill = mode)) +
   xlim(c(NA,20)) +
-  facet_wrap(~ ifelse(now_cycle, "Now cycled", "Unchanged") , scales = "free")
+  facet_wrap(~ now_cycle, scales = "free")
 
