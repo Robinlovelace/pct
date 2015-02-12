@@ -1,10 +1,11 @@
 ---
-title: "Co-benefits methodology"
+title: 'Carbon and health co-benefits of cycling uptake: methodology (V.1)'
 author: "Robin Lovelace"
-date: "February 6, 2015"
-output: word_document
+output: pdf_document
 bibliography: ~/Documents/Transport.bib
 ---
+
+# Introduction
 
 To estimate the relative health/carbon benefits of different scenarios of
 behavioural change in the transport sector we use a multilevel model
@@ -16,9 +17,172 @@ about the types of people who are most likely to start cycling.
 
 The method builds on @Crawford2014 but instead of predetermining model outcomes
 by fixing the final rate of cycling, each different scenario is based on
-different parameters determining *distance decay*. @Crawford used a very
+different parameters determining *distance decay*. @Crawford2014 used a very
 simple formula for distance decay and did not optimise the parameters
-$\alpha$ and $\beta$
+$\alpha$ and $\beta$, which was taken from a previous paper [@Iacono2010].
+
+Reproducible code to run the model, in its simplest form, is available
+from the 'pct' (short for 'propensity to cycle tool') MIT-licensed GitHub
+code/data repository: https://github.com/Robinlovelace/pct. The subsequent
+description of methodology is based largely on the
+[pswitch-model-NTS.R](https://github.com/Robinlovelace/pct/blob/master/microsimulation/pswitch-model-NTS.R)  script file in this 'repo'.
+
+# Dependencies and data
+
+The model is implemented entirely in open source software based the R language
+for statistical analysis. To augment the capabilities of R's 'base' functions,
+a number of add-on packages, available from the Comprehensive R Archive Network
+([CRAN](http://cran.r-project.org/)) are used:
+
+```{r, eval=FALSE}
+pkgs <- c("foreign", "dplyr", "birk", "ggplot2")
+```
+
+In the first instance, the model is based completely on the UK's National Travel
+Survey (NTS). The latest release (summer 2014) contains data from 2002 to 2012
+and is divided into 9 files, 4 of which are used in this study. SPSS
+(`*.sav`) files used to load the data into R:
+
+- household.sav (36 MB): household-level data linked via the variable `HouseholdID`.
+This table contains data on the local environment as well as household characteristics.
+- individual.sav (141 MB): individual-level, with information about individual travellers
+and additudes.
+- psu.sav (0.16 MB): this contains information about the *Primary Sampling Units* (PSU)
+used to ensure a geographically representative stratified sample, including the region
+and sub-region of the households within.
+- trip.sav (466 MB) the largest file in the 2002-2012 NTS, this file contains
+more than 3 million observations of trip-level data with associated
+characteristics.
+
+Other tables of interest include stages.sav (which divides multi-stage trips
+into shorter steps) and vehicle.sav (information about the vehicle of travel).
+These could be used for future refinements of the method. The data were
+loaded into R using commands such as the following:
+
+```{r, eval=FALSE}
+trips <- read.spss("trip.sav")
+```
+
+## Joining the datasets together
+
+In order to select trips by household-level attributes (for example),
+the different levels of data must be joined together. This was acheived
+using the `*_join` functions from the **dplyr** package. To join individual
+with house-level data, for example, the following command was used:
+
+```{r, eval=FALSE}
+all <- inner_join(houses, psuid, by = "PSUID")
+```
+
+## Sampling
+
+In some cases it will be beneficial to sample from the available data
+rather than using the entirety of the 2002 - 2012 dataset which,
+as we have seen, is rather large. To sample by sub-region, for example,
+the following code can be used:
+
+```{r, eval=FALSE}
+psuid <- filter(psuid, PSUStatsReg_B01ID == "Yorkshire/Humberside, Metropolitan")
+```
+
+# Allocating probabilities of switching mode
+
+To determine the probability of trips switching to cycling,
+a probability was assigned to every trip. We used the `log_cubic()`
+function (described in the `pctpack` R package) to translate
+distances of trips to probabilities. To enable socio-demographic
+and other variables to be accounted for in distance decay,
+we divided-up the probability-assignment process into groups.
+To illustrate the method, the code below shows how different
+parameters into the distance-decay function were used for men and women
+(in a full model more than two groups will be used):
+
+```{r, eval=FALSE}
+# Load dd parameters from NTS (Anna Goodman)
+par_male_urb <- c(0.0001945, -0.002273, -0.1489583, -2.923221)
+par_female_urb <- c(-0.0017932, 0.0655261, -0.8396819, -2.892149)
+
+# Probability of urban males switching, based on distance decay
+tsam$pswitch <- 0 # create probability variable
+tsam$pswitch[tsam$Sex_B01ID == "Male"] <-
+  log_cubic(tsam$JD[tsam$Sex_B01ID == "Male"], par_male_urb)
+
+# Probability of urban females switching
+tsam$pswitch[tsam$Sex_B01ID == "Female"] <-
+  log_cubic(tsam$JD[tsam$Sex_B01ID == "Female"], par_female_urb)
+```
+
+Note that any pre-defined distance-decay functions, based on any future
+scenarios and divided into many different combinations of groups, could be used here.
+
+## Excluding trips that are impossible to switch to cycling
+
+Some trips simply cannot be cycled. To define these, we identify those
+trips (e.g. those already made by bicycle or those made by disabled people)
+and set the probability of a switch to zero. The subsequent line
+of code, for example, makes impossible for trips made by those with a disability to
+switch to cycling:
+
+```{r, eval=FALSE}
+tsam$pswitch[tsam$difficulty_travel == "Yes"] <- 0
+```
+# Generating new cyclists
+
+The model is probabilistic and the hard word goes into estimating
+the probability of any given trip switching to cycling based on
+distance, mode of travel, socio-demographic characteristics and
+other variables. In any case, we will be left with a vector of
+probabilities for each scenario: `pswitch`.
+
+To generate new bicycle trips from `pswitch` we use a random number
+generator (RNG) to create a new binary variable, `now_cycle`.
+A value of 1 means the trip has switched to cycling; a value of
+0 means it has not:
+
+```{r, eval=FALSE}
+set.seed(666) # ensure results are reproducible
+random_num <- runif(n = nrow(tsam), min = 0, max = 1) # random number
+tsam$now_cycle <- tsam$pswitch > random_num # new cycle trips
+```
+
+# Analysis
+
+Based on the above steps, a wide range of analytic possibilities are opened-up.
+Below we simply highlight the potential by creating histograms of number of
+trips by distance for trips that switched to cycling and all other trips
+(Figure 1). The code below also shows how many new cycle trips are created
+compared with the pre-existing modal split.
+
+```{r, echo=FALSE}
+setwd("~/repos/pct")
+tsam <- readRDS("pct-data/tsam.Rds")
+library(ggplot2)
+```
+
+
+```{r, fig.cap="Histograms of trip numbers overall (left) and those which switched to cycling (right) by mode and distance."}
+sum(tsam$mode == "Bicycle") # original number of cyclists
+sum(tsam$now_cycle) # number of additional cyclists
+
+# This is just and example: see other R scripts for more on analysis
+# Distance of new vs existing bicycle trips
+ggplot(tsam) +
+  geom_histogram(aes(JD, fill = mode)) +
+  xlim(c(NA,20)) + xlab("Distance (miles)") +
+  facet_wrap(~ now_cycle , scales = "free")
+```
+
+
+
+
+
+# This is just and example: see other R scripts for more on analysis
+# Distance of new vs existing bicycle trips
+ggplot(tsam) +
+  geom_histogram(aes(JD, fill = mode)) +
+  xlim(c(NA,20)) +
+  facet_wrap(~ ifelse(now_cycle, "Now cycled", "Unchanged") , scales = "free")
+
 
 
 # References
