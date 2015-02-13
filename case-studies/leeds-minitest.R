@@ -122,11 +122,5 @@ l <- SpatialLines(l)
 l <- SpatialLinesDataFrame(l, data = flow, match.ID = F)
 plot(l)
 
-writeOGR(l, "/tmp/", layer = "testlines", "ESRI Shapefile")
-
-
-
-
-
-
+# writeOGR(l, "/tmp/", layer = "testlines", "ESRI Shapefile")
 

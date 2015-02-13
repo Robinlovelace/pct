@@ -26,7 +26,7 @@ source("set-up.R") # load required packages
 # # # # # # # # # # # #
 
 # Load the geographical data
-manc <- readOGR("pct-data/manchesterhester/", "manc-msoa-lores")
+manc <- readOGR("pct-data/manchester/", "manc-msoa-lores")
 
 # Load the flow data
 fmanc <- read.csv("pct-data/manchester/msoa-flow-manc.csv")
@@ -53,12 +53,15 @@ fmanc$ecp <- fmanc$n_cycle - fmanc$Bicycle
 summary(fmanc$ecp)
 summary(fmanc$Bicycle)
 
-write.csv(fmanc, "pct-data/manchester/manc-msoas-dists.csv")
+# write.csv(fmanc, "pct-data/manchester/manc-msoas-dists.csv")
+summary(fmanc$dist)
+# remove 0 distance points
+fmanc <- fmanc[fmanc$dist > 0, ]
 
 # Test plotting
 plot(manc)
 # for(i in 1:nrow(fmanc)){
-for(i in 1:20){
+for(i in 70:100){
   from <- manc$geo_code %in% fmanc$Area.of.residence[i]
   to <- manc$geo_code %in% fmanc$Area.of.workplace[i]
   x <- coordinates(manc[from, ])
@@ -69,5 +72,3 @@ for(i in 1:20){
 # Compare estimated and actual number of cyclists
 plot(fmanc$Bicycle, fmanc$n_cycle)
 cor(fmanc$Bicycle, fmanc$n_cycle)
-
-
