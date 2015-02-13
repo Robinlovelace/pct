@@ -7,7 +7,7 @@ bibliography: ~/Documents/Transport.bib
 
 ## Concepts and measures on level of cycling
 
-- **Current level of cycling** refers to the amount of current cycling activity.
+- **Current level of cycling** (*CLC*) refers to the amount of current cycling activity.
   It can be measured as a proportion (or prevalence) in terms of the number of
   regular cyclists (*NC*) --- e.g. the number who regularly
   cycle to work (*NC~commute~*) or the number who would classify themselves as
