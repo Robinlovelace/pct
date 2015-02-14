@@ -3,7 +3,6 @@
 if(!require(devtools)) install.packages("devtools")
 if(!require(pctpack)) install_github("robinlovelace/pctpack")
 pkgs <- c("rgdal", "dplyr", "rgeos", "pctpack")
-require(pkgs, character.only = T)
 # Which packages do we require?
 reqs <- as.numeric(lapply(pkgs, require, character.only = TRUE))
 # Install packages we require

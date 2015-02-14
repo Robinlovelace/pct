@@ -77,6 +77,8 @@ for(i in 1:nrow(fleeds)){
       " distances calculated")) # print % of distances calculated
 }
 
+fleeds$dist <- fleeds$dist / 1000
+
 # Estimate propensity to cycle
 # Distance-decay function (Iacono et al. 2011)
 iac <- function(x, a = 0.3, b = 0.2){
@@ -86,7 +88,7 @@ iac(1:10)
 
 # Expected number who cycle
 fleeds$pcycle <- fleeds$Bicycle / fleeds$All.categories..Method.of.travel.to.work
-fleeds$pcp <- iac(fleeds$dist / 1000)
+fleeds$pcp <- iac(fleeds$dist)
 fleeds$pcp_n <- fleeds$pcp * fleeds$All.categories..Method.of.travel.to.work
 
 # Propensity to cycle

@@ -2,16 +2,30 @@
 title: "Estimating extra cycling potential from aggretate flows"
 author: "Robin Lovelace"
 date: "February 13, 2015"
-output: pdf_document
+output:
+  pdf_document:
+    fig_caption: yes
+    keep_tex: yes
 ---
+
+```{r, warning=FALSE, message=FALSE, results='hide'}
+# Setup - for reproducible results see https://github.com/Robinlovelace/pct
+pkgs <- c("png", "grid")
+lapply(pkgs, library, character.only = TRUE)
+old <- setwd("../")
+source("case-studies/leeds.R")
+```
 
 There are many ways to characterise distance decay (*DD*),
 the relationship between the distance
 of a trip and the probability of it being made by a particular mode --- in this
-case by bicycle. Clearly
+case by bicycle. In this document we see how *DD* can be estimated
+using flow data from the Census. Clearly
 (as illustrated by the growth of long-distance bicycle touring) *all* trips
 are cyclable in theory. In practice, however, short trips are far more likely
 to be cycled than longer trips for reasons including time stamina and comfort.
+This fact is represented in the flow data. The challenge is extracting the
+nature of *DD* from the flow data, which is rather opaque in its raw form.
 
 Building on 'the principle of parsimony' --- otherwise known as Occam's razor ---
 we will start with the simplest model that explains *DD* in active
@@ -19,14 +33,27 @@ travel reasonably well This is log-linear decay, characterised by two parameters
 [@Iacono2010]. We will build on this example to explore alternative
 distance-decay functions.
 
+# Estimating distance decay
+
 A problem with the log-linear function
 (and any log-model) for fitting to raw flow data on cycling is that
 the log of zero is minus infinity ($log(0) = -\infty$) yet 0 flows between
 origins and destinations are common for all modes of transport, and especially
 so for rare modes. Of the 589 positive commuter flow lines between 25 MSOA zones 
 surrounding Leeds city centre, for example, more than half (389) have 0 cyclists.
-This clearly poses a problem to efforts to parameterise *DD* through linear
+Zero and one-inflation
+clearly poses a problem to efforts to parameterise *DD* through linear
 regression: it is hard to estimate the parameters that result in infinity!
+
+In addition, because flow matrices are so sparse, counts of 1 are common.
+Thus both extreme values of
+0 and 1 values are excessively common (or *inflated*) in raw flow data, 
+as illustrated in Figure 1. This means that fitting non-probabilistic
+regression models to the flow-level is problematic.
+
+```{r, fig.cap="The frequency of 0s and 1s in the proportion of commutes by bicycle. Data: Leeds"}
+plot(flow$dist, flow$pcycle) # the problem with flow data: many 0's and 1's
+```
 
 There are at least two viable solutions to this problem:
 
@@ -43,11 +70,116 @@ the rate of flow between individual OD pairs, so cannot realistically be
 used to estimate *ECP* for OD flows. Zero-inflated regression, by contrast,
 can estimate OD-flows but is more computationally intensive.
 
-## Binning flows
+## Binning flows by distance
 
-We will bin the distances as follows:
+### Binning distances
+
+Distance in the flow data is calculated as the Euclidean distance
+(a refinement would be to use route distance)
+between origin and destination centroids and is a truly continuous variable.
+This differs from the individual-level survey data which treats distance
+as a quasi-continuous variable with a granularity of 0.1 miles (and clumping
+around integer distances, which impacts on our selection of distance bins).
+We bin the distances as follows, and set the maximum distance to 20.5 miles:
 
 ```{r}
-bins <- c(0, 1.5, )
+brks <- c(0, 0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 9.5, 12.5, 15.5, 20.5)
+flow <- flow[flow$dist < 20.5, ]
 ```
+
+This allows for the OD flows to be grouped by distance and for the creation
+of aggregates for each distance band:
+
+```{r}
+flow$binned_dist <- cut(flow$dist, breaks = brks, include.lowest = T)
+
+# Create aggregate variables
+gflow <- group_by(flow, binned_dist) %>%
+  summarise(mdist = mean(dist), mbike = mean(pcycle),
+    total = sum(All.categories..Method.of.travel.to.work))
+```
+
+
+### Defining average distances per bin
+
+The simplest approach to setting the distance associated with each bin
+score is to take the mid-point between the upper and lower value of each bin:
+
+```{r}
+brks_min <- head(brks, -1)
+brks_max <- brks[-1]
+(midpoint <- (brks_min +brks_max) / 2)
+```
+
+However this is an oversimplification: distance distributions are strongly
+positively skewed so the average of distances within the further distance bands
+are likely to be substantially lower than the mean. This is true of our case
+study city (Figure 2), therefore we use the computed mean distance for each bin:
+
+```{r}
+plot(gflow$mdist, midpoint, xlab = "Mean distance (miles)")
+abline(a = 0, b = 1)
+```
+
+### The relationship between distance and cycling in grouped data
+
+Now the data have been grouped and assigned to approximate distances,
+we can use regression to explore **DD** for cycling.
+The relationship is strikingly curvilinear in our example city:
+
+```{r}
+plot(gflow$mdist, gflow$mbike,
+  xlab = "Distance (miles)", ylab = "Percent cycling")
+```
+
+With this non-linear relationship in mind (with a peak around 3 miles),
+we can start to fit functional forms to the data:
+
+```{r}
+mod_loglin <- lm(log(gflow$mbike) ~ gflow$mdist)
+mod_logsqr <- lm(log(gflow$mbike) ~ gflow$mdist + I(gflow$mdist^2))
+mod_logcub <- lm(log(gflow$mbike) ~ gflow$mdist + I(gflow$mdist^2) + I(gflow$mdist^3))
+```
+
+The above code fitted log-linear, log-square and log-cubic functional forms to the
+data. The results are presented in Figure 3.
+
+```{r, fig.cap="Linear regression to estimate *DD* from flow data. Blue, red and green lines represent log-linear, quadratic and cubic functional forms, respectively."}
+plot(gflow$mdist, gflow$mbike,
+  xlab = "Distance (miles)", ylab = "Percent cycling")
+lines(gflow$mdist, exp(mod_loglin$fitted.values), col = "blue")
+lines(gflow$mdist, exp(mod_logsqr$fitted.values), col = "red")
+lines(gflow$mdist, exp(mod_logcub$fitted.values), col = "green")
+```
+
+### Weighted regression
+
+Note that in the previous model, excessive influence was given to the outlying
+distances beyond 15 miles. These anomalous results should not have so much
+sway over the model. To overcome this issue we use weighted regression:
+
+```{r}
+modw_loglin <- lm(log(mbike) ~ mdist, weights = total, data = gflow)
+modw_logsqr <- lm(log(gflow$mbike) ~ mdist + I(mdist^2), weights = total, data = gflow)
+modw_logcub <- lm(log(mbike) ~ mdist + I(mdist^2) + I(mdist^3), weights = total, data = gflow)
+```
+
+Now the results fit the (more common) shorter trips far better (Figure 5).
+
+```{r, eval=FALSE}
+plot(gflow$mdist, gflow$mbike,
+  xlab = "Distance (miles)", ylab = "Percent cycling")
+lines(gflow$mdist, exp(modw_loglin$fitted.values), col = "blue")
+lines(gflow$mdist, exp(modw_logsqr$fitted.values), col = "red")
+lines(gflow$mdist, exp(modw_logcub$fitted.values), col = "green")
+```
+
+```{r, fig.cap="Weighted regression results to estimate *DD* from flow data. Blue, red and green lines represent log-linear, quadratic and cubic functional forms, respectively."}
+old <- setwd("../")
+img <- readPNG("figures/weighted-reg.png")
+grid.raster(img)
+```
+
+
+## Zero-inflated regression
 

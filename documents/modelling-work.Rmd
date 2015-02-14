@@ -1,0 +1,19 @@
+---
+title: "modelling-work"
+output: pdf_document
+---
+
+Based on formal definitions of ‘propensity to cycle’ we will provide estimates of the potential level of cycling (PLC) for the case study cities. We will provide a range of estimates of PLC based on two major branches of research: model level and scenarios of the future.
+4 levels of model will be explored, comprising of combinations between area/flow line-based estimates of cycling potential and individual/aggregate-level analysis. The individual-level analysis requires spatial microsimulation.
+
+We will produce model-based estimates of propensity to cycle at areal and flow line levels in three cities, Manchester, Norwich and another of the DfT’s choosing (we recommend Sheffield or Coventry) using aggregate models. To demonstrate the relative merits of an individual-level model, we will create individual-level model for Manchester, in addition to the aggregate method.
+
+We will produce a simplified version of the model for policy planning and evaluation. The tool will be useful in itself and, based on user feedback, will guide the next phase of the project. The tool will illustrate how potential uptake of cycling varies, based on pre-calculated distance decay functions. The tool’s graphical user interface will help identify where to prioritise cycling investment.  Brook Lyndhurst will organise  user testing of the tool amongst stakeholders. The tool workpackage includes:
+
+a)        Proof-of-concept interactive and planning tool
+
+b)        Review of options to ‘scale- up’ the tool to the national level
+
+c)         User testing and feedback (Brook Lyndhurst)
+
+We will provide demonstration and testing of the model for use by local authorities to guide their investment decision making (e.g. where to place new bicycle paths).
