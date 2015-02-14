@@ -1,0 +1,53 @@
+---
+title: "Estimating extra cycling potential from aggretate flows"
+author: "Robin Lovelace"
+date: "February 13, 2015"
+output: pdf_document
+---
+
+There are many ways to characterise distance decay (*DD*),
+the relationship between the distance
+of a trip and the probability of it being made by a particular mode --- in this
+case by bicycle. Clearly
+(as illustrated by the growth of long-distance bicycle touring) *all* trips
+are cyclable in theory. In practice, however, short trips are far more likely
+to be cycled than longer trips for reasons including time stamina and comfort.
+
+Building on 'the principle of parsimony' --- otherwise known as Occam's razor ---
+we will start with the simplest model that explains *DD* in active
+travel reasonably well This is log-linear decay, characterised by two parameters
+[@Iacono2010]. We will build on this example to explore alternative
+distance-decay functions.
+
+A problem with the log-linear function
+(and any log-model) for fitting to raw flow data on cycling is that
+the log of zero is minus infinity ($log(0) = -\infty$) yet 0 flows between
+origins and destinations are common for all modes of transport, and especially
+so for rare modes. Of the 589 positive commuter flow lines between 25 MSOA zones 
+surrounding Leeds city centre, for example, more than half (389) have 0 cyclists.
+This clearly poses a problem to efforts to parameterise *DD* through linear
+regression: it is hard to estimate the parameters that result in infinity!
+
+There are at least two viable solutions to this problem:
+
+1. Aggregating flows into distance bins such so that we estimate the *average*
+(or population-weighted average) proportion of trips made by bicycle.
+2. Zero-inflated regression, whereby the high frequency of zeros in the dependent
+variable (% commuting by bicycle) is accounted for in the model.
+
+Both solutions have advantages. Binning greatly reduces the computational requirements
+of the model by grouping hundreds of distances into only a few dozen bins (how
+many bins depends on the bin size). Binning is therefore
+useful for parameter estimation. However, the binning approach cannot predict
+the rate of flow between individual OD pairs, so cannot realistically be
+used to estimate *ECP* for OD flows. Zero-inflated regression, by contrast,
+can estimate OD-flows but is more computationally intensive.
+
+## Binning flows
+
+We will bin the distances as follows:
+
+```{r}
+bins <- c(0, 1.5, )
+```
+

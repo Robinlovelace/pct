@@ -85,11 +85,12 @@ iac <- function(x, a = 0.3, b = 0.2){
 iac(1:10)
 
 # Expected number who cycle
-fleeds$p_cycle <- iac(fleeds$dist / 1000)
-fleeds$n_cycle <- fleeds$p_cycle * fleeds$All.categories..Method.of.travel.to.work
+fleeds$pcycle <- fleeds$Bicycle / fleeds$All.categories..Method.of.travel.to.work
+fleeds$pcp <- iac(fleeds$dist / 1000)
+fleeds$pcp_n <- fleeds$pcp * fleeds$All.categories..Method.of.travel.to.work
 
 # Propensity to cycle
-fleeds$pc1 <- fleeds$n_cycle - fleeds$Bicycle
+fleeds$pc1 <- fleeds$pcp_n - fleeds$Bicycle
 summary(fleeds$pc1)
 
 # write.csv(fleeds, "pct-data/leeds/sample-leeds-centre-dists.csv")
@@ -120,7 +121,7 @@ for(i in 1:nrow(flow)){
 
 l <- SpatialLines(l)
 l <- SpatialLinesDataFrame(l, data = flow, match.ID = F)
-plot(l)
+# plot(l)
 
 # writeOGR(l, "/tmp/", layer = "testlines", "ESRI Shapefile")
 
