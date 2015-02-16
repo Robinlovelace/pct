@@ -9,7 +9,8 @@ output:
 ---
 
 ```{r, warning=FALSE, message=FALSE, results='hide', echo=FALSE}
-# Setup - for reproducible results see https://github.com/Robinlovelace/pct
+# output: word_document
+# For reproducible results see https://github.com/Robinlovelace/pct
 pkgs <- c("png", "grid", "ggplot2", "ggthemes")
 lapply(pkgs, library, character.only = TRUE)
 if(grepl("doc", getwd())) old <- setwd("../") # get into correct directory
