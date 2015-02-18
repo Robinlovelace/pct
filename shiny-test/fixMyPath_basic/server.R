@@ -33,7 +33,6 @@ shinyServer(function(input, output){
   })
 
   output$map = renderLeaflet(map%>%
-                                 setView(-1.549167, 53.799722, zoom()) %>%
                                  addPolygons(data = leeds
                                              , fillOpacity = 0.4
                                              , opacity = (input$transp_zones)*.4
@@ -51,6 +50,7 @@ shinyServer(function(input, output){
                                                   , radius = 2
                                                   , color = "black"
                                                   , popup = sprintf("<b>Journeys by bike: </b>%s%%", round(leeds$pCycle * 100, 2))) %>%
-                                 addGeoJSON(RJSONIO::fromJSON(sprintf("%s.geojson", input$feature)))
+                                 addGeoJSON(RJSONIO::fromJSON(sprintf("%s.geojson", input$feature))) %>%
+                                 mapOptions(zoomToLimits = "first")
   )
 })
