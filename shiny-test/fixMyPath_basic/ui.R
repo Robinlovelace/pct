@@ -15,6 +15,6 @@ fluidPage(
     mainPanel("Welcome to",
               a(href = "https://robinlovelace.shinyapps.io/fixMyPath/", "fixMyPath"),
               p("fixMyPath is a shiny app written to facilitate better bicycle path planning in Leeds, the UK and eventually the world. If you'd like to get involved, please check-out, test and contribute-to the fully reproducible code..."),
-              a(href = "https://github.com/nikolai-b/hackMyRoute/tree/master/R/fixMyPath", strong("HERE!"), target="_blank"),
-              leafletOutput('map', height = 600)),
+              a(href = "https://github.com/Robinlovelace/pct/tree/master/shiny-test/fixMyPath_basic", strong("HERE!"), target="_blank"),
+              leafletOutput('map', height = 600))
   ))
