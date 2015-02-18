@@ -14,6 +14,6 @@ function(input, output){
     addPolylines()
 #     addPopups(-1.549, 53.8, 'First ever popup in leaflet') # add popup
 
-  output$myMap = renderLeaflet(map)
+  output$map = renderLeaflet(map)
 
 }
