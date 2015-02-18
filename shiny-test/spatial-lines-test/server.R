@@ -12,8 +12,6 @@ function(input, output){
     addTiles() %>%
     setView(lng = map_centre[1], lat = map_centre[2], zoom = 10) %>%
     addPolylines()
-  #     addPopups(-1.549, 53.8, 'First ever popup in leaflet') # add popup
-
   output$map = renderLeaflet(map)
 
 }
