@@ -3,7 +3,7 @@
 # # # # # # # # # # #
 
 # Packages we'll be using
-pkgs <- c("raster", "rgdal", "rgeos", "ggmap")
+pkgs <- c("raster", "rgdal", "rgeos", "ggmap", "dplyr")
 lapply(pkgs, library, character.only = TRUE)
 
 # # # # # # # # # # # # # # # #
@@ -97,6 +97,30 @@ eng_lsoa$avslope <- avslope
 
 # write.csv(eng_lsoa@data, "/tmp/height-slope.csv")
 # writeOGR(eng_lsoa, dsn = "bigdata/", layer = "terrain_shape", driver = "ESRI Shapefile")
+
+# # # # # #
+# Merging #
+# Binning #
+# # # # # #
+
+tomerge <- read.csv("/tmp/England_pcycle2011_LSOA11.csv")
+head(tomerge)
+unique(tomerge$pcycle11) # 22 unique bins
+head(eng_lsoa@data)
+bins <- quantile(avslope, probs = seq(0, 1, length.out = 21), na.rm = T)
+avslope_binned <- cut(avslope, bins)
+eng_lsoa$avslope_binned <- avslope_binned
+frommerge <- eng_lsoa@data
+
+# Prepare for merge
+tomerge <- rename(tomerge, geo_code = lsoacode_11)
+tomerge$geo_label <- as.character(tomerge$geo_label)
+frommerge$geo_label <- as.character(frommerge$geo_label)
+head(tomerge$geo_code)
+head(frommerge$geo_code)
+merged <- inner_join(tomerge, frommerge)
+summary(merged$avslope_binned)
+write.csv(merged, "/tmp/merged.csv")
 
 # # # # #
 # Tests #
