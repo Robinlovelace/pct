@@ -17,7 +17,7 @@ bibliography: ~/Documents/Transport.bib
   
 - **Potential level of cycling** (*PLC*)
   is the *expected* rate of cycling in given area or between
-  origin-destination pairs, under a certain set of assumptions of assuming
+  origin-destination pairs, under a certain set of assumptions, including
   a given background cycling modal share.
   This potential level is calculated using a model which
   incorporates the impact of distance (see *distance decay*, below),
