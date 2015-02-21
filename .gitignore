@@ -8,4 +8,5 @@ pct-data/
 *shinyapps*
 *.docx
 *.tex
-bigdata/
+*.mdb
+*.accb
