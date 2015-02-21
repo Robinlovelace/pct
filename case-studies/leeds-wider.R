@@ -56,7 +56,7 @@ fleeds$ecp <- fleeds$pc - fleeds$Bicycle
 summary(fleeds$ecp)
 summary(fleeds$Bicycle)
 
-write.csv(fleeds, "pct-data/leeds/msoa-flow-leeds-ecp.csv")
+# write.csv(fleeds, "pct-data/leeds/msoa-flow-leeds-ecp.csv")
 
 # Actual rate of cycling
 plot(leeds)
@@ -79,7 +79,7 @@ for(i in 1:nrow(fleeds)){
   to <- leeds_outer$geo_code %in% fleeds$Area.of.workplace[i]
   x <- coordinates(leeds[from, ])
   y <- coordinates(leeds_outer[to, ])
-#   lines(c(x[1], y[1]), c(x[2], y[2]), lwd = fleeds$pc[i] / 400 )
+  lines(c(x[1], y[1]), c(x[2], y[2]), lwd = fleeds$pc[i] / 400 )
 }
 
 # Compare estimated and actual number of cyclists

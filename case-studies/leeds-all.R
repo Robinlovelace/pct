@@ -69,18 +69,18 @@ names(fleeds)[19:22] <- c("lon_origin", "lat_origin", "lon_dest", "lat_dest")
 # write.csv(fleeds, "pct-data/leeds/msoa-flow-leeds-all.csv")
 
 # # Actual rate of cycling
-# plot(leeds)
-# lwd <- fleeds$Bicycle / mean(fleeds$Bicycle) * 0.1
-# for(i in 1:nrow(fleeds)){
-# # for(i in 1:1000){
-#   from <- leeds$geo_code %in% fleeds$Area.of.residence[i]
-#   to <- leeds$geo_code %in% fleeds$Area.of.workplace[i]
-#   x <- coordinates(leeds[from, ])
-#   y <- coordinates(leeds[to, ])
-#   lines(c(x[1], y[1]), c(x[2], y[2]), lwd = lwd, col = "blue" )
-#   if(i %% round(nrow(fleeds) / 10) == 0)
-#   print(paste0(100 * i/nrow(fleeds), " % out of ", nrow(fleeds)))
-# }
+plot(leeds)
+lwd <- fleeds$Bicycle / mean(fleeds$Bicycle) * 0.1
+for(i in 1:nrow(fleeds)){
+# for(i in 1:1000){
+  from <- leeds$geo_code %in% fleeds$Area.of.residence[i]
+  to <- leeds$geo_code %in% fleeds$Area.of.workplace[i]
+  x <- coordinates(leeds[from, ])
+  y <- coordinates(leeds[to, ])
+  lines(c(x[1], y[1]), c(x[2], y[2]), lwd = lwd, col = "blue" )
+  if(i %% round(nrow(fleeds) / 10) == 0)
+  print(paste0(100 * i/nrow(fleeds), " % out of ", nrow(fleeds)))
+}
 #
 # head(fleeds)
 #
