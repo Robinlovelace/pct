@@ -97,7 +97,3 @@ plot(ttw[sel[3], ], lwd = 5, col = "grey")
 plot(wnor, add = T)
 plot(nor, add = T, col = "red")
 ```
-
-
-
-
