@@ -1,0 +1,103 @@
+---
+title: "Travel to work areas"
+author: "Robin Lovelace"
+date: "February 21, 2015"
+output: pdf_document
+---
+```{r setup, include=FALSE}
+library("knitr")
+opts_knit$set(root.dir = "../")
+```
+
+```{r, echo=FALSE, include=FALSE}
+source("set-up.R")
+pkgs <- c("raster")
+lapply(pkgs, library, character.only = TRUE)
+```
+
+Travel to work areas (TTWA) are geographic zones in which
+"where the bulk of the resident population also work within the same area".
+They can be seen as 'commuter watersheds', and are hence useful for analysing
+commuter patterns. Because estimates of distance decay depend strongly on
+an understanding of commuter zones, TTWA may be useful 'train' DD paramaters
+for relatively similar commuting blocks.
+
+TTWA boundaries can be downloaded by the public directly from the internet:
+
+```{r, echo=FALSE}
+# url = "https://geoportal.statistics.gov.uk/Docs/Boundaries/Travel_to_work_areas_%28E+W%29_2007_Boundaries_%28Generalised_Clipped%29.zip"
+# download.file(url, method = "curl", destfile = "bigdata/ttwa.zip")
+# unzip(zipfile = "bigdata/ttwa.zip", exdir = "bigdata/")
+```
+
+To load the files one can use the `shapefile` function of **raster**.
+The `gMapshape` function intelligently simplifies the boundaries.
+There are 186 TTWA in England and Wales.
+
+```{r}
+# gMapshape("bigdata/TTWA_DEC_2007_EW_BGC.shp", percent = 5)
+ttw <- shapefile("bigdata/TTWA_DEC_2007_EW_BGCmapshaped_5%.shp")
+
+head(ttw@data, 3)
+nrow(ttw)
+# plot(ttw)
+```
+
+# Areas of interest
+
+Let's highlight the areas we are interested in:
+
+```{r}
+aoi <- "Manchester|Coventry|Norwich"
+sel <-  grep(aoi, ttw$TTWA07NM)
+plot(ttw)
+plot(ttw[sel,], col = "red", add = T)
+```
+
+Let's take a look at each of these in order.
+In the plots below, the grey areas with a thick black boundary are TTWA.
+Thin black lines with no fill represent MSOA areas in the wider area
+(where present). The red zones represent the city Local Authorities,
+such as Norwich.
+
+```{r, echo=FALSE}
+source("geo-load/load-uk.R")
+```
+
+
+## Manchester
+
+The size of the Manchester TTWA is roughly the same as Greater Manchester
+Authority, but a different shape:
+
+```{r}
+plot(ttw[sel[2], ], lwd = 5, col = "grey")
+plot(gman, add = T)
+plot(man, add = T, col = "red")
+```
+
+## Coventry
+
+Coventry's TTWA is substantially larger than the city bounds, extending
+far out to the north:
+
+```{r}
+plot(ttw[sel[1], ], lwd = 5, col = "grey")
+plot(cov, add = T, col = "red")
+```
+
+## Norwich
+
+Norwich's TTWA is roughly the same size and shap as Norwich Local Authority
+plus the Broadland and South Norfolk, the local authorities to the north
+and south of it respectively.
+
+```{r}
+plot(ttw[sel[3], ], lwd = 5, col = "grey")
+plot(wnor, add = T)
+plot(nor, add = T, col = "red")
+```
+
+
+
+

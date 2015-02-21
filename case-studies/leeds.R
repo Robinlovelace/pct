@@ -24,5 +24,3 @@ cor(fleeds$Bicycle, fleeds$pc)
 # Prepare for aggregate flow analysis
 flow <- fleeds
 flow$pcycle <- flow$Bicycle / flow$All.categories..Method.of.travel.to.work * 100
-
-# Create lines, convert to wgs84, export as geojson

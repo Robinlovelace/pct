@@ -1,17 +1,16 @@
+
+```{r }
 ---
 title: "Estimating extra cycling potential from aggretate flows"
 author: "Robin Lovelace"
 date: "February 13, 2015"
-output:
-  pdf_document:
-    fig_caption: yes
-    keep_tex: yes
+output: word_document
 ---
 
 ```{r, warning=FALSE, message=FALSE, results='hide', echo=FALSE}
 # output: word_document
 # For reproducible results see https://github.com/Robinlovelace/pct
-pkgs <- c("png", "grid", "ggplot2", "ggthemes")
+pkgs <- c("png", "grid", "ggmap", "ggthemes")
 lapply(pkgs, library, character.only = TRUE)
 if(grepl("doc", getwd())) old <- setwd("../") # get into correct directory
 source("case-studies/leeds.R")
@@ -25,8 +24,14 @@ using flow data from the Census. Clearly
 (as illustrated by the growth of long-distance bicycle touring) *all* trips
 are cyclable in theory. In practice, however, short trips are far more likely
 to be cycled than longer trips for reasons including time stamina and comfort.
-This fact is represented in the flow data. The challenge is extracting the
+This fact is represented in the flow data (Figure 1). The challenge is extracting the
 nature of *DD* from the flow data, which is rather opaque in its raw form.
+
+```{r, fig.cap="Plot of the demonstration city (Leeds) with all cycle trip flows represented by the white lines (oppacity is proportional to bicycle commuters).", echo=FALSE}
+if(grepl("doc", getwd())) old <- setwd("../") # get into correct directory
+img <- readPNG("figures/leeds-flow-bicycle.png")
+grid.raster(img)
+```
 
 Building on 'the principle of parsimony' --- otherwise known as Occam's razor ---
 we will start with the simplest model that explains *DD* in active
@@ -49,11 +54,11 @@ regression: it is hard to estimate the parameters that result in infinity!
 In addition, because flow matrices are so sparse, counts of 1 are common.
 Thus both extreme values of
 0 and 1 values are excessively common (or *inflated*) in raw flow data, 
-as illustrated in Figure 1. This means that fitting non-probabilistic
+as illustrated in Figure 2. This means that fitting non-probabilistic
 regression models to the flow-level is problematic.
 
 ```{r, fig.height=3, fig.width=4, fig.cap="Scatterplot of flow distance and proportion cycling illustrating the frequency of 0s and 1s in the proportion of commutes by bicycle. Data: Leeds (n = 10,242).", echo=FALSE}
-plot(flow$dist, flow$pcycle, xlab = "Distance (miles)", ylab = "% cyclists") 
+plot(flow$dist, flow$pcycle, xlab = "Distance (miles)", ylab = "% commutes by bike") 
 # the problem with flow data: many 0's and 1's
 ```
 
@@ -117,14 +122,14 @@ brks_max <- brks[-1]
 However this is an oversimplification: distance distributions are strongly
 positively skewed so the average of distances within the further distance bands
 are likely to be substantially lower than the mean. This is true of our case
-study city (Figure 2), therefore we use the computed mean distance for each bin:
+study city (Figure 3), therefore we use the computed mean distance for each bin:
 
 ```{r, fig.height=3, fig.width=4, fig.cap="The relationship between bin midpoint and average Euclidean distance of trips within each bin."}
 plot(gflow$mdist, midpoint, xlab = "Mean distance (miles)")
 abline(a = 0, b = 1)
 ```
 
-The overall number of trips per distance band is illustrated in Figure 3.
+The overall number of trips per distance band is illustrated in Figure 4.
 The barely visible grey fill at the bottom of the bars represents bicycle
 trips. Unsurprisingly, these all-but disappear after 6 miles, demonstrating
 that distance decay for cycling is faster than for trips overall.
@@ -161,7 +166,7 @@ data. The following code runs **weighted regression**.
 Adding weights to the regression in this way reduces the impact of
 the longer-distance commutes, which fewer cyclists make. Note that two weight
 vectors are used: total number of trips and total number of cyclists.
-The results of these regressions are presented in Figure 4.
+The results of these regressions are presented in Figure 5.
 
 ```{r}
 modw_logcub <- lm(log(mbike) ~ mdist + I(mdist^2) + I(mdist^3),
@@ -207,6 +212,5 @@ lines(gflow$mdist, exp(modw2_logcub$fitted.values), col = "green", lty = 3)
 # 
 # ## Zero-inflated regression
 ```
-
-
+```
 
