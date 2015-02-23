@@ -1,23 +1,21 @@
-# # # # #
-# setup #
-# # # # #
+# Loading data
 
-source("set-up.R") # load required packages
+source("geo-load/load-uk.R")
+source("geo-load/load-uk-centroids.R")
 
-# # # # # # # # # # # # #
-# Load Leeds data       #
-# No need to run this   #
-# # # # # # # # # # # # #
+ttw <- ttw[ttw@data$TTWA07NM == "Manchester", ]
 
-# Load public access flow data
-# Set file location (will vary - download files from here:
-# https://wicid.ukdataservice.ac.uk/cider/wicid/downloads.php)
-f <- "bigdata/public-flow-data-msoa/wu03ew_v2.csv"
-flowm <- read.csv(f) # load public msoa-level flow data
-o_in_leeds <- flowm$Area.of.residence %in% leeds$geo_code
-d_in_leeds <- flowm$Area.of.workplace %in% leeds$geo_code
+cent <- cents_msoa[ ttw, ]
+plot(cent)
+nrow(cent)
 
-fleeds <- flowm[ o_in_leeds & d_in_leeds , ]
+# Load flow data
+source("geo-load/load-flow-open.R")
+o <- flowm$Area.of.residence %in% cent$MSOA11CD
+d <- flowm$Area.of.workplace %in% cent$MSOA11CD
+
+
+f <- flowm[ o & d , ]
 
 # # # # # # # # # # # #
 # Load the test data  #
@@ -72,14 +70,14 @@ names(fleeds)[19:22] <- c("lon_origin", "lat_origin", "lon_dest", "lat_dest")
 plot(leeds)
 lwd <- fleeds$Bicycle / mean(fleeds$Bicycle) * 0.1
 for(i in 1:nrow(fleeds)){
-# for(i in 1:1000){
+  # for(i in 1:1000){
   from <- leeds$geo_code %in% fleeds$Area.of.residence[i]
   to <- leeds$geo_code %in% fleeds$Area.of.workplace[i]
   x <- coordinates(leeds[from, ])
   y <- coordinates(leeds[to, ])
   lines(c(x[1], y[1]), c(x[2], y[2]), lwd = lwd, col = "blue" )
   if(i %% round(nrow(fleeds) / 10) == 0)
-  print(paste0(100 * i/nrow(fleeds), " % out of ", nrow(fleeds)))
+    print(paste0(100 * i/nrow(fleeds), " % out of ", nrow(fleeds)))
 }
 #
 # head(fleeds)

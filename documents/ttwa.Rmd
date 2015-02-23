@@ -15,12 +15,13 @@ pkgs <- c("raster")
 lapply(pkgs, library, character.only = TRUE)
 ```
 
-Travel to work areas (TTWA) are geographic zones in which
-"where the bulk of the resident population also work within the same area".
+Travel to work areas (TTWA) are geographic zones
+"where the bulk of the resident population also work within the same area".^[http://www.ons.gov.uk/ons/guide-method/geography/beginner-s-guide/other/travel-to-work-areas/index.html]
 They can be seen as 'commuter watersheds', and are hence useful for analysing
 commuter patterns. Because estimates of distance decay depend strongly on
-an understanding of commuter zones, TTWA may be useful 'train' DD paramaters
-for relatively similar commuting blocks.
+an understanding of commuter zones, TTWA may be useful to 'train' DD paramaters
+for relatively similar commuting blocks and to highlight differences in DD
+between cities.
 
 TTWA boundaries can be downloaded by the public directly from the internet:
 

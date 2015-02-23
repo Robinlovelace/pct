@@ -1,6 +1,8 @@
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-# Needs mapshaper installed - thanks to Richard Ellison #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # #
+# Load MSOA areas for the UK  #
+# Needs mapshaper installed   #
+# - thanks to Richard Ellison #
+# # # # # # # # # # # # # # # #
 
 library("raster")
 
@@ -80,3 +82,9 @@ wnor <- shapefile("pct-data/norwich/wmsoa-lores.shp")
 # saveRDS(outer, file = "pct-data/leeds/outer-points.Rds")
 # saveRDS(leeds, file = "pct-data/leeds/leeds-msoas-simple.Rds")
 # saveRDS(buf, file = "pct-data/leeds/10km-buffer.Rds")
+
+# # Load TTWA
+# url = "https://geoportal.statistics.gov.uk/Docs/Boundaries/Travel_to_work_areas_%28E+W%29_2007_Boundaries_%28Generalised_Clipped%29.zip"
+# download.file(url, method = "curl", destfile = "bigdata/ttwa.zip")
+# unzip(zipfile = "bigdata/ttwa.zip", exdir = "bigdata/")
+ttw <- shapefile("bigdata/TTWA_DEC_2007_EW_BGCmapshaped_5%.shp")
