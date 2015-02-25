@@ -10,6 +10,7 @@ lapply(pkgs, library, character.only = TRUE)
 # # # # #
 # TODO  #
 # # # # #
+
 # Add age-dependency of dd function
 
 # # # # # # # # # # # # # #
@@ -24,8 +25,9 @@ lapply(pkgs, library, character.only = TRUE)
 # # Source: http://discover.ukdataservice.ac.uk/series/?sn=2000037
 # trips <- read.spss(paste0(data_dir, "trip.sav")) # memisc::spss.system.file fails
 # trips <- as_data_frame(trips) # 3.3 million rows of trip-level data
+# names(trips)
 # # Massively reduce dataset's size by saving only relevant variables
-# trips <- dplyr::select(trips, SurveyYear, TripID, DayID, IndividualID, HouseholdID, PSUID, NumStages, trips, modetrp = MainMode_B04ID, purp = TripPurpose_B04ID, TripTotalTime, JD)
+# trips <- dplyr::select(trips, SurveyYear, TripID, DayID, IndividualID, HouseholdID, PSUID, NumStages, modetrp = MainMode_B04ID, purp = TripPurpose_B04ID, TripTotalTime, JD, NumStages )
 #
 # # Individual-level data
 # ind <- read.spss(paste0(data_dir, "individual.sav"))

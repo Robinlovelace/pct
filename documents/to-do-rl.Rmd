@@ -1,0 +1,16 @@
+---
+title: "Todo"
+author: "Robin Lovelace"
+date: "February 23, 2015"
+output: word_document
+---
+
+These are 'action points' associated with the modelling side of the PCT project.
+
+1. Write-up of public-facing document explaining what we're doing.
+2. Public outreach article on the methodology.
+3. Generate spatial microdata for Manchester to compare.
+4. Saspac trial: check 
+5. Fitting 'n-parameter normal' to data: howto
+
+## Done
