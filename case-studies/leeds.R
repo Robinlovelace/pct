@@ -23,4 +23,5 @@ cor(fleeds$Bicycle, fleeds$pc)
 
 # Prepare for aggregate flow analysis
 flow <- fleeds
-flow$pcycle <- flow$Bicycle / flow$All.categories..Method.of.travel.to.work * 100
+flow <- rename(flow, All = All.categories..Method.of.travel.to.work )
+flow$pcycle <- flow$Bicycle / flow$All * 100
