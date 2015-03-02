@@ -104,7 +104,7 @@ flow$binned_dist <- cut(flow$dist, breaks = brks, include.lowest = T)
 
 # Create aggregate variables
 gflow <- group_by(flow, binned_dist) %>%
-  summarise(mdist = mean(dist), mbike = mean(pcycle),
+  summarise(dist = mean(dist), mbike = mean(pcycle),
     total = sum(All))
 gflow$nbike <- gflow$total * gflow$mbike / 100 # number of bikes in each zone
 ```
@@ -126,7 +126,7 @@ are likely to be substantially lower than the mean. This is true of our case
 study city (Figure 3), therefore we use the computed mean distance for each bin:
 
 ```{r, fig.height=3, fig.width=4, fig.cap="The relationship between bin midpoint and average Euclidean distance of trips within each bin."}
-plot(gflow$mdist, midpoint, xlab = "Mean distance (km)")
+plot(gflow$dist, midpoint, xlab = "Mean distance (km)")
 abline(a = 0, b = 1)
 ```
 
@@ -155,10 +155,10 @@ With this non-linear relationship in mind (with a peak around 3 km),
 we fitted various log-linear, quadratic and cubic functional forms to the data.
 
 ```{r}
-mod_loglin <- lm(log(mbike) ~ mdist, data = gflow)
-mod_logsqr <- lm(log(mbike) ~ mdist + I(mdist^2), data = gflow)
-mod_logcub <- lm(log(mbike) ~ mdist + I(mdist^2) + I(mdist^3), data = gflow)
-mod_cub <- lm(mbike ~ mdist + I(mdist^2) + I(mdist^3), data = gflow)
+mod_loglin <- lm(log(mbike) ~ dist, data = gflow)
+mod_logsqr <- lm(log(mbike) ~ dist + I(dist^2), data = gflow)
+mod_logcub <- lm(log(mbike) ~ dist + I(dist^2) + I(dist^3), data = gflow)
+mod_cub <- lm(mbike ~ dist + I(dist^2) + I(dist^3), data = gflow)
 ```
 
 The above code fitted log-linear, log-square and log-cubic functional forms to the
@@ -169,21 +169,21 @@ vectors are used: total number of trips and total number of cyclists.
 The results of these regressions are presented in Figure 5.
 
 ```{r}
-modw_logcub <- lm(log(mbike) ~ mdist + I(mdist^2) + I(mdist^3),
+modw_logcub <- lm(log(mbike) ~ dist + I(dist^2) + I(dist^3),
   weights = total, data = gflow)
-modw2_logcub <- lm(log(mbike) ~ mdist + I(mdist^2) + I(mdist^3),
+modw2_logcub <- lm(log(mbike) ~ dist + I(dist^2) + I(dist^3),
   weights = nbike, data = gflow)
 ```
 
 ```{r, fig.cap="Linear regression to estimate *DD* from flow data. Blue, red and green lines represent log-linear, quadratic and cubic functional forms, respectively. The dotted and dashed green lines represent the impact of weighting but the number of total and cyclist commuter trips in each category, respectively.  The black line is the cubic regression, without taking the log of y.", echo=FALSE}
-plot(gflow$mdist, gflow$mbike,
+plot(gflow$dist, gflow$mbike,
   xlab = "Distance (km)", ylab = "Proportion cycling", ylim = c(0, 0.03))
-lines(gflow$mdist, exp(mod_loglin$fitted.values), col = "blue")
-lines(gflow$mdist, exp(mod_logsqr$fitted.values), col = "red")
-lines(gflow$mdist, exp(mod_logcub$fitted.values), col = "green")
-lines(gflow$mdist, exp(modw_logcub$fitted.values), col = "green", lty = 2)
-lines(gflow$mdist, exp(modw2_logcub$fitted.values), col = "green", lty = 3)
-lines(gflow$mdist, mod_cub$fitted.values, col = "black", lty = 4)
+lines(gflow$dist, exp(mod_loglin$fitted.values), col = "blue")
+lines(gflow$dist, exp(mod_logsqr$fitted.values), col = "red")
+lines(gflow$dist, exp(mod_logcub$fitted.values), col = "green")
+lines(gflow$dist, exp(modw_logcub$fitted.values), col = "green", lty = 2)
+lines(gflow$dist, exp(modw2_logcub$fitted.values), col = "green", lty = 3)
+lines(gflow$dist, mod_cub$fitted.values, col = "black", lty = 4)
 ```
 
 Does the log-term make any difference to model fit? A little, but not much
@@ -218,10 +218,10 @@ kable(mods, digits = 3)
 
 ```{r, echo=FALSE}
 # summary(modw_logcub)
-# plot(gflow$mdist, gflow$mbike,
+# plot(gflow$dist, gflow$mbike,
 #   xlab = "Distance (km)", ylab = "Proportion cycling")
-# lines(gflow$mdist, exp(modw_loglin$fitted.values), col = "blue")
-# lines(gflow$mdist, exp(modw_logsqr$fitted.values), col = "red")
+# lines(gflow$dist, exp(modw_loglin$fitted.values), col = "blue")
+# lines(gflow$dist, exp(modw_logsqr$fitted.values), col = "red")
 # ```{r, fig.cap="Weighted regression results to estimate *DD* from flow data. Blue, red and green lines represent log-linear, quadratic and cubic functional forms, respectively."}
 # old <- setwd("../")
 # img <- readPNG("figures/weighted-reg.png")
@@ -244,9 +244,7 @@ Using grouped data precludes the inclusion of flow-level variables that could
 be useful in acurately estimating the potential level of cycling (CLC)
 such as steepness and the characteristics of the origin zone.
 
-We can fit exactly the same model to the individual-level data:
-
-```{r, fig.cap="Distance decay curves based on the cubic polynomial regression against distance for all flows (red lines)"}
+```{r, echo=FALSE}
 flow$clc <- flow$Bicycle / flow$All
 mod_ind1 <- lm(pcycle ~ dist + I(dist^2) + I(dist^3), data = flow)
 mod_ind2 <- lm(pcycle ~ dist + I(dist^2) + I(dist^3), data = flow,
@@ -256,19 +254,141 @@ mod_ind3 <- lm(pcycle ~ dist + I(dist^2) + I(dist^3), data = f3,
   weights = All)
 summary(mod_ind1)
 df <- data.frame(dist = seq(0.1, max(flow$dist), length.out = 100))
-df2 <- data.frame(mdist = seq(0.1, max(flow$dist), length.out = 100))
+df2 <- data.frame(dist = seq(0.1, max(flow$dist), length.out = 100))
+```
+
+We can fit exactly the same model to the individual-level data 
+
+```{r, fig.cap="Distance decay curves based on the cubic polynomial regression against distance for all flows (red lines). The continuous and dashed lines represent unweighted, and weighted implementations. The dotted lines is fitted only to flows of < 15 km. The green line is the fit produced from the binned data."}
 
 plot(flow$dist, flow$pcycle, xlim = c(0, 16), ylim = c(0, 0.04),
   xlab = "Distance (km)", ylab = "Percentage cycling")
 lines(df$dist, predict(object = mod_ind1, df), col = "red", lwd = 4)
 lines(df$dist, predict(object = mod_ind2, df), col = "red", lwd = 6, lty = 2)
 lines(df$dist, predict(object = mod_ind3, df), col = "red", lwd = 6, lty = 3)
-lines(df2$mdist, exp(predict(object = modw_logcub, df2)),
+lines(df2$dist, exp(predict(object = modw_logcub, df2)),
   col = "green", lwd = 5)
-lines(gflow$mdist, mod_cub$fitted.values, col = "black", lty = 4, lwd = 6)
+# lines(gflow$dist, mod_cub$fitted.values, col = "black", lty = 4, lwd = 6)
 ```
 
-## Regression against the cumulative probability of cycling
+## Fitting a simplified Planck Law
+
+The dotted curve in Figure 6 illustrates a problem with the cubic distance
+decay function: after reaching a minimum value it lurches upwards. Thus, in
+all versions of this model, the proportion of people cycling 20 km to work
+is greater than the proportion cycling 10 km. The dotted line shows that, even
+after weighting the flows so the more common shorter trips have a disproportionate
+impact on the model, the relatively rare longer trips hold great sway over
+the shape of the DD curve produced by the cubic functions. This reduces the
+fit of the model and, worse, means that DD curves in regions with no long-distance
+trips will be very different from those produced in regions with long-distance
+trips, even if the underlying pattern is identical.
+
+A function that always tends to zero as distance tends to infinity would be
+preferable. An equation in which the dependent variable
+rises rapidly and then decays gradually with an independent variable is the
+'Planck Law':
+
+A simplified version of this equation was developed after some experimentation
+to fit to the data:
+
+$$
+pc= \frac{a (b + d)}{e^{k(b + d)}}
+$$
+
+In words, this means that *pc* increases (how rapidly depends on the value of *b*)
+to some maximum value (dependent on *a*) before entering a exponential decay
+phase, the gradient of which dominated by *k*.
+
+This function can be easily written in R and fitted to the data using the
+Nonlinear Least Squares function `nls`.
+The function can also be fitted to the flow-level data.
+
+```{r, echo=FALSE}
+# The original form of the Planck-like dd function:
+dd_planck_orig <- function(x, a, b, k){
+  (a * (x^b)) / (exp(k * x))
+}
+```
+
+
+```{r}
+dd_planck <- function(x, a, b, k){
+  (a * (b + x)) / (exp(k * (b + x)))
+}
+
+mod_plank1 <- nls(mbike ~ dd_planck(dist, a, b, k), weights = total,
+  data = gflow, start = list(a = 0.1, b = 0.1, k = 0.1))
+```
+
+
+```{r, echo=FALSE}
+mod_plank2 <- nls(pcycle ~ dd_planck(dist, a, b, k), weights = All,
+  data = flow, start = list(a = 0.1, b = 0.1, k = 0.1))
+
+mod_plank3 <- nls(mbike ~ dd_planck_orig(dist, a, b, k), weights = total,
+  data = gflow, start = list(a = 0.1, b = 0.1, k = 0.1))
+```
+
+Figure 7 compares the model fit acheived with this 'Planck' function against
+that acheived with the log-cubic function. It was found that, despite the anomolous
+upward tick in the example data (which would benefit the log-cubic function),
+the Planck-like function fits the data better. Non-adjusted R-squared values
+of 0.85 and 0.89 were obtained from the Planck and log-cubic functions respectively.
+
+```{r, echo=FALSE, fig.cap="Fitted distance decay curves. The dotted line represents modw_logcub; the continuous blude line represents the new function."}
+x = seq(0.1, 20, by = 0.1)
+df <- data.frame(dist = x)
+plot(gflow$dist, gflow$mbike,
+  xlab = "Distance (km)", ylab = "Proportion cycling", ylim = c(0, 0.03))
+lines(df$dist, predict(mod_plank1, df), col = "blue", lwd = 4)
+# lines(df$dist, predict(mod_plank3, df), col = "blue")
+# lines(df$dist, predict(mod_plank2, df), col = "red")
+# lines(df$dist, predict(object = mod_ind2, df), col = "red", lty = 2)
+lines(df2$dist, exp(predict(object = modw_logcub, df2)),
+  col = "blue", lty = 5)
+# cor(mod_plank1$m$fitted(), gflow$mbike)^2
+# cor(mod_plank3$m$fitted(), gflow$mbike)^2
+# cor(modw_logcub$fitted, gflow$mbike)^2
+```
+
+## What the parameters of the Planck function mean
+
+Figure 8 illustrates the impact of varying the parameters *a*, *b* and *k*
+on the Planck function. It is shown that these parameters allow scenarios of
+future changes in DD to be changed according to knowledge of growth in the
+willingness to cycle long distances (decreases in k), shifts in the distance
+of the peak rate of cycling (b) and proportional increases in cycling for all
+distances.
+
+```{r, echo=FALSE, fig.cap="Model experiments illustrating the impacts of altering a, b and k parameters of the 'Planck' distance decay function. For a and k the green lines represent increases of 25% of the original value derived from the Leeds dataset and the red lines represent decreases of 10%. For b they represent changes of +2 and -1 respectively."}
+pars <- coef(mod_plank1)
+mults_plus <- cbind(diag(3) * c(0.25, 2, 0.25) + 1, "Increase", c("a", "b", "k"))
+mults_minus <- cbind(diag(3) * -c(0.1, 1, 0.1) + 1, "Decrease", c("a", "b", "k"))
+mults_orig <- cbind(matrix(1, 3, 3), "Original", c("a", "b", "k"))
+mults <- rbind(mults_minus, mults_plus, mults_orig)
+dfp <- NULL
+for(i in 1:9){
+  ptemp <- as.numeric(mults[i, 1:3]) * pars
+  dftemp <- data.frame(
+    Distance = x,
+    PC = dd_planck(x, a = ptemp[1], b = ptemp[2], k = ptemp[3]),
+    Experiment = mults[i, 4],
+    Parameter = mults[i, 5]
+  )
+  dfp <- rbind(dfp, dftemp)
+}
+ggplot(dfp, aes(x = Distance, y = PC, color = Experiment)) + 
+  geom_line() +
+  facet_wrap(~ Parameter) +
+  scale_color_manual(values = c("red", "green", "black")) +
+  theme_bw()
+```
+
+
+
+
+# Regression against the cumulative probability of cycling
 
 To reduce the noise in the data arising from 0s and 1s, the rate of
 cycling can be viewed as a cumulative distribution of trips with distance:
@@ -425,7 +545,7 @@ nls_5pd5 <- nls(pcycle ~ r * s * 10^(r * (dist)) * (10^(r * (dist)) + 1)^(-s-1) 
 
 ynls1 <- predict(nls_5pd1, newdata = data.frame(dist = x)) 
 ynls2 <- predict(nls_5pd2, newdata = data.frame(dist = x)) 
-ynls3 <- predict(nls_5pd3, newdata = data.frame(dist = x)) 
+# ynls3 <- predict(nls_5pd3, newdata = data.frame(dist = x)) 
 ynls4 <- predict(nls_5pd4, newdata = data.frame(dist = x)) 
 ynls5 <- predict(nls_5pd5, newdata = data.frame(dist = x)) 
 
@@ -439,7 +559,7 @@ lines(x, ynls2, lwd = 4, lty = 2, col = "red")
 # lines(x, ynls4, lwd = 4, lty = 5) # no difference
 lines(df$dist, predict(object = mod_ind1, df), col = "green", lwd = 4, lty = 2)
 # lines(df$dist, predict(object = mod_ind2, df), col = "red", lwd = 2, lty = 2)
-# lines(gflow$mdist, exp(modw_logcub$fitted.values), col = "green", lty = 2, lwd = 6)
+# lines(gflow$dist, exp(modw_logcub$fitted.values), col = "green", lty = 2, lwd = 6)
 ```
 
 ```{r}
@@ -448,23 +568,23 @@ lines(df$dist, predict(object = mod_ind1, df), col = "green", lwd = 4, lty = 2)
 # Binned data #
 # # # # # # # #
 
-nls_5pd1 <- nls(mbike ~ r * s * 10^(r * (mdist)) * (10^(r * (mdist)) + 1)^(-s-1), data = gflow, start = list(r = 0.1, s = 1))
+# nls_5pd1 <- nls(mbike ~ r * s * 10^(r * (dist)) * (10^(r * (dist)) + 1)^(-s-1), data = gflow, start = list(r = 0.1, s = 1))
 
-nls_5pd2 <- nls(mbike ~ r * s * 10^(r * (mdist)) * (10^(r * (mdist)) + 1)^(-s-1), data = gflow, start = list(r = 0.2, s = 1), weights = total)
+nls_5pd2 <- nls(mbike ~ r * s * 10^(r * (dist)) * (10^(r * (dist)) + 1)^(-s-1), data = gflow, start = list(r = 0.2, s = 1), weights = total)
 
-# nls_5pd3 <- nls(mbike ~ r * s * 10^(r * (mdist * xmid)) * (10^(r * (mdist * xmid)) + 1)^(-s-1), data = gflow, start = list(xmid = 0.8, r = 0.2, s = 1), weights = total) 
+# nls_5pd3 <- nls(mbike ~ r * s * 10^(r * (dist * xmid)) * (10^(r * (dist * xmid)) + 1)^(-s-1), data = gflow, start = list(xmid = 0.8, r = 0.2, s = 1), weights = total) 
 
-nls_5pd4 <- nls(mbike ~ r * s * 10^(r * (mdist)^t) * (10^(r * (mdist)) + 1)^(-s-1), data = gflow, start = list(t = 1, r = 0.2, s = 1), weights = total) 
+nls_5pd4 <- nls(mbike ~ r * s * 10^(r * (dist)^t) * (10^(r * (dist)) + 1)^(-s-1), data = gflow, start = list(t = 1, r = 0.2, s = 1), weights = total) 
 
-nls_5pd5 <- nls(mbike ~ r * s * 10^(r * (mdist)) * (10^(r * (mdist)) + 1)^(-s-1) + t, data = gflow, start = list(t = 1, r = 0.2, s = 1), weights = total) 
+nls_5pd5 <- nls(mbike ~ r * s * 10^(r * (dist)) * (10^(r * (dist)) + 1)^(-s-1) + t, data = gflow, start = list(t = 1, r = 0.2, s = 1), weights = total) 
 
-ynl1 <- predict(nls_5pd1, newdata = data.frame(mdist = x)) 
-ynl2 <- predict(nls_5pd2, newdata = data.frame(mdist = x)) 
-ynl3 <- predict(nls_5pd3, newdata = data.frame(mdist = x)) 
-ynl4 <- predict(nls_5pd4, newdata = data.frame(mdist = x)) 
-ynl5 <- predict(nls_5pd5, newdata = data.frame(mdist = x)) 
+# ynl1 <- predict(nls_5pd1, newdata = data.frame(dist = x)) 
+ynl2 <- predict(nls_5pd2, newdata = data.frame(dist = x)) 
+# ynl3 <- predict(nls_5pd3, newdata = data.frame(dist = x)) 
+ynl4 <- predict(nls_5pd4, newdata = data.frame(dist = x)) 
+ynl5 <- predict(nls_5pd5, newdata = data.frame(dist = x)) 
 
-plot(gflow$mdist, gflow$mbike,
+plot(gflow$dist, gflow$mbike,
   xlab = "Distance (km)", ylab = "Proportion cycling", ylim = c(0, 0.03))
 # lines(x, ynl1, lwd = 4)
 lines(x, ynl2, lwd = 4, lty = 2, col = "red")
@@ -473,7 +593,7 @@ lines(x, ynl2, lwd = 4, lty = 2, col = "red")
 lines(x, ynl5, lwd = 4, lty = 3, col = "blue") # no difference
 # lines(df$dist, predict(object = mod_ind1, df), col = "red", lwd = 2)
 # lines(df$dist, predict(object = mod_ind2, df), col = "red", lwd = 2, lty = 2)
-lines(gflow$mdist, exp(modw_logcub$fitted.values), col = "green", lty = 2, lwd = 3)
+lines(gflow$dist, exp(modw_logcub$fitted.values), col = "green", lty = 2, lwd = 3)
 ```
 
 
