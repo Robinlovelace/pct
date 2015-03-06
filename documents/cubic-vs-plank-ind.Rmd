@@ -21,9 +21,7 @@ dfx <- data.frame(distance = x)
 y1 <- exp(predict(mod_logcub, dfx))
 summary(mod_logcub)
 lines(0:20, y1)
-```
 
-```{r}
 dd_planck <- function(x, a, b, k){
   (a * (b + x)) / (exp(k * (b + x)))
 }
@@ -51,10 +49,25 @@ modw2_logcub <- lm(log(mbike) ~ dist + I(dist^2) + I(dist^3),
   weights = total, data = gflow)
 plot(gflow$dist, gflow$mbike)
 summary(modw2_logcub)
+plot(gflow$dist, gflow$mbike, ylim = c(0, 0.03))
 lines(gflow$dist, exp(modw2_logcub$fitted.values))
+# write.csv(gflow, "/tmp/binned-results.csv")
+mod_plank1 <- nls(mbike ~ dd_planck(dist, a, b = 0, k), weights = total,
+  data = gflow, start = list(a = 0.01, k = 0.1), control = list(minFactor = 0.000001, warnOnly = T))
 
-mod_plank3 <- nls(mbike ~ dd_planck(dist, a, b, k), weights = total,
-  data = gflow, start = list(a = 0.1, b = 0.1, k = 0.1), control = list(minFactor = 0.000001))
+mod_plank2 <- nls(mbike ~ dd_planck(dist, a, b = 3, k), weights = total,
+  data = gflow, start = list(a = 0.01, k = 0.1), control = list(minFactor = 0.000001, warnOnly = T))
+
+mod_plank3 <- nls(mbike ~ dd_planck(dist, a, b = 0, k) + b, weights = total,
+  data = gflow, start = list(a = 0.01, k = 0.1, b = 0), control = list(minFactor = 0.000001, warnOnly = T))
+
+# mod_plank4 <- nls(mbike ~ dd_planck(dist, a, b, k) + c, weights = total,
+#   data = gflow, start = list(a = 0.01, k = 0.1, b = 0, c = 0.01), control = list(minFactor = 0.000001, warnOnly = T))
+
+lines(gflow$dist, mod_plank1$m$fitted(), col = "blue")
+lines(gflow$dist, mod_plank2$m$fitted(), col = "green")
+lines(gflow$dist, mod_plank3$m$fitted(), col = "red")
+# lines(gflow$dist, mod_plank4$m$fitted(), col = "orange")
 ```
 
 
