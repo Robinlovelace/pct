@@ -1,0 +1,62 @@
+---
+title: "Estimating distance decay from individual-level data"
+author: "Robin Lovelace"
+output: word_document
+---
+
+```{r, echo=FALSE}
+pkgs <- c("dplyr")
+```
+
+
+```{r}
+trips <- read.csv("~/Dropbox/DfT bid/Data analysis/Test_DD/150303_TestPlanck_Data.csv")
+head(trips)
+summary(trips$distance)
+trips <- trips[trips$distance < 20.5, ]
+plot(trips$distance, trips$meancycle) # 
+mod_logcub <- lm(log(meancycle) ~ distance + I(distance^2) + I(distance^3), data = trips)
+x <- 0:20
+dfx <- data.frame(distance = x)
+y1 <- exp(predict(mod_logcub, dfx))
+summary(mod_logcub)
+lines(0:20, y1)
+```
+
+```{r}
+dd_planck <- function(x, a, b, k){
+  (a * (b + x)) / (exp(k * (b + x)))
+}
+
+mod_plank1 <- nls(meancycle ~ dd_planck(distance, a, b, k), control = list(minFactor = 0.000001, warnOnly = TRUE), 
+  data = trips, start = list(a = 0.1, b = 0.1, k = 0.1), )
+y2 <- predict(mod_plank1, dfx) # not fitting correctly
+lines(x, y2)
+```
+
+The Planck function does not fit the data well - seemingly because we are not
+using binned data.
+
+## Binning the data
+
+```{r}
+brks <- c(0, 0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 9.5, 12.5, 15.5, 20.5)
+binned_dist <- cut(trips$distance, breaks = brks, include.lowest = T)
+gflow <- data.frame(interval = levels(binned_dist))
+gflow$dist <- aggregate(distance ~ binned_dist, mean, data = trips)[[2]]
+gflow$mbike <- aggregate(meancycle ~ binned_dist, mean, data = trips)[[2]]
+gflow$total <- aggregate(meancycle ~ binned_dist, length, data = trips)[[2]]
+
+modw2_logcub <- lm(log(mbike) ~ dist + I(dist^2) + I(dist^3),
+  weights = total, data = gflow)
+plot(gflow$dist, gflow$mbike)
+summary(modw2_logcub)
+lines(gflow$dist, exp(modw2_logcub$fitted.values))
+
+mod_plank3 <- nls(mbike ~ dd_planck(dist, a, b, k), weights = total,
+  data = gflow, start = list(a = 0.1, b = 0.1, k = 0.1), control = list(minFactor = 0.000001))
+```
+
+
+
+
