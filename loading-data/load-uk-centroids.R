@@ -24,4 +24,6 @@ library(raster)
 # file.remove(zips)
 
 cents_msoa <- shapefile("bigdata/centroids/MSOA_2011_EW_PWC.shp")
+cents_lsoa <- shapefile("bigdata/centroids/LSOA_2011_EW_PWC.shp")
+
 # plot(cents_msoa)

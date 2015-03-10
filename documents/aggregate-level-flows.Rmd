@@ -1,11 +1,14 @@
 ---
-title: "Estimating extra cycling potential from aggretate flows"
+title: Estimating 'distance decay' functions for modelling transport systems using
+  individual and aggregate-level flow data
 author: "Robin Lovelace"
 date: "February 13, 2015"
 output:
   pdf_document:
     fig_caption: yes
     latex_engine: xelatex
+    number_sections: yes
+    toc: yes
 bibliography: ~/Documents/Transport.bib
 ---
 
@@ -14,14 +17,38 @@ bibliography: ~/Documents/Transport.bib
 # For reproducible results see https://github.com/Robinlovelace/pct
 pkgs <- c("png", "grid", "ggmap", "ggthemes", "knitr", "nplr")
 lapply(pkgs, library, character.only = TRUE)
-opts_knit$set(root.dir = "../")
 ```
 
-There are many ways to characterise distance decay (*DD*),
+Distance decay (*DD*) is
 the relationship between the distance
-of a trip and the probability of it being made by a particular mode --- in this
-case by bicycle. In this document we see how *DD* can be estimated
-using flow data from the Census. Clearly
+of a trip and the probability of it being made by a particular mode.
+A clear understanding of *DD* is advantageous in modelling modal shift and
+other changes in transport systems because it can pave the way to
+estimating the probability of one form of transport replacing another.
+*DD* can also be used to estimate the probability of a trip happenning at all.
+This methodological paper explores the concept of *DD*, demonstrates techniques
+for 'curve fitting' based on individual and aggregate-level 'flow' and
+travel diary datasets (both common in countries around the world), evaluates
+various functional forms for describing *DD* and provides recommendations for
+further work. Critically for other researchers wanting to use the concept of
+*DD* in their own work, the methods presented here are completely reproducible
+using publicly available data and open source sofware.
+
+The aim is to describe some new developments in understandings of how distance
+affects travel using a probabilistic modelling framework. Based on
+reliable estimates of *DD* curves, many probabilistic modelling methods are
+opened-up, allowing for a range of scenarios to envisioned, operationalised and
+quantified. It is not the purpose of this paper to describe the full suite of
+options that *DD* estimates open up. We refrain from heralding a new 'distance
+decay paradigm'. However, the reason for developing methods of estimating *DD* 
+curves were closely related to modelling needs and we will discuss how robust
+estimates of *DD* can be used for modelling in the final section of the paper.
+Primarily the paper is methodological, however, hence our use of a relatively
+small example dataset of no particular empirical interest.
+
+# Conceptualising distance decay
+
+Clearly
 (as illustrated by the growth of long-distance bicycle touring) *all* trips
 are cyclable in theory. In practice, however, short trips are far more likely
 to be cycled than longer trips for reasons including time, stamina and comfort.
@@ -55,8 +82,10 @@ regression: it is hard to estimate the parameters that result in infinity!
 In addition, because flow matrices are so sparse, counts of 1 are common.
 Thus both extreme values of
 0 and 1 values are excessively common (or *inflated*) in raw flow data, 
-as illustrated in Figure 2. This means that fitting non-probabilistic
-regression models to the flow-level is problematic.
+as illustrated in Figure 2. This means non-probabilistic
+regression models will have low overall goodness-of-fit when fitted to the
+raw data and that weighted regression must be used to prevent outliers having
+a disproportionate impact on the results.
 
 ```{r, fig.height=3, fig.width=4, fig.cap="Scatterplot of flow distance and proportion cycling illustrating the frequency of 0s and 1s in the proportion of commutes by bicycle. Data: Leeds (n = 10,242).", echo=FALSE}
 flow$pcycle <- flow$Bicycle / flow$All
@@ -64,26 +93,23 @@ plot(flow$dist, flow$pcycle, xlab = "Distance (km)", ylab = "Proportion of commu
 # the problem with flow data: many 0's and 1's
 ```
 
-There are at least two viable solutions to this problem:
-
-1. Aggregating flows into distance bins such so that we estimate the *average*
+As we shall see, *binning by distance* is a solution to this problem that
+has the associated benefit of greatly reducing the computational requirements
+of the regression. Binning involves aggregating the data from one level
+to another to estimate the *average*
 (or population-weighted average) proportion of trips made by bicycle.
-2. Zero-inflated regression, whereby the high frequency of zeros in the dependent
-variable (% commuting by bicycle) is accounted for in the model.
-
-Both solutions have advantages. Binning greatly reduces the computational requirements
-of the model by grouping hundreds of distances into only a few dozen bins (how
-many bins depends on the bin size). Binning is therefore
-useful for parameter estimation. However, the binning approach cannot predict
+Binning is also advantageous in that it demonstrates visually how well
+any given DD function fits the data. A downside is that 
+the binning approach cannot predict
 the rate of flow between individual OD pairs, so cannot realistically be
-used to estimate *ECP* for OD flows. Zero-inflated regression, by contrast,
-can estimate OD-flows but is more computationally intensive.
+used to estimate *ECP*, dependent on zone characteristics,
+for OD flows. 
 
 ## Binning flows by distance
 
 ### Binning distances
 
-Distance in the flow data is calculated as the Euclidean distance
+Distance in flow data is calculated as the Euclidean distance
 (a refinement would be to use route distance)
 between origin and destination centroids and is a truly continuous variable.
 This differs from the individual-level survey data which treats distance
@@ -96,7 +122,12 @@ brks <- c(0, 0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 9.5, 12.5, 15.5, 20.5)
 flow <- flow[flow$dist < 20.5, ]
 ```
 
-This allows for the OD flows to be grouped by distance and for the creation
+Note that the bins were selected to contain integer distances. Althought this makes
+no difference for continuous flow data, it helps reduce the impact of rounding
+to the nearest integer by respondents in travel surveys. This binning strategy
+eases the translation of the methods from aggregate flow to individual trip-level
+data, as we shall see below. 
+The distance bins allow all OD flows to be grouped by distance and enable the creation
 of aggregates for each distance band:
 
 ```{r}
@@ -122,8 +153,8 @@ brks_max <- brks[-1]
 
 However this is an oversimplification: distance distributions are strongly
 positively skewed so the average of distances within the further distance bands
-are likely to be substantially lower than the mean. This is true of our case
-study city (Figure 3), therefore we use the computed mean distance for each bin:
+are likely to be lower than the mean. This is true of our case
+study city (Figure 3). Therefore we use the computed mean distance for each bin:
 
 ```{r, fig.height=3, fig.width=4, fig.cap="The relationship between bin midpoint and average Euclidean distance of trips within each bin."}
 plot(gflow$dist, midpoint, xlab = "Mean distance (km)")
@@ -146,7 +177,7 @@ ggplot(data = gflow) +
   theme_bw()
 ```
 
-### The relationship between distance and cycling in grouped data
+## Estimating distance decay from binned data using polynomials
 
 Now the data have been grouped and assigned to approximate distances,
 we can use regression to explore **DD** for cycling.
@@ -156,19 +187,20 @@ we fitted various log-linear, quadratic and cubic functional forms to the data.
 
 ```{r}
 mod_loglin <- lm(log(mbike) ~ dist, data = gflow)
-mod_logsqr <- lm(log(mbike) ~ dist + I(dist^2), data = gflow)
+# mod_logsqr <- lm(log(mbike) ~ dist + I(dist^2), data = gflow)
+mod_logsqr <- lm(log(mbike) ~ dist + I(dist^0.5), data = gflow, weights = total)
 mod_logcub <- lm(log(mbike) ~ dist + I(dist^2) + I(dist^3), data = gflow)
 mod_cub <- lm(mbike ~ dist + I(dist^2) + I(dist^3), data = gflow)
 ```
 
 The above code fitted log-linear, log-square and log-cubic functional forms to the
-data. The following code runs **weighted regression**.
+data. We also ran the same models using *weighted regression*, setting the
+weight for each OD flow proportional to the total (all modes) rate of travel.
 Adding weights to the regression in this way reduces the impact of
-the longer-distance commutes, which fewer cyclists make. Note that two weight
-vectors are used: total number of trips and total number of cyclists.
+the longer-distance commutes, which fewer cyclists make. 
 The results of these regressions are presented in Figure 5.
 
-```{r}
+```{r, echo=FALSE}
 modw_logcub <- lm(log(mbike) ~ dist + I(dist^2) + I(dist^3),
   weights = total, data = gflow)
 modw2_logcub <- lm(log(mbike) ~ dist + I(dist^2) + I(dist^3),
@@ -186,14 +218,15 @@ lines(gflow$dist, exp(modw2_logcub$fitted.values), col = "green", lty = 3)
 lines(gflow$dist, mod_cub$fitted.values, col = "black", lty = 4)
 ```
 
-Does the log-term make any difference to model fit? A little, but not much
-for the Leeds dataset.
-
-From visual inspection of the models, the log-cubic model clearly fits better.
-This is also apparent from the adjusted R-squared scores of each model
-(which takes accound of over-fitting through excessive free parameters):
+Does the log term make any difference to model fit? These and other questions
+are answered quantitatively in Table 1 below. The log terms
+does increase model fit for the example dataset.
+From visual inspection of the models, the log-cubic model clearly fits best
+and this is apparent from the adjusted R-squared scores
+(which takes accound of over-fitting through excessive free parameters).
 The log-cubic model explains around 90% of variation in the average
-proportion of people who cycle in different distance groups:
+proportion of people who cycle in different distance groups, while the
+log-linear and log-quadratic models barely explain half the variability.
 
 ```{r, eval=FALSE, echo=FALSE}
 mnames <- ls()[grep("mod_", ls())]
@@ -205,6 +238,9 @@ for(i in 1:nrow(mods)){
 }
 kable(mods, digits = 3)
 ```
+
+Table 1: Adjusted R-squared scores of various models. mod_ind* models
+were fitted to the raw flow data, hence their much poorer fit.
 
 |Model      | Adj.R.sq|
 |:----------|--------:|
@@ -237,41 +273,8 @@ kable(mods, digits = 3)
 # ## Zero-inflated regression
 ```
 
-### Estimating propensity to cycle based on individual flows
 
-There are issues with fitting the regression model to the grouped data.
-Using grouped data precludes the inclusion of flow-level variables that could
-be useful in acurately estimating the potential level of cycling (CLC)
-such as steepness and the characteristics of the origin zone.
-
-```{r, echo=FALSE}
-flow$clc <- flow$Bicycle / flow$All
-mod_ind1 <- lm(pcycle ~ dist + I(dist^2) + I(dist^3), data = flow)
-mod_ind2 <- lm(pcycle ~ dist + I(dist^2) + I(dist^3), data = flow,
-  weights = All)
-f3 <- flow[flow$dist < 15, ]
-mod_ind3 <- lm(pcycle ~ dist + I(dist^2) + I(dist^3), data = f3,
-  weights = All)
-summary(mod_ind1)
-df <- data.frame(dist = seq(0.1, max(flow$dist), length.out = 100))
-df2 <- data.frame(dist = seq(0.1, max(flow$dist), length.out = 100))
-```
-
-We can fit exactly the same model to the individual-level data 
-
-```{r, fig.cap="Distance decay curves based on the cubic polynomial regression against distance for all flows (red lines). The continuous and dashed lines represent unweighted, and weighted implementations. The dotted lines is fitted only to flows of < 15 km. The green line is the fit produced from the binned data."}
-
-plot(flow$dist, flow$pcycle, xlim = c(0, 16), ylim = c(0, 0.04),
-  xlab = "Distance (km)", ylab = "Percentage cycling")
-lines(df$dist, predict(object = mod_ind1, df), col = "red", lwd = 4)
-lines(df$dist, predict(object = mod_ind2, df), col = "red", lwd = 6, lty = 2)
-lines(df$dist, predict(object = mod_ind3, df), col = "red", lwd = 6, lty = 3)
-lines(df2$dist, exp(predict(object = modw_logcub, df2)),
-  col = "green", lwd = 5)
-# lines(gflow$dist, mod_cub$fitted.values, col = "black", lty = 4, lwd = 6)
-```
-
-## Fitting a simplified Planck Law
+## A simplified 'Planck function'
 
 The dotted curve in Figure 6 illustrates a problem with the cubic distance
 decay function: after reaching a minimum value it lurches upwards. Thus, in
@@ -330,19 +333,22 @@ mod_plank3 <- nls(mbike ~ dd_planck_orig(dist, a, b, k), weights = total,
   data = gflow, start = list(a = 0.1, b = 0.1, k = 0.1))
 ```
 
-Figure 7 compares the model fit acheived with this 'Planck' function against
+Figure 6 compares the model fit acheived with this 'Planck' function against
 that acheived with the log-cubic function. It was found that, despite the anomolous
 upward tick in the example data (which would benefit the log-cubic function),
 the Planck-like function fits the data better. Non-adjusted R-squared values
 of 0.85 and 0.89 were obtained from the Planck and log-cubic functions respectively.
 
-```{r, echo=FALSE, fig.cap="Fitted distance decay curves. The dotted line represents modw_logcub; the continuous blude line represents the new function."}
+```{r, echo=FALSE, fig.cap="The fitted 'Planck function' (continuous line). The dotted line, for comparison, is the log-cubic function described in the previous section."}
 x = seq(0.1, 20, by = 0.1)
+df <- data.frame(dist = x)
+df2 <- data.frame(dist = x)
 df <- data.frame(dist = x)
 plot(gflow$dist, gflow$mbike,
   xlab = "Distance (km)", ylab = "Proportion cycling", ylim = c(0, 0.03))
 lines(df$dist, predict(mod_plank1, df), col = "blue", lwd = 4)
 # lines(df$dist, predict(mod_plank3, df), col = "blue")
+lines(df$dist, exp(predict(mod_logsqr, df)), col = "blue")
 # lines(df$dist, predict(mod_plank2, df), col = "red")
 # lines(df$dist, predict(object = mod_ind2, df), col = "red", lty = 2)
 lines(df2$dist, exp(predict(object = modw_logcub, df2)),
@@ -352,13 +358,13 @@ lines(df2$dist, exp(predict(object = modw_logcub, df2)),
 # cor(modw_logcub$fitted, gflow$mbike)^2
 ```
 
-## What the parameters of the Planck function mean
+## Interpretting the parameters of the Planck function
 
-Figure 8 illustrates the impact of varying the parameters *a*, *b* and *k*
+Figure 7 illustrates the impact of varying the parameters *a*, *b* and *k*
 on the Planck function. It is shown that these parameters allow scenarios of
 future changes in DD to be changed according to knowledge of growth in the
-willingness to cycle long distances (decreases in k), shifts in the distance
-of the peak rate of cycling (b) and proportional increases in cycling for all
+willingness to cycle long distances (decreases in *k*), shifts in the distance
+of the peak rate of cycling (*b*) and proportional increases in cycling for all
 distances.
 
 ```{r, echo=FALSE, fig.cap="Model experiments illustrating the impacts of altering a, b and k parameters of the 'Planck' distance decay function. For a and k the green lines represent increases of 25% of the original value derived from the Leeds dataset and the red lines represent decreases of 10%. For b they represent changes of +2 and -1 respectively."}
@@ -386,7 +392,67 @@ ggplot(dfp, aes(x = Distance, y = PC, color = Experiment)) +
 ```
 
 
+```{r, echo=FALSE, eval=FALSE}
+# comparison for mod_logsqr model
+dd_logsqr <- function(distance, intercept, loglin, logsqrt = 0){
+  exp(intercept + loglin * distance + logsqrt * distance^0.5)
+}
 
+pars <- coef(mod_logsqr)
+mults_plus <- cbind(diag(3) * c(0.25, 0.25, 0.25) + 1, "Times 1/4", c("Intercept (-4.2)", "Log-lin (-0.2)", "Log-sqrt (0.7)"))
+mults_minus <- cbind(diag(3) * -c(0.1, 0.1, 0.1) + 1, "Times -0.1", c("Intercept (-4.2)", "Log-lin (-0.2)", "Log-sqrt (0.7)"))
+mults_orig <- cbind(matrix(1, 3, 3), "Original", c("Intercept (-4.2)", "Log-lin (-0.2)", "Log-sqrt (0.7)"))
+mults <- rbind(mults_minus, mults_plus, mults_orig)
+dfp <- NULL
+for(i in 1:9){
+  ptemp <- as.numeric(mults[i, 1:3]) * pars
+  dftemp <- data.frame(
+    Distance = x,
+    PC = dd_logsqr(x, ptemp[1], ptemp[2], ptemp[3]),
+    Experiment = mults[i, 4],
+    Parameter = mults[i, 5]
+  )
+  dfp <- rbind(dfp, dftemp)
+}
+ggplot(dfp, aes(x = Distance, y = PC, color = Experiment)) + 
+  geom_line() +
+  facet_wrap(~ Parameter) +
+  scale_color_manual(values = c("red", "green", "black")) +
+  theme_bw()
+# ggsave("figures/log-sqrt-params.png")
+```
+
+
+# Estimating propensity to cycle based on individual flows
+
+There are issues with fitting the regression model to the grouped data.
+Using grouped data precludes the inclusion of flow-level variables that could
+be useful in acurately estimating the potential level of cycling (CLC)
+such as steepness and the characteristics of the origin zone. This is not
+a problem as we can fit exactly the same models presented in the previous
+section to the raw flow data, which is messier (Figure 8).
+
+```{r, echo=FALSE}
+flow$clc <- flow$Bicycle / flow$All
+mod_ind1 <- lm(pcycle ~ dist + I(dist^2) + I(dist^3), data = flow)
+mod_ind2 <- lm(pcycle ~ dist + I(dist^2) + I(dist^3), data = flow,
+  weights = All)
+f3 <- flow[flow$dist < 15, ]
+mod_ind3 <- lm(pcycle ~ dist + I(dist^2) + I(dist^3), data = f3,
+  weights = All)
+```
+
+```{r, fig.cap="Distance decay curves based on the cubic polynomial regression against distance for all flows (red lines). The continuous and dashed lines represent unweighted, and weighted implementations. The dotted lines is fitted only to flows of < 15 km. The green line is the fit produced from the binned data.", echo=FALSE}
+
+plot(flow$dist, flow$pcycle, xlim = c(0, 16), ylim = c(0, 0.04),
+  xlab = "Distance (km)", ylab = "Percentage cycling")
+lines(df$dist, predict(object = mod_ind1, df), col = "red", lwd = 4)
+lines(df$dist, predict(object = mod_ind2, df), col = "red", lwd = 6, lty = 2)
+lines(df$dist, predict(object = mod_ind3, df), col = "red", lwd = 6, lty = 3)
+lines(df2$dist, exp(predict(object = modw_logcub, df2)),
+  col = "green", lwd = 5)
+# lines(gflow$dist, mod_cub$fitted.values, col = "black", lty = 4, lwd = 6)
+```
 
 # Regression against the cumulative probability of cycling
 
@@ -562,7 +628,7 @@ lines(df$dist, predict(object = mod_ind1, df), col = "green", lwd = 4, lty = 2)
 # lines(gflow$dist, exp(modw_logcub$fitted.values), col = "green", lty = 2, lwd = 6)
 ```
 
-```{r}
+```{r, echo=FALSE, eval=FALSE}
 
 # # # # # # # #
 # Binned data #
@@ -604,7 +670,7 @@ curves, described above, to data [@Commo2014]. Below we see some examples
 of the models that can be fitted, with
 `npars` representing the number of parameters in the final model. 
 
-```{r, eval=F}
+```{r, eval=FALSE, echo=FALSE}
 mod_logist2 <- nplr(fc$dist, fc$cumclc)
 mod_logist3 <- nplr(fc$dist, fc$cumclc, useLog = F)
 mod_logist4 <- nplr(fc$dist, fc$cumclc, npars = 2)

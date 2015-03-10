@@ -62,7 +62,7 @@ Thin black lines with no fill represent MSOA areas in the wider area
 such as Norwich.
 
 ```{r, echo=FALSE}
-source("geo-load/load-uk.R")
+source("loading-data/load-uk.R")
 ```
 
 

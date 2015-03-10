@@ -26,7 +26,7 @@ source("set-up.R") # load required packages
 # # # # # # # # # # # #
 
 # Load the geographical data
-manc <- readOGR("pct-data/manchester/", "manc-msoa-lores")
+manc <- shapefile("pct-data/manchester/manc-msoa-lores.shp")
 
 # Load the flow data
 fmanc <- read.csv("pct-data/manchester/msoa-flow-manc.csv")
