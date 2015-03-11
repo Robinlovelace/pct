@@ -76,6 +76,8 @@ o <- flow$Area.of.residence %in% cents$MSOA11CD
 d <- flow$Area.of.workplace %in% cents$MSOA11CD
 flow <- flow[o & d, ] # subset flows with o and d in study area
 
-# Save flow data and polygon centroids
-write.csv(flow, "pct-data/manchester/msoa-flow-manc.csv")
-writeOGR(cents, "pct-data/manchester/cents", layer = "cents", driver = "GeoJSON")
+# # Save flow data and polygon centroids
+# write.csv(flow, "pct-data/manchester/msoa-flow-manc.csv")
+# writeOGR(cents, "pct-data/manchester/cents", layer = "cents", driver = "GeoJSON")
+# cents84 <- spTransform(cents, CRSobj = CRS("+init=epsg:4326"))
+# writeOGR(cents84, "pct-data/manchester/cents84", layer = "cents", driver = "GeoJSON")

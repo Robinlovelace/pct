@@ -5,7 +5,6 @@ flow <- flow[flow$Bicycle > 0,]
 
 l <- vector("list", nrow(flow))
 
-
 for(i in 1:nrow(flow)){
   from <- leeds$geo_code %in% flow$Area.of.residence[i]
   to <- leeds$geo_code %in% flow$Area.of.workplace[i]
