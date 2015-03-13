@@ -6,18 +6,55 @@
 
 library("raster")
 
-# # Heavily simplify the shape. Warning - this will change the centroid results
+# # Heavily simplify the shape
 
-# # Original code:
-# # system('mapshaper /media/robin/SAMSUNG/geodata/msoa-2011/infuse_msoa_lyr_2011.shp auto-snap -simplify keep-shapes 1% -o force /media/robin/SAMSUNG/geodata/msoa-2011/infuse_msoa_lyr_2011-1perc-mappshaped.shp',wait=TRUE)
+# # # # # # # # #
+# lsoa dataset  #
+# # # # # # # # #
+
+# dir <- "/media/robin/SAMSUNG/geodata/lsoa-2011/"
+# eng_lsoa <- readOGR(dir, "infuse_lsoa_lyr_2011")
+# object.size(eng_lsoa) / 1000000
+# gMapshape(dsn = "/media/robin/SAMSUNG/geodata/lsoa-2011/infuse_lsoa_lyr_2011.shp", percent = 5)
+# f <- list.files(dir, pattern = "5")
+# file.copy(paste0(dir, f), paste0("pct-data/national/", f))
+
+# Merge-in lsoa-level data, aggregated, to msoa
+lsoas <- shapefile("bigdata/terrain_shape.shp")
+
+# Adding additional data (todo)
+
+geoc_lsoas <- SpatialPointsDataFrame(gCentroid(lsoas, byid = T), lsoas@data)
+geoc_lsoas <- spTransform(geoc_lsoas, CRS(proj4string(msoas)))
+
+msoas <- shapefile("pct-data/national/infuse_msoa_lyr_2011mapshaped_5%.shp")
+proj4string(msoas)
+msoas_agg <- aggregate(geoc_lsoas, msoas, mean)
+head(msoas_agg@data)
+
+msoas$avslope <- msoas_agg$avslope
+sheftest <- msoas[grep("Sheff", msoas@data$geo_label), ]
+qtm(sheftest, fill = avslope)
+
+shapefile("pct-data/national/msoas.shp", msoas)
+write.csv(msoas@data, "pct-data/national/avslope-msoa.csv")
+
+# Preprocessing
 
 # # New code (will need install_github("robinlovelace/pctpack") to work)
 # dir <- "/media/robin/SAMSUNG/geodata/msoa-2011/infuse_msoa_lyr_2011.shp" # directory
 # pctpack::gMapshape(dir, percent = 1)
+# f <- list.files("/media/robin/SAMSUNG/geodata/msoa-2011/", pattern = "5", full.names = T)
+# ft <- list.files("/media/robin/SAMSUNG/geodata/msoa-2011/", pattern = "5")
+# ft <- paste0("pct-data/national/", ft)
+# file.copy(f, ft)
 
 # dir <- "/media/robin/SAMSUNG/geodata/msoa-2011/"
 # ukmsoa <- readOGR(dir, "infuse_msoa_lyr_2011mapshaped_1%")
 # plot(ukmsoa)
+
+
+
 
 # Load manchester
 # sel_man <- grepl( "Manchester", ukmsoa$geo_label )

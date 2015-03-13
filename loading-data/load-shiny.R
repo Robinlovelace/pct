@@ -14,11 +14,19 @@ flow$X <- NULL
 l <- gFlow2line(flow, zones)
 head(l@data)
 
-l$clc_dutch <- l$clc + runif(nrow(l), min = 0, max = 0.2)
-l$plc_dutch <- l$plc + runif(nrow(l), min = 0, max = 0.2)
-l$ecp_dutch <- l$clc + runif(nrow(l), min = 0, max = 20)
+proj4string(l) <- CRS("+init=epsg:27700")
+l <- spTransform(l, CRS("+init=epsg:4326"))
+
+# # # # # # # # #
+# Save the data #
+# # # # # # # # #
 
 writeGeoJSON(x = l, filename = "pct-data/manchester-shiny/lines")
+writeOGR(obj = l, dsn = "pct-data/manchester-shiny/", layer = "lines", driver = "ESRI Shapefile")
+# l <- shapefile("pct-data/manchester-shiny/lines.shp") # load saved data
+
+writeGeoJSON(zones, "pct-data/manchester-shiny/zones")
+writeOGR(obj = zones, dsn = "pct-data/manchester-shiny/", layer = "zones", driver = "ESRI Shapefile")
 
 # # # # # #
 # Testing #

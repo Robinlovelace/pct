@@ -21,15 +21,19 @@ lapply(pkgs, library, character.only = TRUE)
 # plot(ukslope)
 # writeRaster(x = ukslope, "pct-data/ukslope.asc", "ascii")
 # ukslope <- raster("pct-data/ukslope.asc")
+# proj4string(ukslope) <- CRS("+init=epsg:4326")
+# ukslope2 <- projectRaster(ukslope, crs = CRS("+init=epsg:27700"))
+# ukslope2 # to find resolution
 
 # # # # # # # # # # # # # # # # #
 # Download latest 90m res data  #
 # See http://srtm.csi.cgiar.org/#
 # # # # # # # # # # # # # # # # #
 
-# url <- "ftp://srtm.csi.cgiar.org/SRTM_V41/SRTM_Data_GeoTiff/" # base url
-# # which tiles are you interested in?
-# tiles <- c("srtm_35_02.zip", "srtm_36_02.zip", "srtm_37_02.zip", "srtm_35_01.zip", "srtm_36_01.zip" )
+url <- "ftp://srtm.csi.cgiar.org/SRTM_V41/SRTM_Data_GeoTiff/" # base url
+# which tiles are you interested in?
+tiles <- c("srtm_35_02.zip", "srtm_36_02.zip", "srtm_37_02.zip", "srtm_35_01.zip", "srtm_36_01.zip" )
+paste0(url, tiles)
 
 # # Download files in a loop - warning: takes some time!
 # for(i in tiles){
@@ -46,17 +50,9 @@ lapply(pkgs, library, character.only = TRUE)
 # for(i in f[-1]){
 #   uksrtm <- raster::merge(uksrtm, raster(i))
 # }
-
-# # # # # # # # #
-# lsoa dataset  #
-# # # # # # # # #
-
-# dir <- "/media/robin/SAMSUNG/geodata/lsoa-2011/"
-# eng_lsoa <- readOGR(dir, "infuse_lsoa_lyr_2011")
-# object.size(eng_lsoa) / 1000000
-# gMapshape(dsn = "/media/robin/SAMSUNG/geodata/lsoa-2011/infuse_lsoa_lyr_2011.shp", percent = 5)
-# f <- list.files(dir, pattern = "5")
-# file.copy(paste0(dir, f), paste0("pct-data/national/", f))
+# proj4string(uksrtm) <- CRS("+init=epsg:4326")
+# uksrtm2 <- projectRaster(uksrtm, crs = CRS("+init=epsg:27700")) # warning: not necessary, computationally intensive
+# uksrtm2 # to find resolution
 
 # # # # # # # # # #
 # Read local data #
@@ -120,7 +116,16 @@ head(tomerge$geo_code)
 head(frommerge$geo_code)
 merged <- inner_join(tomerge, frommerge)
 summary(merged$avslope_binned)
-write.csv(merged, "/tmp/merged.csv")
+# write.csv(merged, "/tmp/merged.csv")
+
+# Re-aggregate data to different levels
+
+lsoas <- shapefile("bigdata/terrain_shape.shp")
+msoas <- shapefile("pct-data/national/infuse_msoa_lyr_2011mapshaped_5%.shp")
+head(avslope)
+head()
+
+lsoas@data <- inner_join(lsoas@data)
 
 # # # # #
 # Tests #
