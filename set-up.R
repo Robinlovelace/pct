@@ -2,7 +2,7 @@
 # NB: you'll need to use devtools::install_github for an early version of stplanr
 if(!require(devtools)) install.packages("devtools")
 if(!require(stplanr)) install_github("robinlovelace/stplanr")
-pkgs <- c("rgdal", "dplyr", "rgeos", "stplanr", "raster")
+pkgs <- c("rgdal", "dplyr", "rgeos", "stplanr", "raster", "maptools")
 # Which packages do we require?
 reqs <- as.numeric(lapply(pkgs, require, character.only = TRUE))
 # Install packages we require
@@ -18,3 +18,5 @@ if(sum(!reqs) > 0) install.packages(pkgs[!reqs])
 # list.files(pattern = "pct") # check the data's been downloaded
 
 # Option 3: download data manually from https://github.com/Robinlovelace/pct-data/archive/master.zip
+
+cckey <- readLines("~/Dropbox/dotfiles/cyclestreets-api-key-rl")

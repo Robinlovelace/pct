@@ -12,3 +12,4 @@ pct-data/
 *.accb
 bigdata/
 *.orig
+pct-shiny

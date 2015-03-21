@@ -36,7 +36,7 @@ msoas$avslope <- msoas_agg$avslope
 sheftest <- msoas[grep("Sheff", msoas@data$geo_label), ]
 qtm(sheftest, fill = avslope)
 
-shapefile("pct-data/national/msoas.shp", msoas)
+# shapefile("pct-data/national/msoas.shp", msoas)
 write.csv(msoas@data, "pct-data/national/avslope-msoa.csv")
 
 # Preprocessing
