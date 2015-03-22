@@ -95,8 +95,13 @@ l <- spTransform(l, CRS("+init=epsg:4326"))
 # Warning: time-consuming!  #
 # # # # # # # # # # # # # # #
 
-# rf <- gLines2CyclePath(l[ flow$dist > 0, ])
-# rq <- gLines2CyclePath(l[ flow$dist > 0, ], plan = "quietest")
+if(grep("rf.Rds|rq.Rds", list.files(paste0("pct-data/", la))) >= 2){
+  rf <- readRDS(paste0("pct-data/", la, "/rf.Rds")) # if you've loaded them
+  rq <- readRDS(paste0("pct-data/", la, "/rq.Rds"))
+} else{
+  rf <- gLines2CyclePath(l[ flow$dist > 0, ])
+  rq <- gLines2CyclePath(l[ flow$dist > 0, ], plan = "quietest")
+}
 
 # Process route data
 rf$length <- rf$length / 1000
@@ -156,9 +161,9 @@ for(i in 1:nrow(cents)){
   # all flows originating from centroid i
   j <- which(flow$Area.of.residence == cents$geo_code[i])
 
-  cents$clc[i] <- sum(flow$Bicycle[j]) / sum(flow$All[j])
-  cents$plc[i] <- sum(flow$Bicycle[j]) + sum(flow$ecp[j])
-  cents$ecp[i] <- sum(flow$ecp[j])
+  cents$base_clc[i] <- sum(flow$Bicycle[j]) / sum(flow$All[j])
+  cents$base_plc[i] <- sum(flow$Bicycle[j]) + sum(flow$ecp[j])
+  cents$base_ecp[i] <- sum(flow$ecp[j])
 
   # values for scenarios
   cents$gendereq_plc[i] <- sum(flow$gendereq_plc[j])
@@ -199,7 +204,8 @@ rq <- rq[rq$id %in% idsel, ]
 lines(rq, col = "white")
 lines(rf, col = "blue")
 
-l@data <- left_join(l@data, flow, by = "id")
+flow_in_l <- names(flow) %in% names(l)
+l@data <- left_join(l@data, cbind(id = flow$id, flow[,!flow_in_l]), by = "id")
 
 # # # # # # # # #
 # Save the data #
