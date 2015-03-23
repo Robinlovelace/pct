@@ -163,7 +163,7 @@ for(i in 1:nrow(cents)){
 
   cents$base_clc[i] <- sum(flow$Bicycle[j]) / sum(flow$All[j])
   cents$base_plc[i] <- sum(flow$Bicycle[j]) + sum(flow$ecp[j])
-  cents$base_ecp[i] <- sum(flow$ecp[j])
+  cents$base_ecp[i] <- sum(flow$base_ecp[j])
 
   # values for scenarios
   cents$gendereq_plc[i] <- sum(flow$gendereq_plc[j])
@@ -177,7 +177,6 @@ for(i in 1:nrow(cents)){
 
   cents$av_distance <- sum(flow$dist[j] * flow$All[j])  / sum(flow$All[j])
   cents$cirquity <- mean(flow$cirquity[j] * flow$All[j], na.rm =T)  / sum(flow$All[j])
-
 }
 
 # # # # # # # # # # # # # # # # #
