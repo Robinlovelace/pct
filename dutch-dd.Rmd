@@ -1,0 +1,15 @@
+---
+title: "Dutch Distance decay"
+author: "Robin Lovelace"
+date: "03/20/2015"
+output: pdf_document
+---
+
+```{r}
+library(stplanr) # load sustainable planning package
+dp <- c(-0.3252529, -.5701872, .9831708) # dutch parameters
+d <- seq(0.1, 30, by = 0.1) # distances to plot
+plc <- dd_logsqr(d, dp[1], dp[2], dp[3]) # level of cycling modelled
+plot(d, plc)
+abline(h = 1)
+```

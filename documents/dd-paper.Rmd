@@ -1,0 +1,118 @@
+---
+title: 'Distance decay in active travel: an exploration of functional forms
+  for modelling individual and aggregate level data'
+author: "Robin Lovelace"
+output: pdf_document
+bibliography: ~/Documents/Transport.bib
+---
+
+Short-distance trip tend to be more frequent than longer ones.
+*Distance decay* (henceforth *dd*) is one of a number of concepts that 
+neatly expresses the this near-universal observation.
+Researchers using the *dd* terminology tend to go beyond verbal
+descriptions of the relationship between distance the frequency of trips.
+*dd* is a useful term for describing precisely *how* the proportion of trips
+($p$) declines with distance ($p$), beyond the general observation that the
+slope is negative:
+
+$$
+\frac{\delta d}{\delta p} < 0
+$$
+
+the term 
+has been used to ask, *how* does trip frequency vary as a function
+of distance [@Iacono2010, ]. In other words, what is the function for distance decay
+($fdd$)?:
+
+$$
+fdd(d, X) = tr + e
+$$
+
+where $d$ is distance (km), $X$ is a set of explanatory variables, $tr$
+is the trip rate, expressed either in absolute numbers or as a proportion of
+all trips for a given trip distance and $e$ is stochastic error.
+Clearly this equation can be refined. A logical refinement of
+is to add subscripts to the terms in equation 1, to
+disaggregate distance decay by variables operating at various levels.
+Trip type (e.g. trip mode,
+and purpose), the characteristics of the people making the trip
+(e.g. age and sex) and the location and physical surroundings of the
+trip (e.g. hilliness, location) have all been found to affent the shap
+of distance decay curves [@Fotheringham1981; @Iacono2010; @Fingleton2005].
+
+Other invocations of the distance decay concept have been developed and it is
+worth reviewing these briefly: a variety of words can be used to express
+the fundamental truth t, which are axiomatic
+in the travel behaviour literature,
+include the 'first law of geography', the more vernacular 'friction of distance'
+and 'the gravity law'.
+
+Tobler's famous first first law of geography states that
+"everything is related to everything
+else, but near things are more related than distant things" [@Tobler1970].
+The phrase strongly implies that space and distance are important
+considerations for understanding the world but does not specify why. Clearly,
+the increased frequency of communications and transport between places that
+are close to each other can help explain spatial autocorrelation
+and related quantitative measures of Tobler's law [@Miller2004a]. However,
+the 'first law' is primarily descriptive and says little about *how* the
+nature of transport systems contributes to the generalisability of the
+'law', or to which proximity is related to the degree of interaction between
+two people, places or phenomena. Moreover, in a world of accelerating globalisation
+under the auspices of the ongoing 'digital revolution', the relevance of the
+'first law' to the system-level processes it was proposed to explain has come under
+scrutiny [@Westlund2013].
+
+Limiting the scope of investigation to transportation --- the physical movement
+of people and goods, as opposed to communication which can be immaterial
+--- can simplify the problem and make it more tangible.
+Due to fundament physical limits on the efficiency with which matter
+can be moved [@MacKay2009] and a limited supply of energy
+(especially pertinent in an era of resource over-extraction and
+climate change), transport will always be limited to some degree by distance.
+This is well encapsulated in the more theoretical phrase
+'the friction of distance' [@Ellegard2004].
+
+The 'gravity model' of movement patterns formalised,
+helped to quantify and generalised these ideas [@zipf1946p1].
+The gravity model, or 'law' as it has sometimes been called [@]  has been a rich source of theoretical and methodological advance in many fields, primarily
+urban modelling but also in fields as diverse as ... and spatial epidemiology
+[@Balcan2009].
+
+
+Despite dissenting voices --- including the statement that "a strict gravity
+model simply did not work" for modelling urban systems and that some subsequent
+refinements to the gravity model were "fudge factors" [@Wilson1998-past] ---
+the gravity model has been one of the dominant tools for understanding
+urban mobility over the past 100 years [@masucci2013gravity]. A recent
+development in this field has been the 'radiation model'
+[@Simini2012]. This new formula for estimating flow rates between geographic
+zones is interesting in its ommission of distance as an explicit explanatory
+variable, instead using the number 'intervening opportunities' ($IO$)
+as a proxy for $dd$ the denominator to estimate flow:
+
+$$
+dd \approx (m_i+s_{ij})(m_i+n_j+s_{ij})
+$$
+
+
+
+
+
+a concept that is familiar to conventional transportation planning practice as an
+integral part of methods to
+model the distribution of trips 
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+summary(cars)
+```
+
+You can also embed plots, for example:
+
+```{r, echo=FALSE}
+plot(cars)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
