@@ -1,84 +1,160 @@
 ---
-title: 'Distance decay in active travel: an exploration of functional forms
-  for modelling individual and aggregate level data'
+title: 'Distance decay: exploring a universal concept for modelling transport systems'
 author: "Robin Lovelace"
-output: pdf_document
+output:
+  word_document: default
+  pdf_document:
+    toc: yes
 bibliography: ~/Documents/Transport.bib
 ---
 
-Short-distance trip tend to be more frequent than longer ones.
-*Distance decay* (henceforth *dd*) is one of a number of concepts that 
-neatly expresses the this near-universal observation.
-Researchers using the *dd* terminology tend to go beyond verbal
-descriptions of the relationship between distance the frequency of trips.
-*dd* is a useful term for describing precisely *how* the proportion of trips
-($p$) declines with distance ($p$), beyond the general observation that the
-slope is negative:
+```{r, include=FALSE}
+# title: 'Distance decay in active travel: an exploration of functional forms
+  # for modelling individual and aggregate level data'
+
+# Researchers using the *dd* terminology have gone beyond mere verbal
+# descriptions of the relationship between trip distance and frequency.
+pkgs <- c("gdata", "dplyr", "tidyr", "ggmap", "grid", "png", "knitr")
+lapply(pkgs, library, character.only = T)
+opts_knit$set(root.dir = "../")
+```
+
+# Abstract
+
+\clearpage
+
+Trips of short distances tend to be more frequent than trips of long distances.
+This is a fundamental feature of transport behaviour, observed in the majority of
+transport systems worldwide. The concept is neatly captured by the term
+*distance decay* (*dd*) which means literally that
+the proportion of trips of any given type tends to *decay*
+to zero as distance tends to infinity. 
+
+```{r, echo=FALSE}
+# Because speed
+# is limited, trips of infinite distance would take an
+# infinite amount of time, so
+# *dd* can be seen as a universal law. It is the purpose of this paper to review
+# existing 
+```
+
+
+*Distance decay* --- along with the synonymous *deterence function* [@Simini2012]
+--- builds on older terms expressing the same fundamental truth,
+such as the 'friction of distance' and the 'gravity law' (described in the
+subsequent section). 
+Unlike these established terms, $dd$ encourages quantitative
+exploration of *how* the proportion of trips
+($p$) declines with distance ($d$) [@Iacono2008],
+beyond the simple observation that the
+slope is negative beyond a certain threshold distance. 
+A resergence of interest in the distance-frequency relationship seeks
+questions the validity of simple pre-existing
+(and often context-specific) formulations, such as
+$p = \alpha e^{\beta d}$ [@Wilson1971] and $p = \alpha d^{\beta}$
+[@Fotheringham1981].
+In other words, the concept of *dd* begs the question: what is the precise function 
+that links the proportion of trips to distance:
 
 $$
-\frac{\delta d}{\delta p} < 0
+p = f(d)
 $$
 
-the term 
-has been used to ask, *how* does trip frequency vary as a function
-of distance [@Iacono2010, ]. In other words, what is the function for distance decay
-($fdd$)?:
+```{r, echo=FALSE}
+# Look into changing this to a partial variable 
+# Convert ds in xs
+# $$
+# \frac{\delta p}{\delta d} < 0 
+# $$
+# where $d$ is distance (km), $X$ is a set of explanatory variables, $tr$
+# is the trip rate, expressed either in absolute numbers or as a proportion of
+# all trips for a given trip distance and $e$ is stochastic error.
+```
 
-$$
-fdd(d, X) = tr + e
-$$
-
-where $d$ is distance (km), $X$ is a set of explanatory variables, $tr$
-is the trip rate, expressed either in absolute numbers or as a proportion of
-all trips for a given trip distance and $e$ is stochastic error.
-Clearly this equation can be refined. A logical refinement of
-is to add subscripts to the terms in equation 1, to
-disaggregate distance decay by variables operating at various levels.
-Trip type (e.g. trip mode,
-and purpose), the characteristics of the people making the trip
+Clearly this equation can be refined. 
+Subscripts can be added to the terms, representing
+how distance decay changes in response to a range of variables.
+These variables operate at a range of levels.
+The type of trip (e.g. time of day,
+purpose), the characteristics of the people making the trip
 (e.g. age and sex) and the location and physical surroundings of the
-trip (e.g. hilliness, location) have all been found to affent the shap
-of distance decay curves [@Fotheringham1981; @Iacono2010; @Fingleton2005].
+trip (e.g. hilliness, transport infrastructure) have all been found to
+affect the shape of distance decay curves [@Fotheringham1981;@Fingleton2005].
+Critically for understanding transport systems is the *mode*, or 'method'
+of transport. Mode refers to the
+choice of 'vehicle' (e.g. walking, cycling, car driving) and has been found,
+unsurprisingly, to dramatically affect
+the speed travelled during and amount of effort required for trips of different
+distances. The *dd* concept is especially applicable to
+active travel modes due to physiological limits on human mechanical power
+output and the slow speed of these modes.
 
-Other invocations of the distance decay concept have been developed and it is
-worth reviewing these briefly: a variety of words can be used to express
-the fundamental truth t, which are axiomatic
-in the travel behaviour literature,
-include the 'first law of geography', the more vernacular 'friction of distance'
-and 'the gravity law'.
+```{r, echo=FALSE}
+# Todo: add some theoretical dd curves here
+```
 
-Tobler's famous first first law of geography states that
+# The distance decay literature
+
+## Alternative terms for distance decay
+
+A variety of terms have been used to express
+the idea underlying the $dd$ concept outlined in this paper.
+These including the 'first law of geography', the 'friction of distance'
+and 'the gravity law'. It is worth reviewing these terms before describing
+work refering to $dd$ directly, to put the term in its wider historical
+context.
+
+Tobler's famous **first law of geography** states that
 "everything is related to everything
 else, but near things are more related than distant things" [@Tobler1970].
-The phrase strongly implies that space and distance are important
-considerations for understanding the world but does not specify why. Clearly,
+The phrase implies that interaction between things declines
+with distance without specifying how or why. Clearly,
 the increased frequency of communications and transport between places that
 are close to each other can help explain spatial autocorrelation
-and related quantitative measures of Tobler's law [@Miller2004a]. However,
-the 'first law' is primarily descriptive and says little about *how* the
-nature of transport systems contributes to the generalisability of the
-'law', or to which proximity is related to the degree of interaction between
-two people, places or phenomena. Moreover, in a world of accelerating globalisation
+ [@Miller2004a]. However, unlike $dd$,
+the 'first law' says little about the way in which
+relatedness between entities declines with distace.
+Moreover, in a world of accelerating globalisation
 under the auspices of the ongoing 'digital revolution', the relevance of the
 'first law' to the system-level processes it was proposed to explain has come under
 scrutiny [@Westlund2013].
 
-Limiting the scope of investigation to transportation --- the physical movement
-of people and goods, as opposed to communication which can be immaterial
---- can simplify the problem and make it more tangible.
+```{r, echo=FALSE}
+# and related quantitative measures of Tobler's law
+```
+
+To overcome this issue, the scope of this paper is limited to transportation
+of people and goods, opposed to immaterial communication.
+This simplifies the issue and makes it more tangible.
 Due to fundament physical limits on the efficiency with which matter
-can be moved [@MacKay2009] and a limited supply of energy
+can be moved [@MacKay2009], and a limited supply of energy
 (especially pertinent in an era of resource over-extraction and
-climate change), transport will always be limited to some degree by distance.
+climate change), such physical transport
+will always be limited to some degree by distance.
 This is well encapsulated in the more theoretical phrase
-'the friction of distance' [@Ellegard2004].
+'friction of distance' [@Ellegard2004], which explains
+*why* 'near things are more related than distance things'.
+However, the question of precisely *how* this friction increases
+with distance has not been tackled by researchers using the term.
 
-The 'gravity model' of movement patterns formalised,
-helped to quantify and generalised these ideas [@zipf1946p1].
-The gravity model, or 'law' as it has sometimes been called [@]  has been a rich source of theoretical and methodological advance in many fields, primarily
-urban modelling but also in fields as diverse as ... and spatial epidemiology
-[@Balcan2009].
+The 'gravity law' of movement patterns
+helped to quantify and generalise early incarnations if *dd* [@zipf1946p1].
+This 'law' (also referred to as the 'gravity model')
+suggests that travel incentives are roughly analogous to
+Newtonian gravitation [@Ravenstein1885]. The resulting formulae imply that
+the total movement between two places
+($T_{ij}$ between origin $i$ and destination $j$) is proportional
+to the product of their populations ($m_i$ and $n_j$),
+divided by a power of the distance between them:
 
+$$
+T_{ij} = \frac{m_i n_j}{d^\beta}
+$$
+
+as it has sometimes been called  has been a rich source of theoretical and methodological advance in many fields, primarily
+urban modelling but also in fields as diverse as highway planning [@Jung2008],
+national transport of minerals [@Zuo2013]
+and spatial epidemiology [@Balcan2009].
 
 Despite dissenting voices --- including the statement that "a strict gravity
 model simply did not work" for modelling urban systems and that some subsequent
@@ -95,24 +171,317 @@ $$
 dd \approx (m_i+s_{ij})(m_i+n_j+s_{ij})
 $$
 
+```{r, echo=FALSE}
+# a concept that is familiar to conventional transportation planning practice as an
+# integral part of methods to model the distribution of trips 
+```
+
+# Defining distance decay
+
+This section moves from verbal definitions of *dd* towards formal definitions
+which enable the functional form of distance decay curves to be derived using
+regression analysis. Within the general understanding that trips become less
+frequent with distance (beyond some threshold limit) there are
+various ways of describing the dependent variable that *dd* functions seek to
+explain. *dd* can be understood as:
+
+- the absolute
+number of trips expected for any given distance band ($db$):
+$f(d) = T_{db}$
+- the proportion of *all* trips that are made for a given distance band:
+$f(d) = T_{db} / T$
+- the proportion of trips *within a given distance band* made by a particular trip
+type (e.g. walking): \newline $f(d) = Twalk_{db} / T_{db}$
+
+Of these definitions the second is the most generalisable, being a proportion
+($0 \geq p \leq 1$)
+that tends to zero with increasing distance for any mode of transport.
+The third definition of *dd* also estimates a proportion with the same constraints,
+but is less generalisable: the result will not always tend to zero
+(the proportion of trips by air travel, for example, will tend to one for
+large trip distances). The first and simplest definition is the
+least generalisable as it is highly dependent on the total amount of travel.
+
+For each of these definitions the *functional form* of the *dd* equation
+can take many different forms. These are explored in the next section.
+ 
+# Functional forms of distance decay
+
+# Data
+
+We use a variety of datasets for this study. Primarily, we use data on distance
+vs *clc* (current level of cycling) derived from the census (Fig. 1).
+
+```{r, fig.cap="The relationship between distance and current level of cycling amongst 8 different groups."}
+f <- "/home/robin/Dropbox/DfT bid/Data analysis/Test_DD/TestPlanck_150303/150304_SegmentationCompare_8cat.xlsx"
+nts_seg <- read.xls(f, sheet = 2) # load in the .xlsx file with dist:pcycle values
+nts_seg <- rename(nts_seg, dist = X) # rename the "X" column as dist (miles)
+ntss <- gather(nts_seg, segment, clc, -dist)
+(p1 <- ggplot(aes(x = dist), data = ntss) + geom_line(aes(y = clc)) +
+  facet_wrap(~ segment))
+```
+
+# Polynomial functions
+
+## A linear model
+
+The simplest model to fit to the data is a linear model. For illustrative
+purposes we will fit a linear model to the data presented in Fig. 1,
+with different intercepts and gradients for each of the groups (Fig. 2):
+
+```{r, fig.cap="Linear model (red lines) fitted to the data, with intercept and gradient parameters estimated for each group."}
+# nb: the '*' means estimate all par
+m1 <- lm(clc ~ dist * segment, data = ntss) 
+ntss$m1 <- m1$fitted.values
+p1 + geom_line(aes(y = m1$fitted.values), color = "red")
+```
+
+The intercepts and gradients for each group are presented in table TODOxx:
+
+```{r, include=FALSE}
+summary(m1)
+```
+
+The above numbers are equations that describe the relationship between
+distance and *clc* for each group. In the `Mal_Young_NC` group, for example,
+
+$$
+clc ~ (0.0941 - 0.0682) + (-0.00377 + 0.00301)  * dist
+$$
+
+Let's double-check this makes sense: 
+
+```{r, fig.cap="Demonstration of the meaning of the parameters produced by the 'summary()' function for the linear model (m1) for the group 'Mal_Young_NC'.", fig.height=3, fig.width=4}
+mync <- filter(ntss, segment == "Mal_Young_NC")
+mync$m1 <- (0.0941 - 0.0682) + (-0.00377 + 0.00301)  * mync$dist
+plot(mync$dist, mync$clc)
+lines(mync$dist, mync$m1)
+```
 
 
+Considering the linear model is so simple, an adjusted R squared value of
+0.58 is not bad! 
 
+Now we will progress to fit slightly more complicated polynomial models.
 
-a concept that is familiar to conventional transportation planning practice as an
-integral part of methods to
-model the distribution of trips 
+## Cubic polynomial models
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+The results of the cubic models are displayed in Fig. 4.
+
+```{r, fig.cap="Different versions of the cubic polynomial distance decay function fitted to the data with per-covariate parameters estimated for linear, square, cubic and all power terms (red, green, blue and yellow lines respectively)."}
+m2 <- lm(clc ~ dist * segment + I(dist^2) + I(dist^3), data = ntss) 
+m3 <- lm(clc ~ dist + I(dist^2) * segment + I(dist^3), data = ntss) 
+m4 <- lm(clc ~ dist + I(dist^2) + I(dist^3) * segment, data = ntss) 
+m5 <- lm(clc ~ dist * segment + I(dist^2) * segment + I(dist^3) * 
+    segment, data = ntss) 
+p1 + geom_line(aes(y = m2$fitted.values), color = "red") +
+  geom_line(aes(y = m3$fitted.values), color = "green") +
+  geom_line(aes(y = m4$fitted.values), color = "blue") +
+  geom_line(aes(y = m5$fitted.values), color = "yellow", size = 3, alpha = 0.5)
+```
+
+Note that there are different ways to fit parameters to the model: we can change
+one parameter value for every group, or we can change many. In the finat model
+presented in yellow if Fig. 4, we changed all 4 parameters in response to every
+group. Thus we have calculated 32 parameter values! This is not a problem: we
+can extract each formula from the coefficients. Lets extract them for the
+`Fem_Old_NC` group, for example:
 
 ```{r}
-summary(cars)
+c5 <- coefficients(m5)
+c5[grep("Fem_Old_NC", names(c5))]
 ```
 
-You can also embed plots, for example:
+```{r, echo=FALSE, eval=FALSE}
+# Which model fits best
+summary(m1)
+summary(m2)
+summary(m3)
+summary(m4)
+summary(m5)
+```
+
+Of the cubic models fitted, the one with 32 parameters (8 for each parameter in
+the general model) fits by far the best with the data, with an adjusted R-squared
+value of 0.89.
+
+From the preceeding analysis, it is clear that a 4 parameter polynomial model
+fits sufficiently well for modelling: after all, we are interested in a simple
+way to increase the update of cycling not *fit curves to the current rate of cycling*.
+
+However, let's exploring how much better the curve can fit our data,
+which are admitedly noisy for the small groups. 
+
+## Cubic polynomial with cube and square root terms
+
+The model fit (in terms of adjusted R-squared) is improved slightly by adding
+sqare-root, cubic-root and square- cubic-root terms, from 0.89 to 0.91 (0.914, 
+0.913, and 0.917 respectively). Interestingly,
+the model fit barely changes between square-root, cube-root or cube- and square-root
+versions of the model and introduces some
+unexpected inflection points (wiggles in the red line) in the fitted
+curve (Fig. 5). This implies that a 6 parameter model is overkill
+and unnecessarily complex. Can the problems of overfitting and overcomplexity
+be resolved by using a different distance decay function?
+That is the subject of the next section.
+
+```{r, fig.cap="6 parameter cubic polynomial model with cube and square root terms", fig.height=3, fig.width=4}
+m6 <- lm(clc ~ dist * segment + I(dist^2) * segment + I(dist^3) * 
+    segment + I(dist^0.333) * segment, data = ntss)
+m7 <- lm(clc ~ dist * segment + I(dist^2) * segment + I(dist^3) * 
+    segment + I(dist^0.5) * segment, data = ntss)
+m8 <- lm(clc ~ dist * segment + I(dist^2) * segment + I(dist^3) * 
+    segment + I(dist^0.5) * segment + I(dist^0.333) + segment, data = ntss) 
+p1 + geom_line(aes(y = m8$fitted.values), color = "red") 
+# summary(m6) ; summary(m7); summary(m8)
+length(coefficients(m6))
+```
+
+## Fitting to the log of pcycle
+
+Because of the non-linearity evident in distance decay, fitting to the log
+of the cycling level may be appropriate. A problem with this approach is that
+it fails to capture the fact that the rate of cycling can peak with a distance
+above 0. This could be problematic with respect to cycling's interaction with
+walking but, as long there is a sufficient number of short trips in the
+"training" data, this should not be a serious problem. A potential solution
+would be to cap the probability of cycling at a specific level. Using
+the log-square root function in a logit model could also solve this issue.
 
 ```{r, echo=FALSE}
-plot(cars)
+# TODO: fit to clc = log(d)
+# pcycle = a * exp(-k * d)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+$$
+clc = \alpha e^{\beta d}
+$$
+
+$$
+log(clc) =  log(\alpha) + \beta d
+$$
+
+This fits reasonably well with the data...
+
+$$
+clc = \alpha e^{\beta d + \gamma  d^{1/2}}
+$$
+
+$$
+log(clc) = log(\alpha) + \beta d + \gamma  d^{1/2}
+$$
+
+
+```{r, fig.cap="Log-linear approaches to distance decay with 2 and 3 parameter models (red and green lines respectively)."}
+ntss$clc[ntss$clc == 0] <- 0.0001
+m11 <- lm(log(clc) ~ dist * segment, data = ntss)
+m12 <- lm(log(clc) ~ dist * segment + I(dist^2) * segment, data = ntss, )
+p1 + geom_line(aes(y = exp(m11$fitted.values)), color = "red") +
+  geom_line(aes(y = exp(m12$fitted.values)), color = "green") + ylim(c(0,0.15))
+```
+
+```{r, echo=FALSE}
+# Testing what happens when the distance goes very high
+xtest <- mutate(ntss, dist = dist^2)
+predm12 <- predict(object = m12, newdata = xtest)
+
+pred12 <- lm(log(clc) ~ dist * segment + I(dist^0.5) * segment, data = xtest)
+p12 <- glm(log(clc) ~ dist * segment + I(dist^0.5) * segment, data = ntss)
+
+p1 + geom_line(aes(y = exp(m11$fitted.values)), color = "red") +
+  geom_line(aes(y = exp(predm12)), color = "green") + ylim(c(0,0.15))
+
+p1 + geom_line(aes(y = exp(m11$fitted.values)), color = "red") +
+  geom_line(aes(x = dist^2, y = exp(p12$fitted.values)), color = "green") + ylim(c(0,0.15))
+```
+
+
+As can be seen from the output of the log-linear-square-root model,
+the parameters change in a predictable way to changes in the shape of the distance
+decay curve:
+
+```{r, include=FALSE}
+summary(m12)
+```
+
+
+```{r, echo=FALSE, eval=FALSE}
+summary(m11) # model fit - not shown
+summary(m12) # model fit - not shown
+summary(m13) # model fit - not shown
+
+# m14 <- lm(log(clc) ~ dist + I(dist^2) * segment, data = ntss)
+# summary(m14) # model fit - not shown
+  # geom_line(aes(y = m13$m$fitted()), color = "blue") 
+# Models not understood
+# m12 <- lm(clc ~ -1 + dist / I(exp(dist)) * segment, data = ntss)
+# m11 <- lm(clc ~ dist / I(exp(dist)) * segment, data = ntss)
+# m12 <- lm(log(clc) ~ dist + I(exp(dist)) * segment, data = ntss)
+# m13 <- lm(log(clc) ~ dist + I(log(dist)) * segment, data = ntss)
+```
+
+As shown in Fig. 7, the parameters of the 'log linear square-root' are meaningful.
+The intercept, log-lin and log-sqrt terms affect the intercept, short-term distance
+decay and longer-term distance decay respectively. The function fits the census flow data quite well.
+
+```{r, fig.cap="Impacts of changing the parameters of the 'log-linear-square-root' function. The green lines represent increases of 0.25 times the the original values derived from the Leeds dataset and the red lines represent -0.1 times the original value.", echo=FALSE}
+grid.raster(readPNG("figures/log-sqrt-params.png"))
+```
+
+## Simple exponential decay
+
+A feature present in all relationships between frequency and distance
+of trip is decay to zero as distance increases to infinity. This is especially
+the case with active travel modes such as cycling. Therefore some kind of
+exponential decay function may be suitable. This section fits various
+functions that have an exponential decay term to the data to see which perform
+well.
+
+The simplest type of exponential decay model is one in which a linear
+term (dominant in over short distances) is combined with an exponential decay:
+
+$$
+clc = \frac{\beta_1 dist}{exp(\beta_2)} 
+$$
+
+Where each $\beta$ term is estimated for each group, as with the twin parameter
+linear model illustrated Fig. 1. We can fit this to the data using
+*non-linear regression* (e.g. by using `nls()` in R) but this seems likely to
+make parameter estimation more complicated.
+
+```{r, echo=FALSE}
+# `nls()` can also be used...
+# m13 <- nls(clc ~ a * dist / exp(I(dist) * b), data = ntss, 
+#   start = list(a = 1, b = 1))
+# m14 <- gnls(clc ~ a * dist / exp(I(dist) * b) * segment, data = ntss, 
+#   start = list(a = 1, b = 1))
+```
+
+# Fitting the distance decay functions to binary data with logit models
+
+Using the functional forms for distance decay as an input to
+predict binary outcomes is relatively simple.
+"We can transform the output of a linear regression to be
+suitable for probabilities by using a logit link
+function" [@Manning2007]:
+
+$$
+logit(p) = ln \left( \frac{p}{1 - p} \right)
+$$
+
+We can use this knowledge to fit the aformentioned models to raw NTS
+data, with "Cycle trip" as a binary variable, for example using
+`family = "binomial"` in R's `glm()` function.
+
+
+# Key features of distance decay functions
+
+From the preceding analysis the log-linear square root equation (*LSQR*) is the
+preferred *dd* functional form, of the options tested so far. The subsequent
+analysis therefore uses *LSQR* as the basis for exploring the key feature of
+*dd* curves, although the the same analysis could be applied to alternative
+functions.
+
+
+# References
+

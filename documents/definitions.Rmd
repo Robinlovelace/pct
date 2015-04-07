@@ -1,60 +1,27 @@
 ---
 title: "Definitions for the propensity to cycle project"
-author: "Robin Lovelace"
-output: word_document
+output: pdf_document
 bibliography: ~/Documents/Transport.bib
 ---
 
-## Concepts and measures on level of cycling
+## Symbols
 
-- **Current level of cycling** (*CLC*) refers to the amount of current cycling activity.
-  It can be measured as a proportion (or prevalence) in terms of the number of
-  regular cyclists (*NC*) --- e.g. the number who regularly
-  cycle to work (*NC~commute~*) or the number who would classify themselves as
-  leisure cyclists (*NC~leisure~*). Alternatively it can be measured as a rate,
-  as the number of trips per year
-  or week (*NT~yr~* or *NT~wk~*).
-  
-- **Potential level of cycling** (*PLC*)
-  is the *expected* rate of cycling in given area or between
-  origin-destination pairs, under a certain set of assumptions, including
-  a given background cycling modal share.
-  This potential level is calculated using a model which
-  incorporates the impact of distance (see *distance decay*, below),
-  socio-demographics (and its influence on distance decay)
-  the transport network (e.g. *circuity* and the presence of dedicated cycle paths)
-  and other place-specific variables such as hilliness. *PLC* can be projected
-  into the future based on assumptions about the overall rate of cycling, likelihood
-  to shift to cycling and changes in distance decay by socio-demographic group.
-  
-- **Extra cycling potential** (*ECP*) is the number of additional trips or cyclists
-  that can be expected in a given scenario of the future. Formally, this can be 
-  defined as the *potential level of cycling* (under a set of assumptions) minus
-  the current rate of cycling. For the number of people who regularly cycle to work,
-  for example, *ECP* would be defined as follows:
+- **Distance decay** (*dd*) describes the relationship between the 
+  proportion of trips made by a given mode of transport ($p$)
+  and distance ($d$).
+  The distance decay function (*ddf*) is the formal function
+  mapping $d$ to $p$ and can be calculated for all trips overall or with
+  respect to a predefined set of explanatory variables (*X*),
+  such as the person's socio-demographic group and the hilliness of the local area,
+  each of which modifying the rate of *dd*.
   
 $$
-ECP_{commute} = PC_{commute} - NC_{commute}
+p = fdd(d, X)
 $$
 
-- Note that *ECP* can also be defined as a fraction, showing the percentage increase
-  in cycling following a particular policy intervention. We can call this 
-  **proportional increase in cycling** (*PIC*):
-  
-$$
-PIC = \frac{PC}{NC}
-$$
-
-## Other definitions
-  
-- **Distance decay** (*DD*) is function that relates the distance (*d*) of a trip to
-  the probability (or odds) of it being made by a specific mode of travel (e.g. by bicycle) with
-  respect to predefined set of explanatory variables (*X*)
-  such as the person's socio-demographic group and the hilliness of the local area.
-  
-$$
-DD = f(d, X)
-$$
+- $p$ denotes the proportion of trips made by any given mode. $pcar$, $pcycle$
+and $pwalk$ therefore represent the proportion of total number of trips ($T$) made
+by car, cycling and walking respectively.
 
 - **Circuity** (*Q*) is the actual length of a trip along the transport network compared
     with the straight-line (*Euclidean*) distance. Formally,
@@ -63,5 +30,59 @@ $$
 Q = \frac{d_{R}}{d_{E}}
 $$
 
+- $T$ is an integer count of the total number of trips. The value can be defined
+per zone (e.g. all work trips originating in zone $i$ --- $T_i$), per
+origin-destination flow ($T_{ij}$) or per distance band ($T_{db}$). In addition,
+$Tmode$ is used to denote the total number of trips by a given *mode* of
+transport such as car, bicycle or walking ($Tcar$, $Tcycle$ and $Twalk$ respectively).
 
+ 
+
+## Concepts and measures of cycling
+
+- **Observed level of cycling** (*OLC*) refers to the level of cycling that has
+  been recorded by official data,
+  e.g. the number who regularly cycle to work.
+  As with the other measures of cycling (*SLC* and *MIC*, defined subsequently),
+  *OLC* can be defined for a given area or between
+  origin-destination pairs.
+  Alternatively it can be measured as a rate ---
+  the number of trips per year
+  or week.
+  
+- **Scenario-based level of cycling** (*SLC*)
+  is the *modelled* rate of cycling for a given scenario. 
+  *SLC* is calculated using a model which projects the number of people who cycle
+  or the number of trips
+  made by bicycle. The model projects the cycling rate
+  based on a number of *explanatory variables* and assumptions about the future.
+  The explanatory variables include factors such as
+  distance of trips (see *distance decay*, below)
+  socio-demographics
+  and geographical factors (e.g. hilliness)
+  factors to . *SLC* can be projected
+  into the future based on assumptions about the future
+  overall rate of cycling, likelihood
+  to shift to cycling and changes in distance decay by socio-demographic group.
+  
+- **Modelled increase in cycling** (*MIC*) is the number of *additional* trips or
+  cyclists
+  that can be expected in a given scenario of the future, compared with the
+  current rate. $MIC$ represents the growth in cycling that can be expected
+  under a given scenario of the future and therefore equals the scenario-based
+  level of cycling minus the current rate of cycling. 
+  
+$$
+MIC = SLC - OLC
+$$
+
+```{r, echo=FALSE}
+# - Note that *ECP* can also be defined as a fraction, showing the percentage increase
+#   in cycling following a particular policy intervention. We can call this 
+#   **proportional increase in cycling** (*PIC*):
+#   
+# $$
+# PIC = \frac{PC}{NC}
+# $$
+```
 

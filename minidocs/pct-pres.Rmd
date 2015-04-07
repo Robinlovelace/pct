@@ -115,7 +115,9 @@ shinyAppDir("~/repos/learning-shiny/rentSplit/")
 
 ## Leaflet
 
-```{r}
+An R interface to the Leaflet JavaScript library, compatible with Shiny.
+
+```{r, eval=FALSE}
 cent <- geocode("Girona")
 leaflet() %>% 
   addTiles() %>%
