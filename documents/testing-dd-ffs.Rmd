@@ -27,7 +27,7 @@ We use a variety of datasets for this study. Primarily, we use data on distance
 vs *clc* (current level of cycling) derived from the census (Fig. 1).
 
 ```{r, fig.cap="The relationship between distance and current level of cycling amongst 8 different groups."}
-f <- "~/Dropbox/DfT bid/Data analysis/Test_DD/150304_SegmentationCompare_8cat.xlsx"
+f <- "/home/robin/Dropbox/DfT bid/Data analysis/Test_DD/TestPlanck_150303/150304_SegmentationCompare_8cat.xlsx"
 nts_seg <- read.xls(f, sheet = 2) # load in the .xlsx file with dist:pcycle values
 nts_seg <- rename(nts_seg, dist = X) # rename the "X" column as dist (miles)
 ntss <- gather(nts_seg, segment, clc, -dist)
@@ -162,13 +162,53 @@ walking but, as long there is a sufficient number of short trips in the
 would be to cap the probability of cycling at a specific level. Using
 the log-square root function in a logit model could also solve this issue.
 
+```{r, echo=FALSE}
+# TODO: fit to clc = log(d)
+# pcycle = a * exp(-k * d)
+```
+
+$$
+clc = \alpha e^{\beta d}
+$$
+
+$$
+log(clc) =  log(\alpha) + \beta d
+$$
+
+This fits reasonably well with the data...
+
+$$
+clc = \alpha e^{\beta d + \gamma  d^{1/2}}
+$$
+
+$$
+log(clc) = log(\alpha) + \beta d + \gamma  d^{1/2}
+$$
+
+
 ```{r, fig.cap="Log-linear approaches to distance decay with 2 and 3 parameter models (red and green lines respectively)."}
 ntss$clc[ntss$clc == 0] <- 0.0001
 m11 <- lm(log(clc) ~ dist * segment, data = ntss)
-m12 <- lm(log(clc) ~ dist * segment + I(dist^0.5) * segment, data = ntss)
+m12 <- lm(log(clc) ~ dist * segment + I(dist^2) * segment, data = ntss, )
 p1 + geom_line(aes(y = exp(m11$fitted.values)), color = "red") +
   geom_line(aes(y = exp(m12$fitted.values)), color = "green") + ylim(c(0,0.15))
 ```
+
+```{r, echo=FALSE}
+# Testing what happens when the distance goes very high
+xtest <- mutate(ntss, dist = dist^2)
+predm12 <- predict(object = m12, newdata = xtest)
+
+pred12 <- lm(log(clc) ~ dist * segment + I(dist^0.5) * segment, data = xtest)
+p12 <- glm(log(clc) ~ dist * segment + I(dist^0.5) * segment, data = ntss)
+
+p1 + geom_line(aes(y = exp(m11$fitted.values)), color = "red") +
+  geom_line(aes(y = exp(predm12)), color = "green") + ylim(c(0,0.15))
+
+p1 + geom_line(aes(y = exp(m11$fitted.values)), color = "red") +
+  geom_line(aes(x = dist^2, y = exp(p12$fitted.values)), color = "green") + ylim(c(0,0.15))
+```
+
 
 As can be seen from the output of the log-linear-square-root model,
 the parameters change in a predictable way to changes in the shape of the distance
@@ -240,7 +280,7 @@ suitable for probabilities by using a logit link
 function" [@Manning2007]:
 
 $$
-logit(p) = log \left( \frac{p}{1 - p} \right)
+logit(p) = ln \left( \frac{p}{1 - p} \right)
 $$
 
 We can use this knowledge to fit the aformentioned models to raw NTS

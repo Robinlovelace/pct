@@ -1,8 +1,16 @@
 # Project settings - libraries you'll need to load
-# NB: you'll need to use devtools::install_github for an early version of stplanr
+# NB: devtools allows installation of the latest packages
 if(!require(devtools)) install.packages("devtools")
 if(!require(stplanr)) install_github("robinlovelace/stplanr")
-pkgs <- c("rgdal", "dplyr", "rgeos", "stplanr", "raster", "maptools")
+pkgs <- c(
+  "foreign",  # loads external data
+  "rgdal",   # for loading and saving geo* data
+  "dplyr",   # for manipulating data rapidly
+  "rgeos",   # GIS functionality
+  "stplanr", # Sustainable transport planning with R
+  "raster",  # GIS functions
+  "maptools" # GIS functions
+  )
 # Which packages do we require?
 reqs <- as.numeric(lapply(pkgs, require, character.only = TRUE))
 # Install packages we require

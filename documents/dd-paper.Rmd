@@ -23,6 +23,8 @@ opts_knit$set(root.dir = "../")
 
 \clearpage
 
+# Introduction
+
 Trips of short distances tend to be more frequent than trips of long distances.
 This is a fundamental feature of transport behaviour, observed in the majority of
 transport systems worldwide. The concept is neatly captured by the term

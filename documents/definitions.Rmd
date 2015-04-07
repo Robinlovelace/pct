@@ -43,7 +43,7 @@ transport such as car, bicycle or walking ($Tcar$, $Tcycle$ and $Twalk$ respecti
 - **Observed level of cycling** (*OLC*) refers to the level of cycling that has
   been recorded by official data,
   e.g. the number who regularly cycle to work.
-  As with the other measures of cycling (*SLC* and *MIC*, defined subsequently),
+  As with the other measures of cycling (*SLC* and *SIC*, defined subsequently),
   *OLC* can be defined for a given area or between
   origin-destination pairs.
   Alternatively it can be measured as a rate ---
@@ -65,15 +65,15 @@ transport such as car, bicycle or walking ($Tcar$, $Tcycle$ and $Twalk$ respecti
   overall rate of cycling, likelihood
   to shift to cycling and changes in distance decay by socio-demographic group.
   
-- **Modelled increase in cycling** (*MIC*) is the number of *additional* trips or
+- **Scenario-based increase in cycling** (*SIC*) is the number of *additional* trips or
   cyclists
   that can be expected in a given scenario of the future, compared with the
-  current rate. $MIC$ represents the growth in cycling that can be expected
+  current rate. $SIC$ represents the growth in cycling that can be expected
   under a given scenario of the future and therefore equals the scenario-based
   level of cycling minus the current rate of cycling. 
   
 $$
-MIC = SLC - OLC
+SIC = SLC - OLC
 $$
 
 ```{r, echo=FALSE}
