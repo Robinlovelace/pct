@@ -44,15 +44,15 @@ to zero as distance tends to infinity.
 
 *Distance decay* --- along with the synonymous *deterence function* [@Simini2012]
 --- builds on older terms expressing the same fundamental truth,
-such as the 'friction of distance' and the 'gravity law' (described in the
+such as the 'friction of distance' and the 'gravity model' (described in the
 subsequent section). 
 Unlike these established terms, $dd$ encourages quantitative
 exploration of *how* the proportion of trips
 ($p$) declines with distance ($d$) [@Iacono2008],
 beyond the simple observation that the
 slope is negative beyond a certain threshold distance. 
-A resergence of interest in the distance-frequency relationship seeks
-questions the validity of simple pre-existing
+A resergence of interest in the distance-frequency relationship has
+revisited and refined and in some cases sought to overturn pre-existing
 (and often context-specific) formulations, such as
 $p = \alpha e^{\beta d}$ [@Wilson1971] and $p = \alpha d^{\beta}$
 [@Fotheringham1981].
@@ -101,16 +101,16 @@ output and the slow speed of these modes.
 A variety of terms have been used to express
 the idea underlying the $dd$ concept outlined in this paper.
 These including the 'first law of geography', the 'friction of distance'
-and 'the gravity law'. It is worth reviewing these terms before describing
+and 'the gravity model'. It is worth reviewing these terms before describing
 work refering to $dd$ directly, to put the term in its wider historical
 context. The final part of this section reviews recent literature
 explicitly using the term 'distance decay' to explore the concept
 
 ## The gravity model
 
-The 'gravity law' of movement patterns
+The 'gravity model' of movement patterns
 helped to quantify and generalise early incarnations if *dd* [@zipf1946p1].
-This 'law' (also referred to as the 'gravity model')
+This rule (it is sometimes referred to as the 'gravity law')
 suggests that travel incentives are roughly analogous to
 Newtonian gravitation [@Ravenstein1885]. The resulting formulae imply that
 the total movement between two places
