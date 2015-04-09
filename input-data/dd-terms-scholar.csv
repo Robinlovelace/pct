@@ -1,0 +1,37 @@
+Decade,Term,Frequency
+1500-1900,Distance decay,3
+1900-1949,Distance decay,0
+1950s,Distance decay,2
+1960s,Distance decay,27
+1970s,Distance decay,424
+1980s,Distance decay,587
+1990s,Distance decay,943
+2000s,Distance decay,3700
+2010s,Distance decay,4400
+1500-1900,Friction of distance,1
+1900-1949,Friction of distance,3
+1950s,Friction of distance,6
+1960s,Friction of distance,50
+1970s,Friction of distance,189
+1980s,Friction of distance,251
+1990s,Friction of distance,389
+2000s,Friction of distance,988
+2010s,Friction of distance,679
+1500-1900,Gravity model,13
+1900-1949,Gravity model,7
+1950s,Gravity model,30
+1960s,Gravity model,291
+1970s,Gravity model,1160
+1980s,Gravity model,1590
+1990s,Gravity model,2760
+2000s,Gravity model,12100
+2010s,Gravity model,11000
+1500-1900,First law of geography,0
+1900-1949,First law of geography,0
+1950s,First law of geography,0
+1960s,First law of geography,0
+1970s,First law of geography,4
+1980s,First law of geography,11
+1990s,First law of geography,27
+2000s,First law of geography,712
+2010s,First law of geography,860

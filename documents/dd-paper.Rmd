@@ -1,6 +1,7 @@
 ---
 title: 'Distance decay: exploring a universal concept for modelling transport systems'
 author: "Robin Lovelace"
+cls: ~/Dropbox/Templates/citation-styles/journal-of-transport-geography.csl
 output:
   word_document: default
   pdf_document:
@@ -73,7 +74,7 @@ $$
 # all trips for a given trip distance and $e$ is stochastic error.
 ```
 
-Clearly this equation can be refined. 
+This equation can be refined.
 Subscripts can be added to the terms, representing
 how distance decay changes in response to a range of variables.
 These variables operate at a range of levels.
@@ -97,47 +98,15 @@ output and the slow speed of these modes.
 
 # The distance decay literature
 
-## Alternative terms for distance decay
-
 A variety of terms have been used to express
 the idea underlying the $dd$ concept outlined in this paper.
 These including the 'first law of geography', the 'friction of distance'
 and 'the gravity law'. It is worth reviewing these terms before describing
 work refering to $dd$ directly, to put the term in its wider historical
-context.
+context. The final part of this section reviews recent literature
+explicitly using the term 'distance decay' to explore the concept
 
-Tobler's famous **first law of geography** states that
-"everything is related to everything
-else, but near things are more related than distant things" [@Tobler1970].
-The phrase implies that interaction between things declines
-with distance without specifying how or why. Clearly,
-the increased frequency of communications and transport between places that
-are close to each other can help explain spatial autocorrelation
- [@Miller2004a]. However, unlike $dd$,
-the 'first law' says little about the way in which
-relatedness between entities declines with distace.
-Moreover, in a world of accelerating globalisation
-under the auspices of the ongoing 'digital revolution', the relevance of the
-'first law' to the system-level processes it was proposed to explain has come under
-scrutiny [@Westlund2013].
-
-```{r, echo=FALSE}
-# and related quantitative measures of Tobler's law
-```
-
-To overcome this issue, the scope of this paper is limited to transportation
-of people and goods, opposed to immaterial communication.
-This simplifies the issue and makes it more tangible.
-Due to fundament physical limits on the efficiency with which matter
-can be moved [@MacKay2009], and a limited supply of energy
-(especially pertinent in an era of resource over-extraction and
-climate change), such physical transport
-will always be limited to some degree by distance.
-This is well encapsulated in the more theoretical phrase
-'friction of distance' [@Ellegard2004], which explains
-*why* 'near things are more related than distance things'.
-However, the question of precisely *how* this friction increases
-with distance has not been tackled by researchers using the term.
+## The gravity model
 
 The 'gravity law' of movement patterns
 helped to quantify and generalise early incarnations if *dd* [@zipf1946p1].
@@ -153,20 +122,24 @@ $$
 T_{ij} = \frac{m_i n_j}{d^\beta}
 $$
 
-as it has sometimes been called  has been a rich source of theoretical and methodological advance in many fields, primarily
+as it has sometimes been called has been a rich source of theoretical and methodological advance in many fields, primarily
 urban modelling but also in fields as diverse as highway planning [@Jung2008],
 national transport of minerals [@Zuo2013]
 and spatial epidemiology [@Balcan2009].
+
+## The radiation model
 
 Despite dissenting voices --- including the statement that "a strict gravity
 model simply did not work" for modelling urban systems and that some subsequent
 refinements to the gravity model were "fudge factors" [@Wilson1998-past] ---
 the gravity model has been one of the dominant tools for understanding
 urban mobility over the past 100 years [@masucci2013gravity]. A recent
-development in this field has been the 'radiation model'
+development in this field has been the 'radiation model', which has been
+found to fit travel to work and other flow data well
 [@Simini2012]. This new formula for estimating flow rates between geographic
 zones is interesting in its ommission of distance as an explicit explanatory
-variable, instead using the number 'intervening opportunities' ($IO$)
+variable. Instead, the radiation model uses the
+number 'intervening opportunities' ($IO$)
 as a proxy for $dd$ the denominator to estimate flow:
 
 $$
@@ -177,6 +150,87 @@ $$
 # a concept that is familiar to conventional transportation planning practice as an
 # integral part of methods to model the distribution of trips 
 ```
+
+A recent study compared the parameter-free radiation model against the
+gravity model on a large intra-city (London) dataset on commuting. It was
+found that neither model produced a satisfactory fit with the data,
+leading to the conclusion that "commuting at the city scale still lacks a
+valid model and that further research is required to understand
+the mechanism behind urban mobility" [@masucci2013gravity].
+The 'first law of geography' and the related concept of the 'friction
+of distance' are alternative yet closely related (i.e. not mutually
+exclusive) terms for exploring $dd$ th
+
+## The first law of geography
+
+Tobler's famous **first law of geography** states that
+"everything is related to everything
+else, but near things are more related than distant things" [@Tobler1970].
+The phrase implies that interaction between things declines
+with distance without specifying how or why. Clearly,
+the increased frequency of communications and transport between places that
+are close to each other can help explain spatial autocorrelation
+ [@Miller2004a]. However, unlike $dd$,
+the 'first law' says little about the way in which
+relatedness between entities declines with distace.
+Moreover, in a world of accelerating globalisation
+under the auspices of the ongoing 'digital revolution', the relevance of the
+'first law' to the system-level processes it was proposed to explain has come under scrutiny [@Westlund2013].
+
+```{r, echo=FALSE}
+# and related quantitative measures of Tobler's law
+```
+
+To overcome this issue, the scope of this paper is limited to transportation
+of people and goods, opposed to immaterial communication.
+This simplifies the issue and makes it more tangible.
+Due to fundament physical limits on the efficiency with which matter
+can be moved [@MacKay2009], and a limited supply of energy
+(especially pertinent in an era of resource over-extraction and
+climate change), such physical transport
+will always be limited to some degree by distance.
+This notion of travel frequency tending to zero as distance tends to
+infinity, present in the 'friction of distance' terminology, is also
+encapsulated by the more recent phrase 'distance decay' used in this paper.
+
+## The friction of distance
+
+The concept of the 'friction of distance' has been in use for 
+*why* 'near things are more related than distance things'.
+However, the question of precisely *how* this friction increases
+with distance has not been tackled by researchers using the term.
+
+## Recent distance decay literature
+
+As illustrated in Fig. 1, $dd$ has grown rapidly as a term in the academic
+literature over the past 50 years, compared with the well-established
+"gravity model" terminology. By the 1970s, it seems that 
+$dd$ overtook the "friction of distance" amongst transport researchers.
+Although Tobler's 'First Law' of geography has gained rapid acceptance
+since its inception in the 1970s, it has a far lower (by a factor
+of 5) rate of use than $dd$ in the transport literature. In other words,
+a quantitative review of the literature demonstrates that $dd$ is an
+up-and-coming term in transport studies. This section does not attempt
+a full overview of the 10,000+ articles using the $dd$
+terminology in the academic literature, instead focussing on a few key
+and highly cited works that helped set the agenda for $dd$ research.
+
+"friction of distance" terms. (which tends to assign importance to interaction
+between places rather than the impact of distance)
+
+```{r, echo=FALSE}
+brt <-  theme(axis.text.x = element_text(angle=20, color = "black"),
+        panel.background = element_rect(fill = "white"),
+        panel.grid.major.y = element_line(color = "grey", linetype=3))
+ddt <- read.csv("input-data/dd-terms-scholar.csv")
+ggplot(ddt) +
+  geom_line(aes(x = Decade, y = Frequency, color = Term, group = Term)) +
+  scale_y_log10() + brt +
+  ylab("Number of 'transport' papers in Google Scholar")
+```
+
+
+
 
 # Defining distance decay
 
@@ -206,8 +260,6 @@ least generalisable as it is highly dependent on the total amount of travel.
 
 For each of these definitions the *functional form* of the *dd* equation
 can take many different forms. These are explored in the next section.
- 
-# Functional forms of distance decay
 
 # Data
 
@@ -223,7 +275,31 @@ ntss <- gather(nts_seg, segment, clc, -dist)
   facet_wrap(~ segment))
 ```
 
-# Polynomial functions
+# Functional forms of distance decay
+
+@Martinez2013 identified 4 main functional forms commonly used in the
+literature to characterise distance decay curves:
+
+- Exponential functions, $e^{\beta x}$ [e.g. @Wilson1971]
+- Power functions, $x^{\beta}$ [e.g. @Fotheringham1981]
+- Tanner functions, $x^{\beta_1}e^{\beta_2 x}$ [e.g. @Openshaw1977]
+- Box-Cox functions, $exp(\beta \frac{x^{\gamma} - 1}{\gamma})$ when the parameter $\gamma \neq 0$ and $x^{\beta}$ when $\gamma = 0$ 
+
+In addition to these, @Martinez2013 advocated their own distance decay function, a modified version of the generalised logistic or 'Richards' function:
+
+$$
+f(x) = \frac{1}{(1 + Qe^{-B(x - M)})^{1/v}}
+$$
+
+Each of the 4 parameters in this model can be altered to ensure optimal
+fit and each has a separate meaning:
+
+- $B$ is analogous to $\beta$ in the other functions
+- $Q$ represents the intercept
+- $v$ affects the skewness of the curve
+- $M$ is the *x* value of maximum growth
+
+
 
 ## A linear model
 
@@ -459,7 +535,16 @@ make parameter estimation more complicated.
 #   start = list(a = 1, b = 1))
 ```
 
-# Fitting the distance decay functions to binary data with logit models
+
+# Characterising distance decay curves
+
+From the preceding analysis the log-linear square root equation (*LSQR*) is the
+preferred *dd* functional form, of the options tested so far. The subsequent
+analysis therefore uses *LSQR* as the basis for exploring the key feature of
+*dd* curves, although the the same analysis could be applied to alternative
+functions.
+
+# Applications
 
 Using the functional forms for distance decay as an input to
 predict binary outcomes is relatively simple.
@@ -475,14 +560,7 @@ We can use this knowledge to fit the aformentioned models to raw NTS
 data, with "Cycle trip" as a binary variable, for example using
 `family = "binomial"` in R's `glm()` function.
 
-
-# Key features of distance decay functions
-
-From the preceding analysis the log-linear square root equation (*LSQR*) is the
-preferred *dd* functional form, of the options tested so far. The subsequent
-analysis therefore uses *LSQR* as the basis for exploring the key feature of
-*dd* curves, although the the same analysis could be applied to alternative
-functions.
+# Discussion and conclusions
 
 
 # References
