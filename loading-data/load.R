@@ -78,7 +78,7 @@ l <- gFlow2line(flow = flow, zones = cents)
 
 # # # # # # # # # # # # # # # # # #
 # Calculate flow-level variables: #
-# distances and clc for ag. model #
+# distances and olc for ag. model #
 # # # # # # # # # # # # # # # # # #
 
 # Calculate distances (eventually use route distance)
@@ -111,8 +111,8 @@ if(nrow(l) > 2 * sum(l_local_sel) & nrow(l) > 5000){
 }
 
 if(length(grep("rf.Rds|rq.Rds", list.files(paste0("pct-data/", la)))) >= 2){
-  rf <- readRDS(paste0("pct-data/", la, "/rf.Rds")) # if you've loaded them
-  rq <- readRDS(paste0("pct-data/", la, "/rq.Rds"))
+  rf <- readRDS(paste0("pct-data/", la, "/rf_ttwa.Rds")) # if you've loaded them
+  rq <- readRDS(paste0("pct-data/", la, "/rq_ttwa.Rds"))
 } else{
   rf <- gLines2CyclePath(l[ l$dist > 0, ])
   rq <- gLines2CyclePath(l[ l$dist > 0, ], plan = "quietest")
@@ -129,8 +129,8 @@ nz <- which(l$dist > 0) # non-zero lengths = nz
 l$dist_quiet <- l$dist_fast <- l$cirquity <- l$distq_f <- NA
 l$dist_fast[nz] <- rf$length
 l$dist_quiet[nz] <- rq$length
-l$cirquity[nz] <- l$dist[nz] / rf$length
-l$distq_f[nz] <- rf$length / rq$length
+l$cirquity[nz] <- rf$length / l$dist[nz]
+l$distq_f[nz] <- rq$length / rf$length
 
 # Check the data makes sense
 plot(cents)
@@ -140,21 +140,21 @@ lines(rf[1000:1100,], col = "red")
 lines(rq[1000:1100,], col = "green")
 
 # # # # # # # # # # # # # #
-# Estimates plc from clc  #
+# Estimates slc from olc  #
 # # # # # # # # # # # # # #
 
 l$clc <- l$Bicycle / l$All
 flow_ttwa <- flow # save flows for the ttwa
 flow <- l@data
 
-source("models/aggregate-model.R") # this model creates the variable 'plc'
+source("models/aggregate-model.R") # this model creates the variable 'slc'
 
-l$plc <- flow$plc
+l$slc <- flow$plc
 l <- l[l$dist > 0, ]
-l$base_clc <- l$Bicycle
-l$base_plc <- l$plc * l$All
-l$base_ecp <- l$base_plc - l$base_clc
-# l$ecp2 <- l$plc * l$All - l$Bicycle # identical ecp result
+l$base_olc <- l$Bicycle
+l$base_slc <- l$slc * l$All
+l$base_sic <- l$base_slc - l$base_olc
+# l$sic2 <- l$slc * l$All - l$Bicycle # identical sic result
 
 # # # # # # # # # # # # #
 # Additional scenarios  #
@@ -163,14 +163,14 @@ l$base_ecp <- l$base_plc - l$base_clc
 # Additional scenarios
 # Replace with source("models/aggregate-model-dutch|gendereq|ebike.R"))
 set.seed(2015)
-l$gendereq_plc <- l$All * (l$plc + runif(nrow(l), 0, max = 0.1))
-l$gendereq_ecp <- l$gendereq_plc - l$base_clc
+l$gendereq_slc <- l$All * (l$slc + runif(nrow(l), 0, max = 0.1))
+l$gendereq_sic <- l$gendereq_slc - l$base_olc
 
-l$dutch_plc <- l$All * (l$plc + runif(nrow(l), 0, max = 0.2))
-l$dutch_ecp <- l$dutch_plc - l$base_clc
+l$dutch_slc <- l$All * (l$slc + runif(nrow(l), 0, max = 0.2))
+l$dutch_sic <- l$dutch_slc - l$base_olc
 
-l$ebike_plc <- l$All * (l$plc + runif(nrow(l), 0, max = 0.3))
-l$ebike_ecp <- l$ebike_plc - l$base_clc
+l$ebike_slc <- l$All * (l$slc + runif(nrow(l), 0, max = 0.3))
+l$ebike_sic <- l$ebike_slc - l$base_olc
 
 # # # # # # # # # # # # # # # # # #
 # Extract area-level commute data #
@@ -181,22 +181,23 @@ for(i in 1:nrow(cents)){
   # all flows originating from centroid i
   j <- which(l$Area.of.residence == cents$geo_code[i])
 
-  cents$base_clc[i] <- sum(l$Bicycle[j]) / sum(l$All[j])
-  cents$base_plc[i] <- sum(l$Bicycle[j]) + sum(l$ecp[j])
-  cents$base_ecp[i] <- sum(l$base_ecp[j])
+  cents$base_olc[i] <- sum(l$Bicycle[j])
+  cents$base_slc[i] <- sum(l$base_slc[j])
+  cents$base_sic[i] <- sum(l$base_sic[j])
 
   # values for scenarios
-  cents$gendereq_plc[i] <- sum(l$gendereq_plc[j])
-  cents$gendereq_ecp[i] <- sum(l$gendereq_ecp[j])
+  cents$gendereq_slc[i] <- sum(l$gendereq_slc[j])
+  cents$gendereq_sic[i] <- sum(l$gendereq_sic[j])
 
-  cents$dutch_plc[i] <- sum(l$dutch_plc[j])
-  cents$dutch_ecp[i] <- sum(l$dutch_ecp[j])
+  cents$dutch_slc[i] <- sum(l$dutch_slc[j])
+  cents$dutch_sic[i] <- sum(l$dutch_sic[j])
 
-  cents$ebike_plc[i] <- sum(l$ebike_plc[j])
-  cents$ebike_ecp[i] <- sum(l$ebike_ecp[j])
+  cents$ebike_slc[i] <- sum(l$ebike_slc[j])
+  cents$ebike_sic[i] <- sum(l$ebike_sic[j])
 
   cents$av_distance[i] <- sum(l$dist[j] * l$All[j])  / sum(l$All[j])
-  cents$cirquity[i] <- mean(l$cirquity[j] * l$All[j], na.rm =T)  / sum(l$All[j])
+  cents$cirquity[i] <- sum(l$cirquity[j] * l$All[j], na.rm = T )  / sum(l$All[j])
+  cents$distq_f[i] <- sum(l$distq_f[j] * l$All[j], na.rm = T )  / sum(l$All[j])
 }
 
 # # # # # # # # # # # # # # # # #
@@ -234,6 +235,7 @@ summary(cents$geo_code %in% zones$geo_code) # check zones are equal
 
 # Transfer cents data to zones
 zones@data <- left_join(zones@data, cents@data, by = "geo_code")
+head(zones@data)
 
 # Save objects
 saveRDS(zones, paste0("pct-data/", la, "/z.Rds"))
