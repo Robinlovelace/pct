@@ -1,0 +1,61 @@
+---
+title: Where to build bike paths? A generalisable flow-level model of cycling uptake
+  for sustainable transport planning
+author: "Robin Lovelace"
+date: "April 12, 2015"
+output: pdf_document
+---
+
+# Introduction
+
+# Data
+
+The basic model requires only two sets of input data
+(although more refined versions benefit from many additional datasets):
+
+- *Flow data* estimating the rate of movement between different places,
+often recorded through Census travel to work questions. The data is
+generally provided as a 'flow matrix' (with rows representing origins
+and columns destinations) or a longer table of origin-destination pairs.
+This type of data is increasingly available from so-called 'Big Data'
+sources such as passively collected mobile telephone records.
+- *Geographical data* on the coordinates of trip origins and destinations.
+As a bare minimum, this means the (preferably population-weighted)
+centroids of each zone in the study area but could also include.
+
+The flow model described in this paper should work for
+anywhere that has access to these two data types. To link
+the two datasets together, *zone ids* are needed in both
+datasets. To ease the process of combining *flow* and *point* data,
+an R function called `gFlow2Lines()` was 
+created.[The source code of `gFlow2Lines()` has been made available
+online, as part of an R package for sustainable transport planning,
+**stplanr**. See [github.com/Robinlovelace/stplanr/](https://github.com/Robinlovelace/stplanr/blob/master/R/gFlow.R).]
+
+For building the flow model for England, the following open datasets were
+used. Links to the raw data are provided to enable reproducibility.
+
+- `wu03ew_v2.csv`, a 12 MB comma-delimited (human readable text) file
+of origin-destination pairs and flows between them for different modes (see Table xx).
+- `
+
+
+# An automated script to load the data
+
+
+
+# Discussion
+
+The flexibility of the approach outlined in this paper ensures that the
+method can be used in many different contexts. Because the underlying
+methods and computation are transparent and open source, it is
+possible to harness them in many different ways. This flexibility
+has been demonstrated by the tool's ability to be deployed in any
+Local Authority in England, for a range of cycling scenarios, with
+the results presented in a range of ways. However, the flexibility
+of the approach would allow it to be used in contexts that go well
+beyond re-running the model for different cities in the same country.
+Potential extensions of the model include:
+
+- Deployment of the tool and underlying flow model in different
+countries.[This would depend on having ]
