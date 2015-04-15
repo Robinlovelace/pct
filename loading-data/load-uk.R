@@ -124,4 +124,10 @@ wnor <- shapefile("pct-data/norwich/wmsoa-lores.shp")
 # url = "https://geoportal.statistics.gov.uk/Docs/Boundaries/Travel_to_work_areas_%28E+W%29_2007_Boundaries_%28Generalised_Clipped%29.zip"
 # download.file(url, method = "curl", destfile = "bigdata/ttwa.zip")
 # unzip(zipfile = "bigdata/ttwa.zip", exdir = "bigdata/")
-ttw <- shapefile("bigdata/TTWA_DEC_2007_EW_BGCmapshaped_5%.shp")
+# ttw <- shapefile("bigdata/TTWA_DEC_2007_EW_BGCmapshaped_5%.shp")
+
+ttwa_name <- "cambridge" # name of the Travel to Work Area (must type this)
+# gMapshape("bigdata/TTWA_DEC_2007_EW_BGC.shp", percent = 1)
+ttwa_all <- shapefile("bigdata/TTWA_DEC_2007_EW_BGCmapshaped_1%.shp") # all zones
+ttwa_all <- spTransform(ttwa_all, CRSobj = CRS("+init=epsg:4326"))
+geojson_write(ttwa_all, file = "pct-data/national/ttwa_all.geojson")

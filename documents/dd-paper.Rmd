@@ -3,9 +3,10 @@ title: 'Distance decay: exploring a universal concept for modelling transport sy
 author: "Robin Lovelace"
 cls: ~/Dropbox/Templates/citation-styles/journal-of-transport-geography.csl
 output:
-  word_document: default
   pdf_document:
+    fig_caption: yes
     toc: yes
+  word_document: default
 bibliography: ~/Documents/Transport.bib
 ---
 
@@ -195,10 +196,25 @@ encapsulated by the more recent phrase 'distance decay' used in this paper.
 
 ## The friction of distance
 
-The concept of the 'friction of distance' has been in use for 
-*why* 'near things are more related than distance things'.
-However, the question of precisely *how* this friction increases
-with distance has not been tackled by researchers using the term.
+The concept of the 'friction of distance' has been in use for over 100
+enjoying steady (albeit slowing) growth in use until the early 2000s
+(Fig. 1). The term helps to explain why Tobler's Law is true,
+implying that it is more *difficult* (e.g. in terms of energy use)
+for distant things to interact. 'Friction' is thus defined as
+"the difficulty of moving a volume (passengers or goods)" 
+[@Muvingi2012].
+The friction of distance is predominantly used as a synonym for $dd$,
+and to some extent the slowing use of the term illustrated in Fig. 1
+can be seen as a consequence of the latter simply replacing the former.
+@cliff1974evaluating, for example, refer to "the friction of distance
+parameter in gravity models" whereas @Griffith1980 and @McCall2006 
+refer to 'distance decay' in spatial interaction and gravity models
+respectively: the terms are largely interchangeable.
+However, the question of precisely *how* the metaphorical friction 
+increases with distance has been tackled to a lesser extent in
+the (generally older) literature using the term. The recent $dd$ literature,
+by contrast, is largely focussed this question, as
+described in the subsequent section.
 
 ## Recent distance decay literature
 

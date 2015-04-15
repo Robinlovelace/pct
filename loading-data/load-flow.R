@@ -9,9 +9,11 @@
 # # # # # # #
 
 # see https://wicid.ukdataservice.ac.uk/cider/wicid/downloads.php)
-f <- "bigdata/public-flow-data-msoa/wu03ew_v2.csv" # file location
+f <- "pct-data/national/wu03ew_v2.csv" # file location
 flow <- read.csv(f, stringsAsFactors = F) # load public msoa-level flow data
 flow <- rename(flow, All = All.categories..Method.of.travel.to.work)
+
+saveRDS(flow, "pct-data/national/flow.Rds")
 
 # # # # # # # # # #
 # The study area  #
