@@ -1,7 +1,7 @@
 ---
 title: "Open online planning tools for sustainable transport"
 author: "Robin Lovelace, University of Leeds"
-date: "March 26, 2015"
+date: "April 14, 2015"
 output:
   ioslides_presentation:
     transition: slower
@@ -227,17 +227,20 @@ grid.raster(readPNG("~/Pictures/Selection_157.png"))
 ```{r, eval=FALSE}
 example(gLines2CyclePath)
 data(package = "stplanr", "l")
-plot(l)
+plot(flowlines)
 cckey <- Sys.getenv('CYCLESTREET')
-routes_fast <- gLines2CyclePath(l)
-routes_slow <- gLines2CyclePath(l, "quietest")
+routes_fast <- gLines2CyclePath(flowlines)
+routes_slow <- gLines2CyclePath(flowlines, "quietest")
 lines(routes_fast, col = "red")
 lines(routes_slow, col = "green")
 ```
 
 ```{r, echo=FALSE}
-data(package = "stplanr", list = list("l", "routes_fast","routes_slow" ))
-plot(l)
+library(stplanr)
+library(rgdal)
+data("flowlines", "routes_fast","routes_slow")
+flowlines <- spTransform(flowlines, CRS("+init=epsg:4326"))
+plot(flowlines)
 lines(routes_fast, col = "red")
 lines(routes_slow, col = "green")
 ```
