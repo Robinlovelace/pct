@@ -15,13 +15,6 @@ source("set-up.R")
 # 1          E02001019         E02001019 472                           0
 # 2          E02001019         E02001020  78                           0
 # 3          E02001019         E02001021 101                           0
-# 4          E02001019         E02001022  61                           0
-# 5          E02001019         E02001023  31                           0
-# 6          E02001019         E02001024  21                           0
-# 7          E02001019         E02001025 110                           0
-# 8          E02001019         E02001026 244                           0
-# 9          E02001019         E02001027  65                           0
-# 10         E02001019         E02001028  17                           0
 # ..               ...               ... ...                         ...
 # Variables not shown: Underground..metro..light.rail..tram (int), Train (int), Bus..minibus.or.coach
 # (int), Taxi (int), Motorcycle..scooter.or.moped (int), Driving.a.car.or.van (int),
@@ -34,7 +27,7 @@ source("set-up.R")
 # Estimate rate of cycling based on dd formula (see ?dd_logsqr)
 mod_logsqr <- glm(clc ~ dist + I(dist^0.5), data = flow, weights = All, family = "quasipoisson")
 
-
+flow$plc <- NA
 flow$plc[!is.na(l$All)] <- mod_logsqr$fitted.values # create plc from model
 
 # # # # # # # #
