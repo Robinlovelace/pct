@@ -75,7 +75,10 @@ l <- spTransform(l, CRS("+init=epsg:4326"))
 l@data <- flow # copy flow data across
 
 # Aggregate the lines to avoid bi-directional flows
-l <- gOneway(l, attrib = 3:14) # needs 64 bit computer!
+# l <- gOnewaygeo(l, attrib = 3:14) # needs 64 bit computer!
+l <- gOnewayid(l, attrib = 3:14)
+# saveRDS(l, "pct-data/manchester/l-gOnewayid.Rds") # save for future use
+summary(l@data)
 
 # # # # # # # # # # # # # # #
 # Allocate flows to network #
@@ -105,9 +108,11 @@ if(length(grep("rf_ttwa.Rds|rq_ttwa.Rds", list.files(paste0("pct-data/", la)))) 
   # Process route data
   rf$length <- rf$length / 1000
   rq$length <- rq$length / 1000
+  saveRDS(rf, paste0("pct-data/", la, "/rf_ttwa.Rds")) # save the routes
+  saveRDS(rq, paste0("pct-data/", la, "/rq_ttwa.Rds"))
 }
 
-rq$id <- rf$id <- l$id[l$dist > 0]
+rq$id <- rf$id <- l$id
 
 # Allocate route factors to flows
 nz <- which(l$dist > 0) # non-zero lengths = nz
@@ -200,9 +205,6 @@ points(cents)
 lines(l, col = "red")
 l <- l[as.logical(gContains(zone, l, byid = T)),]
 
-# Aggregate the lines to avoid bi-directional flows
-l <- gOneway(l, attrib = 3:14)
-
 idsel <- l$id
 lines(l, col = "green")
 
@@ -212,6 +214,10 @@ rq <- rq[rq$id %in% idsel, ]
 # if(la == "manchester") l <- l[l@data$id %in% paste(rf@data$Area.of.residence, rf@data$Area.of.workplace), ] # bodge
 lines(rq, col = "white")
 lines(rf, col = "blue")
+
+plot(l[44:45,])
+lines(rq[44:45,], col = "white")
+lines(rf[44:45,], col = "blue")
 
 flow_in_l <- names(flow) %in% names(l)
 l@data <- left_join(l@data, data.frame(id = flow$id, plc = flow[,!flow_in_l]), by = "id")
@@ -237,8 +243,6 @@ saveRDS(rq, paste0("pct-data/", la, "/rq.Rds"))
 # saveRDS(ttwa_zone, paste0("pct-data/", la, "/ttw_zone.Rds"))
 # saveRDS(cents_ttwa, paste0("pct-data/", la, "/c_ttwa.Rds"))
 # saveRDS(l_ttwa, paste0("pct-data/", la, "/l_ttwa.Rds"))
-# saveRDS(rf_ttwa, paste0("pct-data/", la, "/rf_ttwa.Rds"))
-# saveRDS(rq_ttwa, paste0("pct-data/", la, "/rq_ttwa.Rds"))
 
 end_time <- Sys.time()
 

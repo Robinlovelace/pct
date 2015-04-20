@@ -1,0 +1,13 @@
+cents <- rgdal::readOGR(dsn = "pct-data/national/cents.geojson", layer = "OGRGeoJSON")
+crs <- CRS("+init=epsg:4326")
+crsuk <- CRS("+init=epsg:27700")
+cents <- sp::spTransform(x = cents, CRSobj = crsuk)
+home <- ggmap::geocode("LS7 3HB")
+home <- sp::SpatialPoints(coords = home, proj4string = crs)
+home <- sp::spTransform(x = home, CRSobj = crsuk)
+buf <- rgeos::gBuffer(home, width = 2000)
+cents <- cents[buf,]
+plot(buf)
+points(cents)
+library(devtools)
+save(cents, file = "cents.RData")
