@@ -74,12 +74,6 @@ cents <- spTransform(cents, CRS("+init=epsg:4326"))
 l <- spTransform(l, CRS("+init=epsg:4326"))
 l@data <- flow # copy flow data across
 
-# Aggregate the lines to avoid bi-directional flows
-# l <- gOnewaygeo(l, attrib = 3:14) # needs 64 bit computer!
-l <- gOnewayid(l, attrib = 3:14)
-# saveRDS(l, "pct-data/manchester/l-gOnewayid.Rds") # save for future use
-summary(l@data)
-
 # # # # # # # # # # # # # # #
 # Allocate flows to network #
 # Warning: time-consuming!  #
@@ -88,7 +82,8 @@ summary(l@data)
 # Subset lines if there are many, many lines
 
 # Create local version of lines; if there are too many in the TTWA, sample!
-l_local_sel <- as.logical(gContains(zone, l, byid = T))
+l_local_sel <- l@data$Area.of.residence %in% zones$geo_code |
+  l@data$Area.of.workplace %in% zones$geo_code # all lines in/out zones
 if(nrow(l) > 2 * sum(l_local_sel) & nrow(l) > 5000){
   l_all <- l
   set.seed(2050)
@@ -191,6 +186,16 @@ for(i in 1:nrow(cents)){
   cents$cirquity[i] <- sum(l$cirquity[j] * l$All[j], na.rm = T )  / sum(l$All[j])
   cents$distq_f[i] <- sum(l$distq_f[j] * l$All[j], na.rm = T )  / sum(l$All[j])
 }
+
+names(l) # which line names can be added for non-directional flows?
+addids <- c(3:14, 23:31)
+# Aggregate the lines to avoid bi-directional flows
+l <- gOnewayid(l, attrib = addids)
+l$clc <- l$Bicycle / l$All
+l$slc <- l$base_slc / l$All
+
+# saveRDS(l, "pct-data/manchester/l-gOnewayid.Rds") # save for future use
+summary(l@data)
 
 # # # # # # # # # # # # # # # # #
 # Subset lines to plotting area #
