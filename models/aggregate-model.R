@@ -34,7 +34,8 @@ source("set-up.R")
 # Estimate rate of cycling based on dd formula (see ?dd_logsqr)
 mod_logsqr <- glm(clc ~ dist + I(dist^0.5), data = flow, weights = All, family = "quasipoisson")
 
-flow$plc <- mod_logsqr$fitted.values # create plc from model
+
+flow$plc[!is.na(l$All)] <- mod_logsqr$fitted.values # create plc from model
 
 # # # # # # # #
 # Diagnostics #
