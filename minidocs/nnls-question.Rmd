@@ -1,0 +1,95 @@
+---
+title: "Constraining coefficients in a linear model"
+output: html_document
+---
+
+## Introduction
+
+Imagine we need to fit x to y - that we suspect there is some relationship
+that makes y, on average, proportional to some scaling factor of x plus
+some scaling factor of x squared:
+
+$$
+y = \alpha x + \beta x^2
+$$
+
+Furthermore imagine that we need y to tend to minus infinity as x
+tends to infinity.
+There are many ways to do this in R, the simplest of which being `lm()`:
+
+```{r}
+set.seed(1)
+x <- 1:10
+y <- runif(n = 10)
+m1 <- lm(y ~ x + I(x^2))
+m1$coefficients
+```
+
+## The problem
+
+This works fine (although the model fit is terrible!) and
+results in a negative x squared term. But what if a positive x squared term
+fits the data best. From trial and error, this was found to be the case when
+the 'seed' (the start point of a known random number generator) is 3:
+
+```{r}
+set.seed(3)
+y2 <- runif(n = 10)
+m2 <- lm(y2 ~ x + I(x^2))
+m2$coefficients
+```
+
+The solution to this problem is not obvious. The function `constrOptim()`
+contains the argument `ci`. Setting `ci = c(0, -1000)` would solve the problem,
+but this is no longer a linear regression model.
+
+## Solution 1
+
+StackOverflow pointed me to a [thread](http://stackoverflow.com/questions/8593434/force-coefficient-to-be-negative-in-r-lm)  that suggested I was not the first
+to encounter this issue. The most voted answer was to use `nnl::nnnpls()`.
+Whilst this may not seem like the most eloquent of names, it actually
+summarises the function very well. Translated into English it means
+"non-negative and non-positive least squares regression, from the
+non-negative least squares package". Does precisely what it says on the tin!
+
+Let's test it out, first with a 'seed' of 1 to act as a control:
+
+```{r}
+A <- matrix(cbind(x, x^2), ncol = 2)
+library(nnls)
+nnnpls(A = A, b = y, con = c(1,-1))
+```
+
+We can see the result is similar: the x-squared term is negative, as specified in the `con = c(1,-1)` argument (x-squared is the second
+term). Note that the precise coefficients are different though.
+
+Now let's see how this responds to a seed of 3, when the best linear
+least squares model says the x-squared coefficient is positive:
+
+```{r}
+library(nnls)
+nnnpls(A = A, b = y2, con = c(1,-1))
+```
+
+Notice the difference: now the x-squared coefficient is negative,
+as intended. Let's double-check we get a similar result as lm
+when the negative condition is removed:
+
+```{r}
+m2$coefficients # recall coefficients
+nnnpls(A = A, b = y2, con = c(-1, 1))
+```
+
+
+
+
+## Solution MKII
+
+
+## Conclusion
+
+
+
+
+
+
