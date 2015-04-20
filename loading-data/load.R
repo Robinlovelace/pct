@@ -6,8 +6,8 @@ start_time <- Sys.time() # for timing the script
 source("set-up.R") # pull in packages needed
 
 # Set local authority and ttwa zone names
-la <- "manchester" # name of the local authority
-ttwa_name <- "manchester" # name of the travel to work area
+la <- "sheffield" # name of the local authority
+ttwa_name <- "sheffield" # name of the travel to work area
 dir.create(paste0("pct-data/", la))
 
 # # # # # # # # # # # #
@@ -44,8 +44,8 @@ cents <- cents[ ttwa_zone,] # subset centroids geographically to ttwa
 
 # Check the area is correct
 plot(ttwa_zone, lwd = 4)
-points(cents)
 plot(zones, col = "red", add = T)
+points(cents)
 
 # # # # # # #
 # Flow data #

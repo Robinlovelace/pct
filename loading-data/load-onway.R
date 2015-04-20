@@ -92,10 +92,11 @@ l_local_sel <- as.logical(gContains(zone, l, byid = T))
 if(nrow(l) > 2 * sum(l_local_sel) & nrow(l) > 5000){
   l_all <- l
   set.seed(2050)
-  lsel <- sample(l$id[!l_local_sel], size = sum(l_local_sel))
-  lsel <- c(lsel, l$id[l_local_sel])
-  l <- l[l$id %in% lsel, ]
+  lsel <- sample(which(!l_local_sel), size = sum(l_local_sel))
+  lsel <- c(lsel, which(l_local_sel))
+  l <- l_all[lsel, ]
   plot(l)
+  lines(l[2000:2600,], col = "blue") # ensure we have all the local ones
 }
 
 if(length(grep("rf_ttwa.Rds|rq_ttwa.Rds", list.files(paste0("pct-data/", la)))) >= 2){
@@ -138,9 +139,10 @@ flow_ttwa <- flow # save flows for the ttwa
 flow <- l@data
 
 source("models/aggregate-model.R") # this model creates the variable 'slc'
+summary(mod_logsqr)
 
 l$slc <- flow$plc
-l <- l[l$dist > 0, ]
+# l <- l[l$dist > 0, ]
 l$base_olc <- l$Bicycle
 l$base_slc <- l$slc * l$All
 l$base_sic <- l$base_slc - l$base_olc
