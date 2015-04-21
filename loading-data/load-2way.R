@@ -6,8 +6,8 @@ start_time <- Sys.time() # for timing the script
 source("set-up.R") # pull in packages needed
 
 # Set local authority and ttwa zone names
-la <- "manchester" # name of the local authority
-ttwa_name <- "manchester" # name of the travel to work area
+la <- "sheffield" # name of the local authority
+ttwa_name <- "sheffield" # name of the travel to work area
 dir.create(paste0("pct-data/", la))
 
 # # # # # # # # # # # #
@@ -44,8 +44,8 @@ cents <- cents[ ttwa_zone,] # subset centroids geographically to ttwa
 
 # Check the area is correct
 plot(ttwa_zone, lwd = 4)
-points(cents)
 plot(zones, col = "red", add = T)
+points(cents)
 
 # # # # # # #
 # Flow data #
@@ -82,37 +82,29 @@ l@data <- flow # copy flow data across
 # Subset lines if there are many, many lines
 
 # Create local version of lines; if there are too many in the TTWA, sample!
-l_local_sel <- l@data$Area.of.residence %in% zones$geo_code &
-  l@data$Area.of.workplace %in% zones$geo_code
+l_local_sel <- as.logical(gContains(zone, l, byid = T))
 if(nrow(l) > 2 * sum(l_local_sel) & nrow(l) > 5000){
   l_all <- l
   set.seed(2050)
-  # sample from all routes in the TTWZ - change 1 for different % outside zone
-  lsel <- sample(which(!l_local_sel), size = sum(l_local_sel) * 1)
-  lsel <- c(lsel, which(l_local_sel))
-  length(lsel)
-  l <- l_all[lsel, ] # subset the lines
+  lsel <- sample(l$id[!l_local_sel], size = sum(l_local_sel))
+  lsel <- c(lsel, l$id[l_local_sel])
+  l <- l[l$id %in% lsel, ]
   plot(l)
-  lines(l[2000:2600,], col = "blue") # ensure we have all the local ones
 }
 
 if(length(grep("rf_ttwa.Rds|rq_ttwa.Rds", list.files(paste0("pct-data/", la)))) >= 2){
   rf <- readRDS(paste0("pct-data/", la, "/rf_ttwa.Rds")) # if you've loaded them
   rq <- readRDS(paste0("pct-data/", la, "/rq_ttwa.Rds"))
 } else{
-  rf <- gLines2CyclePath(lr[ lr$dist > 0, ])
-  rq <- gLines2CyclePath(lr[ lr$dist > 0, ], plan = "quietest")
+  rf <- gLines2CyclePath(l[ l$dist > 0, ])
+  rq <- gLines2CyclePath(l[ l$dist > 0, ], plan = "quietest")
 
   # Process route data
   rf$length <- rf$length / 1000
   rq$length <- rq$length / 1000
-  saveRDS(rf, paste0("pct-data/", la, "/rf_ttwa.Rds")) # save the routes
-  saveRDS(rq, paste0("pct-data/", la, "/rq_ttwa.Rds"))
 }
 
-rq$id <- rf$id <- l$id
-
-# Get route data into larger l object
+rq$id <- rf$id <- l$id[l$dist > 0]
 
 # Allocate route factors to flows
 nz <- which(l$dist > 0) # non-zero lengths = nz
@@ -121,10 +113,6 @@ l$dist_fast[nz] <- rf$length
 l$dist_quiet[nz] <- rq$length
 l$cirquity[nz] <- rf$length / l$dist[nz]
 l$distq_f[nz] <- rq$length / rf$length
-
-# Join route results back to l_all (for subsequent area estimations)
-names(l)
-l_all@data <- inner_join(l_all@data, l@data[,15:ncol(l)])
 
 # Check the data makes sense
 plot(cents)
@@ -142,10 +130,9 @@ flow_ttwa <- flow # save flows for the ttwa
 flow <- l@data
 
 source("models/aggregate-model.R") # this model creates the variable 'slc'
-summary(mod_logsqr)
 
 l$slc <- flow$plc
-# l <- l[l$dist > 0, ]
+l <- l[l$dist > 0, ]
 l$base_olc <- l$Bicycle
 l$base_slc <- l$slc * l$All
 l$base_sic <- l$base_slc - l$base_olc
@@ -174,36 +161,26 @@ l$ebike_sic <- l$ebike_slc - l$base_olc
 for(i in 1:nrow(cents)){
 
   # all flows originating from centroid i
-  j <- which(l_all$Area.of.residence == cents$geo_code[i])
+  j <- which(l$Area.of.residence == cents$geo_code[i])
 
-  cents$base_olc[i] <- sum(l_all$Bicycle[j])
-  cents$base_slc[i] <- sum(l_all$base_slc[j])
-  cents$base_sic[i] <- sum(l_all$base_sic[j])
+  cents$base_olc[i] <- sum(l$Bicycle[j])
+  cents$base_slc[i] <- sum(l$base_slc[j])
+  cents$base_sic[i] <- sum(l$base_sic[j])
 
   # values for scenarios
-  cents$gendereq_slc[i] <- sum(l_all$gendereq_slc[j])
-  cents$gendereq_sic[i] <- sum(l_all$gendereq_sic[j])
+  cents$gendereq_slc[i] <- sum(l$gendereq_slc[j])
+  cents$gendereq_sic[i] <- sum(l$gendereq_sic[j])
 
-  cents$dutch_slc[i] <- sum(l_all$dutch_slc[j])
-  cents$dutch_sic[i] <- sum(l_all$dutch_sic[j])
+  cents$dutch_slc[i] <- sum(l$dutch_slc[j])
+  cents$dutch_sic[i] <- sum(l$dutch_sic[j])
 
-  cents$ebike_slc[i] <- sum(l_all$ebike_slc[j])
-  cents$ebike_sic[i] <- sum(l_all$ebike_sic[j])
+  cents$ebike_slc[i] <- sum(l$ebike_slc[j])
+  cents$ebike_sic[i] <- sum(l$ebike_sic[j])
 
-  cents$av_distance[i] <- sum(l_all$dist[j] * l_all$All[j])  / sum(l_all$All[j])
-  cents$cirquity[i] <- sum(l_all$cirquity[j] * l_all$All[j], na.rm = T )  / sum(l_all$All[j])
-  cents$distq_f[i] <- sum(l_all$distq_f[j] * l_all$All[j], na.rm = T )  / sum(l_all$All[j])
+  cents$av_distance[i] <- sum(l$dist[j] * l$All[j])  / sum(l$All[j])
+  cents$cirquity[i] <- sum(l$cirquity[j] * l$All[j], na.rm = T )  / sum(l$All[j])
+  cents$distq_f[i] <- sum(l$distq_f[j] * l$All[j], na.rm = T )  / sum(l$All[j])
 }
-
-names(l) # which line names can be added for non-directional flows?
-addids <- c(3:14, 23:31)
-# Aggregate the lines to avoid bi-directional flows
-l <- gOnewayid(l, attrib = addids)
-l$clc <- l$Bicycle / l$All
-l$slc <- l$base_slc / l$All
-
-# saveRDS(l, "pct-data/manchester/l-gOnewayid.Rds") # save for future use
-summary(l@data)
 
 # # # # # # # # # # # # # # # # #
 # Subset lines to plotting area #
@@ -219,7 +196,6 @@ plot(cents_ttwa)
 points(cents)
 lines(l, col = "red")
 l <- l[as.logical(gContains(zone, l, byid = T)),]
-
 idsel <- l$id
 lines(l, col = "green")
 
@@ -229,10 +205,6 @@ rq <- rq[rq$id %in% idsel, ]
 # if(la == "manchester") l <- l[l@data$id %in% paste(rf@data$Area.of.residence, rf@data$Area.of.workplace), ] # bodge
 lines(rq, col = "white")
 lines(rf, col = "blue")
-
-plot(l[44:45,])
-lines(rq[44:45,], col = "white")
-lines(rf[44:45,], col = "blue")
 
 flow_in_l <- names(flow) %in% names(l)
 l@data <- left_join(l@data, data.frame(id = flow$id, plc = flow[,!flow_in_l]), by = "id")
@@ -258,6 +230,8 @@ saveRDS(rq, paste0("pct-data/", la, "/rq.Rds"))
 # saveRDS(ttwa_zone, paste0("pct-data/", la, "/ttw_zone.Rds"))
 # saveRDS(cents_ttwa, paste0("pct-data/", la, "/c_ttwa.Rds"))
 # saveRDS(l_ttwa, paste0("pct-data/", la, "/l_ttwa.Rds"))
+# saveRDS(rf_ttwa, paste0("pct-data/", la, "/rf_ttwa.Rds"))
+# saveRDS(rq_ttwa, paste0("pct-data/", la, "/rq_ttwa.Rds"))
 
 end_time <- Sys.time()
 
