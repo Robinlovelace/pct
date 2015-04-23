@@ -3,8 +3,20 @@ title: Where to build bike paths? A generalisable flow-level model of cycling up
   for sustainable transport planning
 author: "Robin Lovelace"
 date: "April 12, 2015"
-output: pdf_document
+output:
+  word_document: default
+  pdf_document:
+    fig_caption: yes
+    number_sections: yes
+    toc: yes
+bibliography: ~/Documents/Transport.bib
 ---
+
+```{r, echo=FALSE, include=FALSE}
+pkgs <- c("stplanr", "knitr", "xtable", "sp")
+vapply(pkgs, require, character.only = T, FUN.VALUE = logical(1))
+```
+
 
 # Introduction
 
@@ -23,26 +35,101 @@ sources such as passively collected mobile telephone records.
 As a bare minimum, this means the (preferably population-weighted)
 centroids of each zone in the study area but could also include.
 
-The flow model described in this paper should work for
+The flow model described in this paper can work for
 anywhere that has access to these two data types. To link
 the two datasets together, *zone ids* are needed in both
 datasets. To ease the process of combining *flow* and *point* data,
 an R function called `gFlow2Lines()` was 
-created.[The source code of `gFlow2Lines()` has been made available
+created.^[The source code of `gFlow2Lines()` has been made available
 online, as part of an R package for sustainable transport planning,
 **stplanr**. See [github.com/Robinlovelace/stplanr/](https://github.com/Robinlovelace/stplanr/blob/master/R/gFlow.R).]
+The two input datasets and single output, a set of geographically defined
+lines with attributes for each flow in both directions
+(which we label `flowlines`) are illustrated in the tables (1 and 2)
+and figure (1) below.
 
-For building the flow model for England, the following open datasets were
-used. Links to the raw data are provided to enable reproducibility.
+```{r tflow, echo=FALSE, results='asis'}
+t1 <- xtable(head(flow[c(1:3, 12)]), caption = "Sample of the 'flow' input dataset, representing the number of people who commute from locations within and between administrative zones (MSOAs)", label = "tbl:flow")
+print(t1, type = "latex", comment = FALSE, caption.placement = "top")
+```
 
-- `wu03ew_v2.csv`, a 12 MB comma-delimited (human readable text) file
-of origin-destination pairs and flows between them for different modes (see Table xx).
-- `
+```{r tcents, echo=FALSE, results='asis'}
+t2 <- xtable(as.data.frame(cents[1:3,-c(3,4)]), caption = "Sample of the 'cents' input dataset, representing the geographical location of the population-weighted centroids of MSOA zones described in Table~\\ref{tbl:flow}", label = "tbl:cents")
+print(t1, type = "latex", comment = FALSE, caption.placement = "top")
+```
+
+```{r, echo=FALSE, fig.cap="Illustration of 'flow data' converted into geographical lines between origin and destination pairs. Width represents the total number of trips."}
+data("flowlines")
+plot(flowlines, lwd = flowlines$All / 10)
+```
 
 
-# An automated script to load the data
+Although the details may differ (e.g. the categories used to disaggregate flow
+by vehicle mode, trip type and socio-demographic group), the basic structure
+of flow data will be the same the world over.
+The model for England described in this paper used the following open datasets:
 
+- `wu03ew_v2.csv`, a 104 MB (12 MB compressed) comma-delimited
+(human readable text) file
+of flows between unique origin destination pairs, disaggregated by mode (see Table \ref{tbl:flow}). Note that this is a square table, usually loaded as a `data.frame`
+in R. Note the origin and destination codes in the top row of table \ref{tbl:flow}
+are the same, indicating *intra-zone* flow.
+- `cents.geojson`, representing populations-weighted centroids of local
+administrative zones (MSOAs). These are loaded in the model from
+a small (1.7 MB) human-readable text file stored in the open
+data format GeoJSON. This file was originally downloaded as a Shapefile
+under the UK's Open Government Licence.^[The license was accessed from http://www.nationalarchives.gov.uk/doc/open-government-licence/version/2/ in
+March 2015.]
 
+## Loading data for local government areas
+
+To ensure reproducibility and enable deployment of the model outside the
+original case study area of Manchester, a systematic data loading method was
+developed. The computational work to load the various datasets is contained
+in the folder `loading-data` in the project's central repository.^[See https://github.com/npct/pct/tree/master/loading-data]. 
+In the UK, local transport decisions (such as the location of new cycle paths)
+are often made at the Local Authoritority level [@Gaffron2003].
+ some work to debug the 
+data and ensure cross-compatibility of the results) 
+
+# Model scenarios
+
+Once the input data has been processesed and sub-setted to the area of interest,
+it is passed to a regression model that estimates what the rate of cycling
+*should* be between OD pairs (and hence within local areas via aggregration) based
+on a series of explanatory variables. In roughly descending order of importance
+(this will be context-dependent) and model implementation these are:
+
+- Distance between origins and destinations. This was calculated in the first
+instance as Euclidean (straight line) distance and subsequently refined to an
+estimate of route distance using the CycleStreets.net API.
+
+- Hilliness
+
+- Gender balance. The remit for including this variable is that the male:female
+ratio of cycle commuters is around 4:1 in the UK; thus including the
+proportion of short (5km and less) trips made by females can
+greatly improve model fit. Note that this variable was used at the areal
+unit level (per zone, as opposed to per origin-destination pair) due to
+data limitations. Critically, this variable can be used as the basis of 
+scenarios estimating the impact of a 'gender equality' scenario for cycling
+increase at the local level.
+
+- Age. 
+
+Note that *total number of trips* is not an explanatory variable. This is because
+the dependent variable is not the absolute number of cyclists, but a proportion
+of trips made that are expected to be made by bike.
+
+## Baseline
+
+## Gender equality
+
+## Go Dutch
+
+## Electric bicycles
+
+# Results
 
 # Discussion
 
@@ -58,4 +145,11 @@ beyond re-running the model for different cities in the same country.
 Potential extensions of the model include:
 
 - Deployment of the tool and underlying flow model in different
-countries.[This would depend on having ]
+countries.^[This would depend on having ]
+
+# Appendix: Using the tool
+
+This Appendix summarises the work from the perspective of practitioners
+by describing how the NPCT may be used to inform the decision-making process.
+
+# References
