@@ -3,7 +3,7 @@
 if(!require(devtools)) install.packages("devtools")
 if(!require(stplanr)) install_github("robinlovelace/stplanr")
 pkgs <- c(
-  "foreign",  # loads external data
+  "foreign", # loads external data
   "rgdal",   # for loading and saving geo* data
   "dplyr",   # for manipulating data rapidly
   "rgeos",   # GIS functionality

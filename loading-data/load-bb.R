@@ -1,55 +1,34 @@
 # # # # # # # # # # # #
 # Aim: load pct data  #
+# based b. box        #
 # # # # # # # # # # # #
 
+la <- "hackey" # name of the example
+dir.create(paste0("pct-data/", la))
 start_time <- Sys.time() # for timing the script
 source("set-up.R") # pull in packages needed
-
-# Set local authority and ttwa zone names
-la <- "leeds" # name of the local authority
-ttwa_name <- "leeds" # name of the travel to work area
-dir.create(paste0("pct-data/", la))
+bb <- as(extent(-0.11552, -0.03347, 51.51595, 51.55925), "SpatialPolygons")
+proj4string(bb) <- CRS("+init=epsg:4326")
+bb <- spTransform(bb, CRS("+init=epsg:27700"))
+bb <- gBuffer(bb, 5000, byid = T)
+plot(bb)
 
 # # # # # # # # # # # #
 # Load national data  #
 # # # # # # # # # # # #
 
-# Travel to work areas (ttwa) see load-uk.R
-fttw <- "pct-bigdata/national/ttwa_all.geojson"
-ttwa_all <- readOGR(dsn = fttw, layer = "OGRGeoJSON")
-ttwa_all <- spTransform(ttwa_all, CRSobj = CRS("+init=epsg:27700"))
-ttwa_zone <- ttwa_all[ grep(ttwa_name, ttwa_all$TTWA07NM, ignore.case = T),]
-
 # Extract la data
 ukmsoas <- shapefile("pct-bigdata/national/msoas.shp")
 
-# Load population-weighted centroids
 cents <- readOGR("pct-bigdata/national/cents.geojson", layer = "OGRGeoJSON")
 cents <- spTransform(cents, CRSobj = CRS("+init=epsg:27700"))
+cents <- crop(cents, bb)
 
-# Extract zones to plot
-zones <- ukmsoas[ grep(la, ukmsoas$geo_label, ignore.case = T), ]
-
-# Check n. zones. If too few, add more!
-# if(nrow(zones) < 50){
-#   zcentre <- SpatialPoints(coords = gCentroid(zones), proj4string = CRS(proj4string(zones)))
-#   zbuf <- gBuffer(zcentre, width = 10000)
-  zbuf <- gBuffer(zones, width = 0)
-  plot(zbuf)
-  plot(zones, add = T)
-  plot(cents, add = T)
-  proj4string(cents) <- proj4string(zones)
-  cents <- cents[zbuf, ]
-  zones <- ukmsoas[ukmsoas$geo_code %in% cents$geo_code,]
-  plot(zones, add = T)
-# }
+zones <- ukmsoas[ukmsoas$geo_code %in% cents$geo_code,]
+plot(zones)
+points(cents)
 
 nrow(zones) # updated n. zones
-
-# Check the area is correct
-plot(ttwa_zone, lwd = 4)
-points(cents)
-plot(zones, col = "red", add = T)
 
 # # # # # # #
 # Flow data #
@@ -93,7 +72,7 @@ l_b4_sub <- l # backup data
 # 1: subset by total amount of flow
 summary(l$All)
 
-l <- l[l$All > 20, ]
+l <- l[l$All > 50, ]
 nrow(l)
 
 # 2: subset by distance
@@ -276,7 +255,6 @@ saveRDS(l, paste0("pct-data/", la, "/l.Rds"))
 saveRDS(rf, paste0("pct-data/", la, "/rf.Rds"))
 saveRDS(rq, paste0("pct-data/", la, "/rq.Rds"))
 
-# # Save data for wider ttwz area
 # saveRDS(ttwa_zone, paste0("pct-data/", la, "/ttw_zone.Rds"))
 # saveRDS(cents_ttwa, paste0("pct-data/", la, "/c_ttwa.Rds"))
 # saveRDS(l_ttwa, paste0("pct-data/", la, "/l_ttwa.Rds"))
