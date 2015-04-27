@@ -64,7 +64,6 @@ will be an interactive on-line map, available to transport planners
 (and eventually the public) to assist with open decision-making processes.
 Specifically, the use of the recently developed R package **shiny** in tandem
 with the JavaScript library **leaflet** is a first in the field.
-The main part of the NPCT
 
 The extension of the NPCT project to Sao Paulo has substantial
 *policy implications*. In the long-run, demonstration of the methodology in
