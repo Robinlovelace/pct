@@ -5,10 +5,17 @@
 start_time <- Sys.time() # for timing the script
 source("set-up.R") # pull in packages needed
 
+# # # # # # # #
+# Parameters  #
+# # # # # # # #
+
 # Set local authority and ttwa zone names
-la <- "leeds" # name of the local authority
-ttwa_name <- "leeds" # name of the travel to work area
+la <- "Bolton" # name of the local authority
+ttwa_name <- "bolton" # name of the travel to work area
 dir.create(paste0("pct-data/", la))
+
+mflow <- 20 # minimum flow between od pairs, subsetting lines
+mdist <- 10 # maximum euclidean distance (km) for subsetting lines
 
 # # # # # # # # # # # #
 # Load national data  #
@@ -28,15 +35,16 @@ cents <- readOGR("pct-bigdata/national/cents.geojson", layer = "OGRGeoJSON")
 cents <- spTransform(cents, CRSobj = CRS("+init=epsg:27700"))
 
 # Extract zones to plot
-zones <- ukmsoas[ grep(la, ukmsoas$geo_label, ignore.case = T), ]
+zones <- ukmsoas[ grep(la, ukmsoas$geo_label), ]
+plot(zones)
 
 # Check n. zones. If too few, add more!
 # if(nrow(zones) < 50){
 #   zcentre <- SpatialPoints(coords = gCentroid(zones), proj4string = CRS(proj4string(zones)))
 #   zbuf <- gBuffer(zcentre, width = 10000)
-  zbuf <- gBuffer(zones, width = 0)
+  zbuf <- gBuffer(zones, width = 3000)
   plot(zbuf)
-  plot(zones, add = T)
+  plot(zones, col = "red", add = T)
   plot(cents, add = T)
   proj4string(cents) <- proj4string(zones)
   cents <- cents[zbuf, ]
@@ -47,21 +55,32 @@ zones <- ukmsoas[ grep(la, ukmsoas$geo_label, ignore.case = T), ]
 nrow(zones) # updated n. zones
 
 # Check the area is correct
-plot(ttwa_zone, lwd = 4)
-points(cents)
-plot(zones, col = "red", add = T)
+# plot(ttwa_zone, lwd = 4)
+# points(cents)
+# plot(zones, col = "red", add = T)
+# plot(zbuf, lwd = 6, add = T)
 
 # # # # # # #
 # Flow data #
 # # # # # # #
 
 flow <- readRDS("pct-bigdata/national/flow.Rds")
+
+# Subset by zones in the study area
 o <- flow$Area.of.residence %in% cents$geo_code
 d <- flow$Area.of.workplace %in% cents$geo_code
 flow <- flow[o & d, ] # subset flows with o and d in study area
+
+# Subset by total amount of flow
+summary(flow$All)
+nrow(flow)
+flow <- flow[flow$All > mflow, ]
+nrow(flow)
+
 flow$id <- paste(flow$Area.of.residence, flow$Area.of.workplace)
 
 l <- gFlow2line(flow = flow, zones = cents)
+
 
 # # # # # # # # # # # # # # # # # #
 # Calculate flow-level variables: #
@@ -77,6 +96,10 @@ zones <- spTransform(zones, CRS("+init=epsg:4326"))
 zone <- gBuffer(zones, width = 0) # create la zone outline
 cents <- spTransform(cents, CRS("+init=epsg:4326"))
 l <- spTransform(l, CRS("+init=epsg:4326"))
+
+# merge flow data with lines
+nrow(l)
+nrow(flow)
 l@data <- flow # copy flow data across
 # l <- readRDS(paste0("pct-bigdata/", la, "/l_all.Rds")) # regenerate l at this point
 
@@ -84,21 +107,13 @@ l@data <- flow # copy flow data across
 # Subset lines to plotting area #
 # # # # # # # # # # # # # # # # #
 
-# TODO: make these params
-
 # Subset data to reduce overheads for plotting
 nrow(l)
 l_b4_sub <- l # backup data
 
-# 1: subset by total amount of flow
-summary(l$All)
-
-l <- l[l$All > 20, ]
-nrow(l)
-
 # 2: subset by distance
 summary(l$dist)
-l <- l[l$dist < 5,]
+l <- l[l$dist < mdist,]
 nrow(l)
 
 # # # # # # # # # # # # # # #
@@ -136,7 +151,8 @@ if(length(grep("rf_ttwa.Rds|rq_ttwa.Rds", list.files(paste0("pct-data/", la)))) 
   rq$length <- rq$length / 1000
   saveRDS(rf, paste0("pct-data/", la, "/rf_ttwa.Rds")) # save the routes
   saveRDS(rq, paste0("pct-data/", la, "/rq_ttwa.Rds"))
-}
+
+  }
 
 rq$id <- rf$id <- l$id[l$dist > 0]
 
