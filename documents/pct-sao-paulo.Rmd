@@ -4,11 +4,12 @@ title: 'Estimating propensity to cycle in Sao Paulo: a flow-level model and inte
 author: "Robin Lovelace"
 date: "April 12, 2015"
 output:
-  word_document: default
   pdf_document:
     fig_caption: yes
     number_sections: yes
     toc: yes
+  word_document: default
+bibliography: ~/Documents/Transport.bib
 ---
 
 ```{r, echo=FALSE, include=FALSE}
@@ -46,10 +47,12 @@ along the transport network where new **bicycle paths** would
 have a greatest positive impact on citizens. The focus
 on infrastructure at the city level is timely because of the rapid
 roll-out of pro-cycling interventions worldwide, primarily in terms of bicycle
-paths and bicycle share schemes. In Latin America alone,
+paths and bicycle share schemes
+[@OBrien2013]. In Latin America alone,
 substantial capital injections over the last 5 years have boosted cycling in
 many cities, including
-Bogotá, Rio de Janeiro and Sao Paulo. However, the speed of new investment has
+Bogotá, Rio de Janeiro and Sao Paulo [@Mosquera2012; @Jones2013b].
+However, the speed of investment
 meant that there has been limited time to decide precisely where the new
 network should be place to maximise benefit-cost ratios. 
 
@@ -70,13 +73,17 @@ The extension of the NPCT project to Sao Paulo has substantial
 a developing world context, in addition to its utilisation in the West, should
 help with the deployment of interactive on-line transport planning tools
 for improved active travel provision worldwide. There are strong reasons for
-choosing Sao Paulo as the next place outside of Europe for the tools deployment.
-The current Mayor of Sao Paulo, Fernando Haddad, has a political commitment
-to increase active travel in the city. However, there has also been
+choosing Sao Paulo as the next place outside of Europe for the tool's deployment.
+There is political momentum behind the idea of
+increased active travel in Sao Paulo and evidence that
+walking and cycling is associated with health benefits from a sample of
+3 cities in Brazil [@Reis2013].
+
+However, there has also been
 opposition to the construction of bicycle paths.
-Part of this backlash has been the perception that the administration
-"has not planned the bike path network before its implementation".^[See
-[folha.uol.com.br/internacional/en/saopaulo/](http://www1.folha.uol.com.br/internacional/en/saopaulo/2015/03/1605612-sao-paulo-court-of-justice-orders-mayor-haddad-to-paralyse-bike-paths-under-construction.shtml)]
+Part of this backlash has been the perception
+that the process of planning the new paths has been rushed.^[See
+[folha.uol.com.br/internacional/en/saopaulo/](http://www1.folha.uol.com.br/internacional/en/saopaulo/2015/03/1605612-sao-paulo-court-of-justice-orders-mayor-haddad-to-paralyse-bike-paths-under-construction.shtml), for example.]
 
 There is clearly a need for local authorities to strategically plan and
 justify future pro-walking and cycling investments. The NPCT method is
@@ -141,6 +148,7 @@ to allocate 'fastest' and 'quietest' routes to the travel network are
 accurate. There is a great need for testing estimates of *route-allocated*
 propensity against real-world data.
 
+
 There is therefore a need for cycle path count data at,
 specific points on the network in the model, to improve test and subsequently
 improve the model's ability to allocate cycling potential to the transport
@@ -191,3 +199,5 @@ be deployed in other cities across Brazil, Latin America and potentially worldwi
 - Write-up of the academic research, including papers on the methodology,
 software and findings comparing how propensity to cycle varies geographically
 from one city to another.
+
+# References

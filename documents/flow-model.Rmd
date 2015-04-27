@@ -4,11 +4,11 @@ title: Where to build bike paths? A generalisable flow-level model of cycling up
 author: "Robin Lovelace"
 date: "April 12, 2015"
 output:
-  word_document: default
   pdf_document:
     fig_caption: yes
     number_sections: yes
     toc: yes
+  word_document: default
 bibliography: ~/Documents/Transport.bib
 ---
 
