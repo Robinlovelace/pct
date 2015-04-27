@@ -1,0 +1,194 @@
+---
+title: 'Estimating propensity to cycle in Sao Paulo: a flow-level model and interactive
+  tool'
+author: "Robin Lovelace"
+date: "April 12, 2015"
+output:
+  word_document: default
+  pdf_document:
+    fig_caption: yes
+    number_sections: yes
+    toc: yes
+---
+
+```{r, echo=FALSE, include=FALSE}
+pkgs <- c("stplanr", "knitr", "xtable", "stplanr", "sp", "grid", "png")
+vapply(pkgs, require, character.only = T, FUN.VALUE = logical(1))
+```
+
+
+# Introduction
+
+This proposal sets out an agenda to implement, refine and further
+develop work begun in the UK to create a National Propensity to Cycle Tool
+(NPCT). Funded by the English Department for Transport
+(DfT), the NPCT project aims to provide new evidence on the question of 
+*where* new sustainable transport interventions should be prioritised.
+The flagship output of the NPCT is an interactive on-line planning
+tool, which provides real-time feedback to transport planners for exploring
+current rates of cycling and where this could be boosted at the city level
+(Fig. 1). During user testing at the DfT's Offices on Friday 24^th^
+April, professional transport planners had the opportunity to test
+a live version of the tool and provide feedback. Overall the feedback was
+very encouraging, indicating that there is high demand for the tool in
+Local Authorities across the country. 
+
+```{r, echo=FALSE, fig.cap="Prototype of the NPCT used for user testing at the Department for Transport in April. Note the flows represent model-based estimates of where there is greatest potential for increased cycling, based on official data."}
+grid.raster(readPNG("~/Dropbox/DfT bid/figures/user-tested-version.png"))
+```
+
+This document sets out a research plan to deploy the NPCT methodology
+in Soa Paulo. The work can be justified on academic, methodological and
+policy grounds.
+
+Specifically, the research seeks to identify travel corridors and routes
+along the transport network where new **bicycle paths** would
+have a greatest positive impact on citizens. The focus
+on infrastructure at the city level is timely because of the rapid
+roll-out of pro-cycling interventions worldwide, primarily in terms of bicycle
+paths and bicycle share schemes. In Latin America alone,
+substantial capital injections over the last 5 years have boosted cycling in
+many cities, including
+Bogotá, Rio de Janeiro and Sao Paulo. However, the speed of new investment has
+meant that there has been limited time to decide precisely where the new
+network should be place to maximise benefit-cost ratios. 
+
+From an *academic perspective*, the project will fill a research gap in the transport
+evaluation and modelling literature.
+Active travel research has traditionally focussed on overall cost:benefit ratios.
+The impact of the location of new infrastructure on these ratios has
+been relatively under-studied, especially in the context of active travel.
+
+*Methodologically*, the project will also break new ground as its main output
+will be an interactive on-line map, available to transport planners
+(and eventually the public) to assist with open decision-making processes.
+Specifically, the use of the recently developed R package **shiny** in tandem
+with the JavaScript library **leaflet** is a first in the field.
+The main part of the NPCT
+
+The extension of the NPCT project to Sao Paulo has substantial
+*policy implications*. In the long-run, demonstration of the methodology in
+a developing world context, in addition to its utilisation in the West, should
+help with the deployment of interactive on-line transport planning tools
+for improved active travel provision worldwide. There are strong reasons for
+choosing Sao Paulo as the next place outside of Europe for the tools deployment.
+The current Mayor of Sao Paulo, Fernando Haddad, has a political commitment
+to increase active travel in the city. However, there has also been
+opposition to the construction of bicycle paths.
+Part of this backlash has been the perception that the administration
+"has not planned the bike path network before its implementation".^[See
+[folha.uol.com.br/internacional/en/saopaulo/](http://www1.folha.uol.com.br/internacional/en/saopaulo/2015/03/1605612-sao-paulo-court-of-justice-orders-mayor-haddad-to-paralyse-bike-paths-under-construction.shtml)]
+
+There is clearly a need for local authorities to strategically plan and
+justify future pro-walking and cycling investments. The NPCT method is
+ideally suited to meet this need.
+
+# Data
+
+The basic model requires only two sets of input data
+(although more refined versions benefit from many additional datasets):
+
+- *Flow data* estimating the rate of movement between different places,
+often recorded through Census travel to work questions. The data is
+generally provided as a 'flow matrix' (with rows representing origins
+and columns destinations) or a longer table of origin-destination pairs.
+This type of data is increasingly available from so-called 'Big Data'
+sources such as passively collected mobile telephone records.
+
+- *Geographical data* on the coordinates of trip origins and destinations.
+As a bare minimum, this means the (preferably population-weighted)
+centroids of each zone in the study area but could also include.
+
+The flow model described in this paper can work for
+anywhere that has access to these two data types. To link
+the two datasets together, *zone ids* are needed in both
+datasets. To ease the process of combining *flow* and *point* data,
+an R function called `gFlow2Lines()` was 
+created.^[The source code of `gFlow2Lines()` has been made available
+on-line, as part of an R package for sustainable transport planning,
+**stplanr**. See [github.com/Robinlovelace/stplanr/](https://github.com/Robinlovelace/stplanr/blob/master/R/gFlow.R).]
+The two input datasets and single output, a set of geographically defined
+lines with attributes for each flow in both directions
+(which we label `flowlines`) are illustrated in the tables (1 and 2)
+and Fig. 2 below.
+
+```{r tflow, echo=FALSE, results='asis'}
+t1 <- xtable(head(flow[c(1:3, 12)]), caption = "Sample of the 'flow' input dataset, representing the number of people who commute from locations within and between administrative zones (MSOAs)", label = "tbl:flow")
+print(t1, type = "latex", comment = FALSE, caption.placement = "top")
+```
+
+```{r tcents, echo=FALSE, results='asis'}
+t2 <- xtable(as.data.frame(cents[1:3,-c(3,4)]), caption = "Sample of the 'cents' input dataset, representing the geographical location of the population-weighted centroids of MSOA zones described in Table~\\ref{tbl:flow}", label = "tbl:cents")
+print(t1, type = "latex", comment = FALSE, caption.placement = "top")
+```
+
+```{r, echo=FALSE, fig.cap="Illustration of 'flow data' converted into geographical lines between origin and destination pairs. Width represents the total number of trips. Note the circles, which represent intra-zone flow.", fig.height=4}
+data("flowlines")
+plot(flowlines, lwd = flowlines$All / 10)
+```
+
+
+Although the details may differ (e.g. the categories used to disaggregate flow
+by vehicle mode, trip type and socio-demographic group), the basic structure
+of flow data will be the same the world over.
+
+## Count data
+
+An issue with the NPCT approach at present is lack of verification. We cannot
+be sure that the origin-destination combinations that the model identifies
+as having the highest potential rate of cycling really will respond best to
+pro-cycling interventions. Also, there is no way of know whether our attempts
+to allocate 'fastest' and 'quietest' routes to the travel network are
+accurate. There is a great need for testing estimates of *route-allocated*
+propensity against real-world data.
+
+There is therefore a need for cycle path count data at,
+specific points on the network in the model, to improve test and subsequently
+improve the model's ability to allocate cycling potential to the transport
+network. 
+
+# Method
+
+Underlying the estimates of increased cycling level is a General Linear regression
+Model (GLM), which uses a number of explanatory variables to estimate the expected
+proportion of trips that *should* be made between all OD pairs in the study area.
+At present distance, hilliness, age distribution and gender split of trips are
+the input variables. This model could be expanded
+to include the quality of
+transport network, the level of car-use and the accident rate.
+
+The flows are allocated to the travel network using the Application Programming
+Interface (API) of
+[CycleStreets.net](http://www.cyclestreets.net/api/), an on-line journey planner
+developed by cyclists for cyclists. A unique feature of this method is that it
+allows routes to be allocated for the *fastest*, *quietest* and *most balanced*
+journeys. This is useful for transport planners seeking to assess on which
+roads new cycle paths are most urgently needed (using the fastest route)
+and how much of a detour cyclists must currently take to find a 'quiet' path
+(assuming there is a quiet path available at all). 
+
+Although the CycleStreets.net API currently works only for the UK and parts of
+continental Europe, it is open software and based on OpenStreetMap data. A version
+could be created for Brazil. Alternatively, a third-part route planner such as
+OSRM^[See http://project-osrm.org/] or GraphHopper^[See https://graphhopper.com/]
+could be used.
+
+Most of the code underlying the NPCT project is open source, so the method is
+easily reproducible.^[See https://github.com/npct] In addition, an R package is
+under development to help automate some of the data processing and
+analysis that underlies the NPCT methodology.^[See https://github.com/Robinlovelace/stplanr]
+
+# Proposal
+
+Based on the above, it is proposed that Dr Robin Lovelace visits the
+MobiLab research centre in Sao Paulo for a 1 month placement. This will allow
+for the development of an NPCT method for Sao Paulo and potentially other
+cities in Latin America. The key outputs of this placement will be:
+
+- Development and deployment of an NPCT for Sao Paulo, ready for use by transport
+planners working to improve active travel in the city.
+- Development of software and methods that will enable the NPCT approach to
+be deployed in other cities across Brazil, Latin America and potentially worldwide.
+- Write-up of the academic research, including papers on the methodology,
+software and findings comparing how propensity to cycle varies geographically
+from one city to another.
