@@ -25,7 +25,14 @@ source("set-up.R")
 # source("loading-data/load-flow.R")
 
 # Estimate rate of cycling based on dd formula (see ?dd_logsqr)
-mod_logsqr <- glm(clc ~ dist + I(dist^0.5), data = flow, weights = All, family = "quasipoisson")
+
+# mod_logsqr <- glm(clc ~ dist + I(dist^0.5), data = flow, weights = All, family = "quasipoisson")
+
+# mod_logsqr <- glm(clc ~ dist + I(dist^0.5) + avslope, data = flow, weights = All, family = "quasipoisson") # with hilliness
+
+mod_logsqr <- glm(clc ~ dist_fast + I(dist_fast^0.5) + avslope, data = flow, weights = All, family = "quasipoisson") # with hilliness + fastest distance
+
+cor(flow$clc, mod_logsqr$fitted.values)
 
 flow$plc <- NA
 flow$plc[!is.na(l$All)] <- mod_logsqr$fitted.values # create plc from model
