@@ -82,7 +82,7 @@ for(i in 1:nrow(flow)){
   # Note: there are more sophisticated ways to allocate hilliness to lines
   # E.g. by dividing the line into sections for each zone it crosses or
   # identifying the hilliness of the network-allocated path
-  flow$avslope[i] <- (avslope_d + avslope_d) / 2 # calculate average slope
+  flow$avslope[i] <- (avslope_o + avslope_d) / 2 # calculate average slope
 }
 
 # Subset by total amount of flow
