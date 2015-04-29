@@ -10,11 +10,11 @@ source("set-up.R") # pull in packages needed
 # # # # # # # #
 
 # Set local authority and ttwa zone names
-la <- "Bristol" # name of the local authority
-ttwa_name <- "bristol" # name of the travel to work area
+la <- "Liverpool" # name of the local authority
+ttwa_name <- "liverpool" # name of the travel to work area
 dir.create(paste0("pct-data/", la))
 
-mflow <- 300 # minimum flow between od pairs, subsetting lines
+mflow <- 80 # minimum flow between od pairs, subsetting lines
 mdist <- 10 # maximum euclidean distance (km) for subsetting lines
 
 # # # # # # # # # # # #
