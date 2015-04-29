@@ -10,11 +10,11 @@ source("set-up.R") # pull in packages needed
 # # # # # # # #
 
 # Set local authority and ttwa zone names
-la <- "Sheffield" # name of the local authority
-ttwa_name <- "sheffield" # name of the travel to work area
+la <- "Bristol" # name of the local authority
+ttwa_name <- "bristol" # name of the travel to work area
 dir.create(paste0("pct-data/", la))
 
-mflow <- 20 # minimum flow between od pairs, subsetting lines
+mflow <- 300 # minimum flow between od pairs, subsetting lines
 mdist <- 10 # maximum euclidean distance (km) for subsetting lines
 
 # # # # # # # # # # # #
@@ -325,6 +325,9 @@ file.copy(files, dname)
 server <- readLines(paste0(dname, "server.R"))
 server <- gsub("manchester", la, server)
 writeLines(server, paste0(dname, "server.R"))
+
+# Save the script that loaded the lines into the data directory
+file.copy("loading-data/load.R", paste0("pct-data/", la, "/load.R"))
 
 end_time <- Sys.time()
 
