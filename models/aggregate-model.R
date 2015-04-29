@@ -24,15 +24,21 @@ source("set-up.R")
 # source("case-studies/leeds.R")
 # source("loading-data/load-flow.R")
 
+# # # # # #
+# Models  #
+# # # # # #
+
 # Estimate rate of cycling based on dd formula (see ?dd_logsqr)
 
 # mod_logsqr <- glm(clc ~ dist + I(dist^0.5), data = flow, weights = All, family = "quasipoisson")
 
 # mod_logsqr <- glm(clc ~ dist + I(dist^0.5) + avslope, data = flow, weights = All, family = "quasipoisson") # with hilliness
 
-mod_logsqr <- glm(clc ~ dist_fast + I(dist_fast^0.5) + avslope, data = flow, weights = All, family = "quasipoisson") # with hilliness + fastest distance
+# mod_logsqr <- glm(clc ~ dist_fast + I(dist_fast^0.5) + avslope, data = flow, weights = All, family = "quasipoisson") # with hilliness + fastest distance
 
-cor(flow$clc, mod_logsqr$fitted.values)
+# mod_logsqr <- glm(clc ~ dist_fast + I(dist_fast^0.5) + avslope + distq_f, data = flow, weights = All, family = "quasipoisson") # + quietness detour
+
+mod_logsqr <- glm(clc ~ dist_fast + I(dist_fast^0.5) + avslope + distq_f + cirquity, data = flow, weights = All, family = "quasipoisson") # + cirquity detour
 
 flow$plc <- NA
 flow$plc[!is.na(l$All)] <- mod_logsqr$fitted.values # create plc from model
@@ -40,6 +46,8 @@ flow$plc[!is.na(l$All)] <- mod_logsqr$fitted.values # create plc from model
 # # # # # # # #
 # Diagnostics #
 # # # # # # # #
+
+cor(flow$clc, mod_logsqr$fitted.values)
 
 # summary(mod_logsqr) # goodness of fit
 #

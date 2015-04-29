@@ -58,7 +58,7 @@ t2 <- xtable(as.data.frame(cents[1:3,-c(3,4)]), caption = "Sample of the 'cents'
 print(t1, type = "latex", comment = FALSE, caption.placement = "top")
 ```
 
-```{r, echo=FALSE, fig.cap="Illustration of 'flow data' converted into geographical lines between origin and destination pairs. Width represents the total number of trips."}
+```{r, echo=FALSE, fig.cap="Illustration of 'flow data' converted into geographical lines between origin and destination pairs. Width represents the total number of trips. Note the circles, which represent intra-zone flow."}
 data("flowlines")
 plot(flowlines, lwd = flowlines$All / 10)
 ```
