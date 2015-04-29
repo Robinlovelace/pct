@@ -310,6 +310,7 @@ saveRDS(cents, paste0("pct-data/", la, "/c.Rds"))
 saveRDS(l, paste0("pct-data/", la, "/l.Rds"))
 saveRDS(rf, paste0("pct-data/", la, "/rf.Rds"))
 saveRDS(rq, paste0("pct-data/", la, "/rq.Rds"))
+saveRDS(mod_logsqr, paste0("pct-data/", la, "/model.Rds"))
 
 # # Save data for wider ttwz area
 # saveRDS(ttwa_zone, paste0("pct-data/", la, "/ttw_zone.Rds"))
