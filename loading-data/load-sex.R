@@ -1,54 +1,54 @@
 # Load gender equality
 
 library(downloader)
-
-# # Attempt 1 fails due to not having cycling as a mode: abandon
-# download("https://www.nomisweb.co.uk/output/census/2011/lc7103ew_oa.zip", "bigdata/lc7103ew_oa.zip")
-# unzip("bigdata/lc7103ew_oa.zip", exdir = "bigdata/")
-# df <- read.csv("bigdata/LC7103EW_2011STATH_NAT_OA_REL_1.1.1_20140319-0942-19509/LC7103EWDATA.CSV")
-# head(df)
-
-# From LA data
-# download("https://www.nomisweb.co.uk/output/census/2011/dc7101ewla.zip", "bigdata/dc7101ewla.zip")
-# unzip("bigdata/dc7101ewla.zip", exdir = "bigdata/")
-# download("https://github.com/Robinlovelace/cycling-chd/raw/master/data/las.geojson", "pct-bigdata/national/las.geojson")
-# las <- geojson_read("pct-bigdata/national/las.geojson") # features
-# las <- readOGR("pct-bigdata/national/las.geojson", layer = "OGRGeoJSON")
-
 # download("http://census.edina.ac.uk/ukborders/easy_download/prebuilt/shape/England_lad_2011_gen_clipped.tar.gz", "bigdata/England_lad_2011_gen_clipped.tar.gz")
 # untar(tarfile = "bigdata/England_lad_2011_gen_clipped.tar.gz", exdir = "bigdata/")
-las <- shapefile("bigdata/England_lad_2011_gen_clipped.shp")
-head(las)
+gMapshape(dsn = "bigdata/England_lad_2011_gen_clipped.shp", 1)
+las <- shapefile("bigdata/England_lad_2011_gen_clippedmapshaped_1%.shp")
+plot(las)
 las@data <- rename(las@data, GeographyCode = CODE)
+
 las$GeographyCode <- as.character(las$GeographyCode)
 
 head(las)
 library(readr)
+
+# link geographical zones to data
+# https://wicid.ukdataservice.ac.uk/cider/info.php?geogtype=96&lablist=1
+linkla <- read_csv("/media/robin/data/data-to-add/link-files/la-old-new.csv")
+linkla <- rename(linkla, GeographyCode = Wname)
 df <- read_csv("bigdata/DC7101EWla_2011CMLADH_NAT_LAD_REL_1.1.1_20140228-1007-06168/DC7101EWla_2011CMLADH_NAT_LAD_REL_1.1.1/DC7101EWlaDATAA5.CSV")
 
-names(df)
-df <- df[!grepl("W", df$GeographyCode),]
+head(df[1:4])
+df <- left_join(df, linkla)
+head(df[250:256])
+
 
 summary(df$clc <- df$DC7101EWla0007 / df$DC7101EWla0001)
 summary(df$clc_m <- df$DC7101EWla0124 / df$DC7101EWla0007)
 
-df <- dplyr::select(df, GeographyCode, clc, clc_m)
-summary(las$GeographyCode)
-summary(df$GeographyCode)
-summary(las$GeographyCode %in% df$GeographyCode)
+df <- dplyr::select(df, CODE, GeographyCode, clc, clc_m)
+head(df)
+head(las$GeographyCode)
+head(df$CODE) # they are the same
 
-# They are not linking: need to change codes
-library(stringr)
-las$geocode <- str_sub(las$GeographyCode, start = -3, end = -1)
-df$geocode <- str_sub(df$GeographyCode, start = -3, end = -1)
-summary(las$geocode %in% df$geocode)
+summary(las$GeographyCode %in% df$CODE)
+las@data <- rename(las@data, CODE = GeographyCode)
 
-las@data <- inner_join(las@data, df, by = "geocode")
+las@data <- left_join(las@data, df, by = "CODE")
+
+# qtm(las, "clc") # test the map makes sense
+las@data[ which(las$clc > 0.1), ]
+las$log_pcycle <- log(las$clc)
+library(tmap)
+tmap::qtm(shp = las, "log_pcycle")
+
+# Analysis
 head(las)
 las$pcycle <- las$clc * 100
 las$pmale <- las@data$clc_m * 100
+las$log_pcycle <- log(las$pcycle)
 
-library(tmap)
 tm_shape(las) +
   tm_fill(c("pcycle", "pmale"))
 
@@ -58,11 +58,9 @@ qplot(las$pcycle, las$pmale) +
   ylab("% cycle commuters who are male") +
   xlab("% commutes made by bicycle")
 
-par(mfrow)
+las <- spTransform(las, CRS("+init=epsg:4326"))
+
+geojson_write(input = las, file = "pct-bigdata/national/las-pcycle.geojson")
+las_pcycle <- geojson_read("pct-bigdata/national/las-pcycle.geojson")
+
 tmap::qtm(shp = las, "pcycle")
-
-library(ggmap)
-ggsave("/tmp/pcycle.png")
-
-
-
