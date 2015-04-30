@@ -46,10 +46,23 @@ summary(las$geocode %in% df$geocode)
 las@data <- inner_join(las@data, df, by = "geocode")
 head(las)
 las$pcycle <- las$clc * 100
+las$pmale <- las@data$clc_m * 100
 
 library(tmap)
+tm_shape(las) +
+  tm_fill(c("pcycle", "pmale"))
+
+qplot(las$pcycle, las$pmale) +
+  geom_smooth() +
+  theme_bw() +
+  ylab("% cycle commuters who are male") +
+  xlab("% commutes made by bicycle")
+
+par(mfrow)
 tmap::qtm(shp = las, "pcycle")
 
 library(ggmap)
 ggsave("/tmp/pcycle.png")
+
+
 
