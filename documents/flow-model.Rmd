@@ -123,7 +123,128 @@ of trips made that are expected to be made by bike.
 
 ## Baseline
 
+
 ## Gender equality
+
+The Gender Equality scenario (*gendereq*) is a relatively simple modification of
+an existing scenario. For the purposes of explanation, we will
+use the *observed level of cycling* (*OLC*) as the basis of the
+scenario. However, it is possible to apply the *gendereq* method to
+any scenario, as described towards the end of this section.
+
+While the Baseline and Cycling Delivery Plan scenarios
+(*base* and *cpd* respectively) assume that the local
+gender split in cycling continues (typically, around 3/4 of cycle commuters
+are males, although this varies over geographic space), *gendereq*
+assumes that females become as likely to cycle as males are, for a given
+origin-destination pair (per *flow*).
+A prerequisite is a model-based estimate of the number of male
+and female cyclists between origin and destinations for the baseline scenario.
+This involves splitting the number of cyclists project by the model, 
+the *Scenario-based Level of Cycling*, into
+male ($SLC_m$) and female ($SLC_f$) components:
+
+$$
+SLC = SLC_m + SLC_f
+$$
+
+In the Gender Equality ($gendereq$) scenario
+$SLC_m$ remains constant. $SLC_f$ changes, however, such that the proportion
+of males cycling is equal to the proportion (or the probability)
+of females cycling per flow
+($pfemale(gendereq)_c = pmale_c$). 
+Note that this is not as simple as setting $SLC_f = SLC_f$: the gender split
+of the overall rate of flow must be taken into
+account.^[To
+illustrate this point, consider a flow in which there
+are no female travellers. $SLC_f$ cannot possibly be positive in this case
+because no females make the trip by any mode, so cannot switch to cycling.
+]
+Thus the *gendereq* scenario can be reduced to calculating $pcycle_m$:
+the proportion of males for any give flow who make the trip by bicycle.
+For each OD flow, we use the following variables to estimate the increase in female
+propensity resulting from women being as likely to cycle as men per OD pair:
+
+- The dominance of males amongst commuter cyclists per zone, expressed as an
+estimate of the proportion of cycling by males ($pcycle(z)_m$).
+- The male/female ratio of the travel-to-work flow in question, represented by
+the proportion of all trips between origin and destination by males ($ptrips_m$).
+
+Based on this data, the proportion of males per flow who cycle can be
+calculated as follow:
+
+$$
+pmale_{c} = \frac{olc_m}{tflow * ptrips_m} 
+$$
+
+where
+
+$$
+olc_m = olc * pcycle_m
+$$
+
+and 
+
+$$
+pcycle_m = \frac{ptrips_m * pcycle(z)_m}{1 - ptrips_m * pcycle(z)_m  }
+$$
+
+To illustrate how this scenario works, imagine a scenario in which
+5 from a total of 50 people commute by bicycle between zone i and j.
+60% of the commutes overall between i and j are made by males and 75% of commuter
+cycling in the zone is by males. This can be described in the language of R
+as follows:
+
+```{r}
+tflow <- 50
+olc <- 5 #  the currect rate of cycling between origin (o) and destination (d)
+ptrips_m <- 0.6 # the proportion of all trips o and d by males
+pcyclez_m <- 0.75 # the proportion of cycle trips in the zone/region made by males
+pcycle_m <- ptrips_m * pcyclez_m / (1 - ptrips_m * pcyclez_m)
+olc_m <- olc * pcycle_m
+pmale_c <- olc_m / (tflow * ptrips_m)
+```
+
+We can verify this by calculating the number of female cyclists per flow
+($olc_f$). In theory, $olc_m + olc_f$ should equal $olc$, set to 5 in this
+hypothetical example:
+
+```{r}
+pcycle_f <- 1 - pcycle_m
+olc_f <- olc * pcycle_f
+pfemale_c <- olc_f / (tflow * (1 - ptrips_m))
+print(pfemale_c)
+print(olc_m)
+print(olc_f)
+olc_m + olc_f
+```
+
+SLC in the *gendereq* scenario ($SLC(gendereq)$) can then
+be derived as follows:
+
+$$
+pfemale(gendereq)_c = pmale_c
+$$
+
+$$
+slc(gendereq)_f = pfemale_c tflow_f
+$$
+
+Based on the above example, $SLC(gendereq)$
+scenario would be 6.8 cyclists, up from 5 cyclists in OLC.
+This represents an increase of just over 1/3 in the rate of cycling, for a 
+reasonably typical example.
+
+```{r}
+pfemale_gendereq_c <- pmale_c
+slc_gendereq_f <- pfemale_gendereq_c * (tflow * (1 - ptrips_m))
+olc_m + slc_gendereq_f
+```
+
+Note that that $SLC(gendereq)$ can be calculated based on any scenario.
+In our model, we estimate $SLC(gendereq)$ based on the Cycling Delivery Plan
+($cdp$) scenario.
+
 
 ## Go Dutch
 
