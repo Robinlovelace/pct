@@ -1,0 +1,56 @@
+---
+title: "Options for the NPCT interactive tool, Phase II"
+output: pdf_document
+---
+
+# Additional features
+
+Two important additions to the tool from
+the perspective of transport planners were reported during user testing
+to be the addition of model
+output (to exactly what underlies the model) and the display of the overall
+propensity of cycling along 'desire lines' and allocated to the road network.
+
+It is proposed that the former is implemented as a new 'tab' at the top of the
+tool, between the 'Interactive map' and 'Help' tabs.
+
+It is proposed that the latter is implemented as an option within the
+main tab, that can be turned on or off. This could be called 'Advanced options'
+or 'Network analysis' or something else. When the 'Radio button' is clicked,
+a simplified version of the road network will be displayed with an indication
+of the segments of highest model-based level and model-based increase displayed.
+
+# Server options
+
+There are a range of options for serving the NPCT for Phase 2. We recommend, for
+flexibility, scalability and easy of deployment in other countries the use of
+Google Cloud. Set-up by our in-house developer, we budget £10,000 per year for
+server deployment and support for the duration of the project. This would
+greatly increase the stability and scalability of the web tool, allowing it to
+handle hundreds of requests simultaneously.
+
+# Nationwide deployment
+
+To deploy the tool nationwide, we recommend a single site (in addition to
+the current set-up which operates on a per-local authority basis). This would
+begin with a map of England. When the user zooms in beyond a certain point,
+the software will detect which administrative zone to use for the data.
+That will allow deployment to a single url.
+
+There is a debate about whether Local Authorities (Unitary and Country, CUAs),
+Combined Authorities (CAs) or Local Economic Partnerships (LEPs) are
+the appropriate level of analysis. It seems transport planners favour the latter
+the level that they work in, that most still operate at the LEP level although
+there is a trend towards work at LEP and CA levels.
+We could potentially deploy LA and LEP versions of the tool nationwide.
+We suggest deploying at the LA level first, reserving
+url-specific versions for the tool for specific CAs and LEPs that request the tool,
+e.g. Transport for Greater Manchester.
+
+# Inclusion of micro-level results 
+
+Results arising from the micro-level model will require a new 'tab'
+and a new map design to display the results. This could be an 'optional extra'
+or a default tab, depending on when there is high demand for micro-level
+results. This will partly depend on future user testing.
+
