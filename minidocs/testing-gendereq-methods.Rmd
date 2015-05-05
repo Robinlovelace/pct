@@ -1,0 +1,88 @@
+---
+title: "Testing methods for implementing the 'gender equality' scenario"
+author: "Robin Lovelace"
+date: "May 3, 2015"
+output: word_document
+---
+
+The proportion of males vs females cycling is known per zone.
+This can be defined as
+`pcyclez_m` for the proportion of male cyclists and `pcyclez_f` for the
+proportion of female cyclists. Because people are either male or female,
+`pcyclez_f = 1 - pcyclez_m`: `pcycle_m + pcycle_f` must equal 1.
+
+Imagine `pcyclez_m = 0.75`
+The *ratio* of male to female cyclists is `pcyclez_m / (1 - pcyclez_m)`: 
+3:1 in this case.
+
+Now consider that we know the total (`tflow = 50`) and cyclist flow
+(`olc = 5`) between two points. Further we know the *ratio* of males vs
+females making this trip is 1.5. This can be stated as `ptrips_m = 0.6`:
+the proportion of all trips made my males is 0.6 because `1.5 / (1.5 + 1) = 0.6 `.
+
+The question is: what would the total rate of cycling be if women were just as
+likely to cycle as men in this set-up?
+
+# Method 1: use ratios assuming `olc_m = olc * pcycle_m`
+
+One approach is to assume that the proportion of males cycling to work for the flow
+in question is the same as the proportion of cyclists who are male in the zone; 
+that `olc_m / olc = pcycle_m`. This would have the consequence that
+`olc_m = 3.75`, the outcome of `5 * 0.75`.
+
+It is fair to assume that the future (gender equal) male:female ratio amongst
+cyclists will be the same as the male:female ratio for the flow overall: `1.5:1`.
+To ensure that this is the case, the new ratio of female cyclists simply becomes
+the current rate divided by this ratio. Clearly `ptrips_f = 1 - ptrips_m`, 0.4,
+so 2.5 women are expect to cycle in the future scenario, compared with 1.25 currently.
+
+`slc_gendereq_f = olc_m * ptrips_f / (1 - ptrips_f)`
+
+From here we can calculate the new rate of cycling:
+`slc_gendereq = olc_m + slc_gendereq_f`, or 6.25.
+
+To verify this result, let's look at the percent of men and women who cycle.
+30 men and 20 women travel along the flow. `3.75 / 30` suggests that 12.5%
+of males cycle. `2.5 / 20` is also 12.5%, so the strategy works from the perspective
+of the proportion of men and women cycling becoming equal.
+
+# Method 2: assume  `olc_m` scales with the proportion of cyclists
+
+A problem with method 1 is that it assumes that `olc_m = olc * pcycle_m`
+regardless of `ptrips_m`. If `ptrips_m` is very low, this become unlikely.
+A solution could be to include `ptrips_m` in the estimate of `olc_m`, as
+a scaling factor (`pscale`)
+which is affected by the ratio of `ptrips_m` multiplied by the proportion
+of trips made by bicycle:
+
+```{r, eval=FALSE}
+pscale = 1 + (ptrips_m / (1 - ptrips_m) - 1) * (olc / tflow)
+```
+
+In this instance, because more males than females make the trip, the dominance
+of males in `olc` is set to increase, by a factor of 1.05, by 5%. This results
+in an estimate of `olc_m` of 3.9375. This suggests 13.1% of males in the
+flow cycle.
+
+```{r, eval=FALSE}
+olc_m = olc * pcyclez_m * pscale
+```
+
+From this point, the same logic as descibed in Method 1 applies:
+
+```{r, eval=FALSE}
+slc_gendereq_f = olc_m * ptrips_f / (1 - ptrips_f)
+```
+
+Thus `slc_gendereq` is estimated as 2.625, slightly higher than in Method 1.
+
+# Comparing the two methods
+
+Method 2 has the advantage of including `ptrips_m` in the estimate
+of the number of males cycling in the zone. However, it also has the 
+disadvantage of complexity. In the absence of a strong reason to prefer
+the more complex method the simpler Method 1 is favoured.
+
+Method 2, if verified, could be a useful refinement of Method 1, for use in
+future versions of this work.
+

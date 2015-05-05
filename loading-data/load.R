@@ -10,11 +10,12 @@ source("set-up.R") # pull in packages needed
 # # # # # # # #
 
 # Set local authority and ttwa zone names
-la <- "Liverpool" # name of the local authority
-ttwa_name <- "liverpool" # name of the travel to work area
-dir.create(paste0("pct-data/", la))
+la <- "Lancaster" # name of the local authority
+ttwa_name <- "lancaster" # name of the travel to work area
+dir.create(paste0("pct-data/", la)) # on a unix machine
 
-mflow <- 80 # minimum flow between od pairs, subsetting lines
+# Minimum flow between od pairs, subsetting lines. High means fewer lines.
+mflow <- 200
 mdist <- 10 # maximum euclidean distance (km) for subsetting lines
 
 # # # # # # # # # # # #
@@ -32,6 +33,25 @@ ukmsoas <- shapefile("pct-bigdata/national/msoas.shp")
 
 # Load population-weighted centroids
 cents <- readOGR("pct-bigdata/national/cents.geojson", layer = "OGRGeoJSON")
+zcentre <- SpatialPoints(coords = gCentroid(cents), proj4string = CRS(proj4string(zones)))
+
+# Load local authorities
+las <- readOGR(dsn = "pct-bigdata/national/las-pcycle.geojson", layer = "OGRGeoJSON")
+lasdat <- SpatialPointsDataFrame(coords = coordinates(las), data = las@data)
+x <- dplyr::select(las@data, clc, pcycle)
+lasdat@data <- x
+
+cuas <- readOGR(dsn = "pct-bigdata/national/cuas.geojson", layer = "OGRGeoJSON")
+proj4string(lasdat) <- proj4string(las)
+cuas2 <- aggregate(lasdat, cuas, mean, na.action = na.omit())
+qtm(cuas2,fill = "clc")
+
+proj4string(las) <- proj4string(zcentre)
+las_centre <- las[zcentre,]
+plot(las_centre)
+pmal <- las_centre@data$clc_m
+
+# Convert cents to OSGB CRS
 cents <- spTransform(cents, CRSobj = CRS("+init=epsg:27700"))
 
 # Extract zones to plot
@@ -41,9 +61,9 @@ plot(zones)
 plot(zone, lwd = 5, add = T)
 zone <- spTransform(zone, CRS("+init=epsg:4326"))
 
-# Check n. zones. If too few, add more!
+# Check n. zones. If too few, add more
 # if(nrow(zones) < 50){
-#   zcentre <- SpatialPoints(coords = gCentroid(zones), proj4string = CRS(proj4string(zones)))
+
 #   zbuf <- gBuffer(zcentre, width = 10000)
   zbuf <- gBuffer(zones, width = 3000)
   plot(zbuf)
@@ -73,6 +93,7 @@ flow <- readRDS("pct-bigdata/national/flow.Rds")
 o <- flow$Area.of.residence %in% cents$geo_code
 d <- flow$Area.of.workplace %in% cents$geo_code
 flow <- flow[o & d, ] # subset flows with o and d in study area
+nrow(flow)
 
 # Allocate zone characteristics to flows
 flow$avslope <- NA
@@ -94,6 +115,8 @@ nrow(flow)
 flow$id <- paste(flow$Area.of.residence, flow$Area.of.workplace)
 
 l <- gFlow2line(flow = flow, zones = cents)
+plot(cents)
+lines(l) # show the lines on the map
 
 
 # # # # # # # # # # # # # # # # # #
@@ -133,12 +156,13 @@ nrow(l)
 # # # # # # # # # # # # # # #
 # Allocate flows to network #
 # Warning: time-consuming!  #
+# Needs CycleStreet.net API #
 # # # # # # # # # # # # # # #
 
 # Create local version of lines; if there are too many in the TTWA, sample!
 l_local_sel <- l@data$Area.of.residence %in% zones$geo_code &
   l@data$Area.of.workplace %in% zones$geo_code
-if(nrow(l) > 2 * sum(l_local_sel) & nrow(l) > 5000){
+if(nrow(l) > 2 * sum(l_local_sel) & nrow(l) > 5000){ # sample if too many lines
   l_all <- l
   f <- list.files(paste0("pct-data/", la, "/"))
   if(sum(grepl("l_all", f)) == 0) saveRDS(l, paste0("pct-data/", la, "/l_all.Rds"))
@@ -153,6 +177,7 @@ if(nrow(l) > 2 * sum(l_local_sel) & nrow(l) > 5000){
   lines(l[2000:2600,], col = "blue") # ensure we have all the local ones
 }
 
+# Create route allocated lines
 if(length(grep("rf_ttwa.Rds|rq_ttwa.Rds", list.files(paste0("pct-data/", la)))) >= 2){
   rf <- readRDS(paste0("pct-data/", la, "/rf_ttwa.Rds")) # if you've loaded them
   rq <- readRDS(paste0("pct-data/", la, "/rq_ttwa.Rds"))
@@ -180,7 +205,7 @@ l$distq_f <- rq$length / rf$length
 # Check the data makes sense
 plot(cents)
 plot(zones, add = T)
-a = 111
+a = 11
 plot(l[l$dist > 0,][a,])
 lines(rf[a,], col = "red")
 lines(rq[a,], col = "green")
@@ -281,9 +306,10 @@ points(cents)
 lines(l, col = "red")
 lines(rq, col = "white")
 lines(rf, col = "blue")
-plot(l[44:45,])
-lines(rq[44:45,], col = "green")
-lines(rf[44:45,], col = "blue")
+toplot <- sample(nrow(l), size = 10)
+plot(l[toplot,])
+lines(rq[toplot,], col = "green")
+lines(rf[toplot,], col = "blue")
 
 flow_in_l <- names(flow) %in% names(l)
 l@data <- left_join(l@data, data.frame(id = flow$id, plc = flow[,!flow_in_l]), by = "id")

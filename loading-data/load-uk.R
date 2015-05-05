@@ -6,7 +6,28 @@
 
 library("raster")
 
-# # Heavily simplify the shape
+# # # # # # # # # # # # #
+# Local authority data  #
+# # # # # # # # # # # # #
+
+las <- readOGR(dsn = "pct-bigdata/national/las-pcycle.geojson", layer = "OGRGeoJSON")
+nrow(las) # 326 las (including districts) in England
+
+download.file(url = "https://geoportal.statistics.gov.uk/Docs/Boundaries/County_and_unitary_authorities_(E+W)_2012_Boundaries_(Full_Extent).zip", destfile = "cuas.zip", method = "wget")
+unzip("cuas.zip")
+cuas <- shapefile("CTYUA_DEC_2012_EW_BFE.shp")
+object.size(cuas) / 1000000 # 22 mb: too big!
+gMapshape("CTYUA_DEC_2012_EW_BFE.shp", percent = 3)
+cuas <- shapefile("CTYUA_DEC_2012_EW_BFEmapshaped_3%.shp")
+object.size(cuas) / 1000000 # 1 mb now!
+plot(cuas)
+nrow(cuas) # only 174 counties and unitary authorities
+torem <- list.files(pattern = "ua|UA")
+file.remove(torem)
+bbox(cuas)
+cuas <- spTransform(cuas, CRSobj = CRS("+init=epsg:4326"))
+geojson_write(input = cuas, file = "pct-bigdata/national/cuas.geojson")
+
 
 # # # # # # # # #
 # lsoa dataset  #
