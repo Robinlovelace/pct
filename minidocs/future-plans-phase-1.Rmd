@@ -14,11 +14,14 @@ propensity of cycling along 'desire lines' and allocated to the road network.
 It is proposed that the former is implemented as a new 'tab' at the top of the
 tool, between the 'Interactive map' and 'Help' tabs.
 
-It is proposed that the latter is implemented as an option within the
-main tab, that can be turned on or off. This could be called 'Advanced options'
-or 'Network analysis' or something else. When the 'Radio button' is clicked,
-a simplified version of the road network will be displayed with an indication
-of the segments of highest model-based level and model-based increase displayed.
+Currently we display 'point to point flows' with no option to view the whole
+route network. The 'route network' would show a simplified version of the whole
+route network with an indication of the segments of highest SLC and SIC displayed.
+We could add the option to change from 'point to point' to 'route network' in
+'Advanced Options' or have the network as default (and the option to change to
+'point to point'). We have a preference for adding the route network to the
+map with an 'advance settings' or 'network analysis' button in the map tab,
+rather than in a new tab for the sake of simplicity.
 
 # Server options
 
