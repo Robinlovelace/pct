@@ -13,7 +13,7 @@ bibliography: ~/Documents/Transport.bib
 ---
 
 ```{r, echo=FALSE, include=FALSE}
-pkgs <- c("stplanr", "knitr", "xtable", "sp")
+pkgs <- c("stplanr", "knitr", "xtable", "sp", "grid", "png")
 vapply(pkgs, require, character.only = T, FUN.VALUE = logical(1))
 ```
 
@@ -25,23 +25,28 @@ vapply(pkgs, require, character.only = T, FUN.VALUE = logical(1))
 The basic model requires only two sets of input data
 (although more refined versions benefit from many additional datasets):
 
-- *Flow data* estimating the rate of movement between different places,
-often recorded through Census travel to work questions. The data is
+- *Flow data* estimating the rate of movement between different places.
+This data is available from various sources including
+flows derived from mobile telephone service providers
+[@smoreda2013spatiotemporal], Census data on commuting [@Rae2009],
+public transport data [@Kitchin2013], as well as the traditional household
+travel survey [@TransportforNSW2014]. Some combination of these sources
+will provide the data for all trip purposes and for most settings. Flow data is
 generally provided as a 'flow matrix' (with rows representing origins
 and columns destinations) or a longer table of origin-destination pairs.
-This type of data is increasingly available from so-called 'Big Data'
-sources such as passively collected mobile telephone records.
+
 - *Geographical data* on the coordinates of trip origins and destinations.
-As a bare minimum, this means the (preferably population-weighted)
-centroids of each zone in the study area but could also include.
+As a bare minimum, this means the (preferably population and/or
+work location-weighted) centroids of each zone in the study area, but could
+also include mobile telephone masts or nodes on the public transport network.
 
 The flow model described in this paper can work for
-anywhere that has access to these two data types. To link
+anywhere that has access to such data. To link
 the two datasets together, *zone ids* are needed in both
 datasets. To ease the process of combining *flow* and *point* data,
 an R function called `gFlow2Lines()` was 
 created.^[The source code of `gFlow2Lines()` has been made available
-online, as part of an R package for sustainable transport planning,
+on-line, as part of an R package for sustainable transport planning,
 **stplanr**. See [github.com/Robinlovelace/stplanr/](https://github.com/Robinlovelace/stplanr/blob/master/R/gFlow.R).]
 The two input datasets and single output, a set of geographically defined
 lines with attributes for each flow in both directions
@@ -63,11 +68,15 @@ data("flowlines")
 plot(flowlines, lwd = flowlines$All / 10)
 ```
 
-
-Although the details may differ (e.g. the categories used to disaggregate flow
-by vehicle mode, trip type and socio-demographic group), the basic structure
-of flow data will be the same the world over.
-The model for England described in this paper used the following open datasets:
+Although the details may
+differ,^[For example,
+categories used to disaggregate flow
+by vehicle mode, trip type and socio-demographic group will vary depending on
+the data source. Flow data from some sources (e.g. anonymised mobile phone records)
+will not have any categories and simply report
+total flow.] the basic structure
+of flow data is likely to be applicable in many settings.
+The model for England described in this paper uses the following open datasets:
 
 - `wu03ew_v2.csv`, a 104 MB (12 MB compressed) comma-delimited
 (human readable text) file
@@ -88,16 +97,21 @@ original case study area of Manchester, a systematic data loading method was
 developed. The computational work to load the various datasets is contained
 in the folder `loading-data` in the project's central repository.^[See https://github.com/npct/pct/tree/master/loading-data]. 
 In the UK, local transport decisions (such as the location of new cycle paths)
-are often made at the Local Authoritority level [@Gaffron2003].
+are often made at the Local Authority level [@Gaffron2003].
  some work to debug the 
 data and ensure cross-compatibility of the results) 
 
 # Model scenarios
 
-Once the input data has been processesed and sub-setted to the area of interest,
-it is passed to a regression model that estimates what the rate of cycling
-*should* be between OD pairs (and hence within local areas via aggregration) based
-on a series of explanatory variables. In roughly descending order of importance
+Once the input data has been processed and sub-setted to the area of interest,
+it is passed to a regression model. The dependent variable is the 'observed'
+level of cycling from the flow data (*olc*); the explanatory variables include
+the distance between origin and destination and a series of other flow and
+zone-level attributes. By aggregating the origins of all flows,
+the model also estimates the rate
+of cycling among inhabitants. (Aggregating by destination would also allow
+an estimate of the number incoming cyclists per work destination.)
+In roughly descending order of importance
 (this will be context-dependent) and model implementation these are:
 
 - Distance between origins and destinations. This was calculated in the first
@@ -107,7 +121,11 @@ estimate of route distance using the CycleStreets.net API.
 - Hilliness
 
 - Gender balance. The remit for including this variable is that the male:female
-ratio of cycle commuters is around 4:1 in the UK; thus including the
+ratio of cycle commuters is around 3:1 in the 
+UK;^[The mean proportion of males cycling to work from the 2011 Census
+across Local Authorities
+in England is 0.77. This corresponds to a ratio of 3.3:1.]
+thus including the
 proportion of short (5km and less) trips made by females can
 greatly improve model fit. Note that this variable was used at the areal
 unit level (per zone, as opposed to per origin-destination pair) due to
@@ -148,103 +166,123 @@ $$
 SLC = SLC_m + SLC_f
 $$
 
-In the Gender Equality ($gendereq$) scenario
-$SLC_m$ remains constant. $SLC_f$ changes, however, such that the proportion
-of males cycling is equal to the proportion (or the probability)
-of females cycling per flow
+More males cycle than females in every Local Authority in the country
+(Figure x). For this reason, the *gendereq* scenario
+is based on the assumption that the rate of cycling amongst
+females increases to match the rate of cycling amongst males, rather than vice
+versa. Under *gendereq* $SLC_m$ remains constant. The challenge is to
+find the value of $SLC_f$ 
+such that the proportion 
+of females cycling becomes equal to the proportion of males cycling
 ($pfemale(gendereq)_c = pmale_c$). 
-Note that this is not as simple as setting $SLC_f = SLC_f$: the gender split
+Note that this is not as simple as $SLC_f = SLC_m$: the gender split
 of the overall rate of flow must be taken into
 account.^[To
 illustrate this point, consider a flow in which there
-are no female travellers. $SLC_f$ cannot possibly be positive in this case
-because no females make the trip by any mode, so cannot switch to cycling.
-]
-Thus the *gendereq* scenario can be reduced to calculating $pcycle_m$:
-the proportion of males for any give flow who make the trip by bicycle.
-For each OD flow, we use the following variables to estimate the increase in female
-propensity resulting from women being as likely to cycle as men per OD pair:
+are are many more female travellers than males.
+$SLC_f$ may rise above $SLC_m$ in this case.
+] It is the *proportion* of males  and females
+per flow who cycle that becomes equal ($pcycle(gendereq)_f = pcycle_m$).
+From this the updated value of $SLC_f$ can be calculated from the total
+number of females travelling along the flow line ($tflow_f$):
 
+$$
+SLC(gendereq)_f = pcycle_m * tflow_f
+$$
+
+```{r, echo=FALSE, fig.cap="Cycling and the gender balance of cycling in England. The choropleth maps illustrate the spatial distribution of the two variables. The scatter plot illustrates the relationship between the two variables cycle commuting (x axis) against the proportion of commuter cyclists who are male (y axis) for all 326 Local Authorities (including Districts) in the UK."}
+grid.raster(readPNG("/home/robin/Dropbox/DfT bid/figures/las-gender-pcycle.png"))
+```
+
+Key to the *gendereq* scenario is therefore estimating $pcycle_m$:
+the proportion of males for any given flow who cycle.
+For each flow, we use the following variables to calculate change in
+the number of female cyclists:
+
+- The total number of flows by all modes ($tflow$) and by bicycle ($olc$) per flow.
 - The dominance of males amongst commuter cyclists per zone, expressed as an
 estimate of the proportion of cycling by males ($pcycle(z)_m$).
 - The male/female ratio of the travel-to-work flow in question, represented by
 the proportion of all trips between origin and destination by males ($ptrips_m$).
 
-Based on this data, the proportion of males per flow who cycle can be
-calculated as follow:
+Note that because cyclists are male or female, $ptrips_f = 1 - ptrips_m$ 
+Based on this data, the proportion of males
+(and females in *gendereq*) per flow who cycle is assumed to
+be equal to the proportion who cycle at the zone level
 
 $$
-pmale_{c} = \frac{olc_m}{tflow * ptrips_m} 
+pcycle_{m} = pcycle(gendereq)_f = pcycle(z)_m
 $$
 
-where
+From this the estimate of the updated number of female cyclists is simple
+to calculate:
 
 $$
-olc_m = olc * pcycle_m
+SLC(gendereq)_f = pcycle(z)_m * tflow * ptrips_f
 $$
 
-and 
+To illustrate how this method works in practice, imagine a flow in which
+5 from a total of 50 people commute by bicycle ($tflow = 50; olc = 5$).
+60% of the flow is constituted made by males
+($ptrips_m = 0.6$) and 75% of commuter
+cycling in the zone is by males ($pcycle(z)_m = 0.75$).
+The first stage is to break $tflow$ down into male and female constituents,
+of 30 and 20, respectively:
 
 $$
-pcycle_m = \frac{ptrips_m * pcycle(z)_m}{1 - ptrips_m * pcycle(z)_m  }
+tflow_m = tflow * ptrips_m; tflow_f = tflow * (1 - ptrips_m)
 $$
 
-To illustrate how this scenario works, imagine a scenario in which
-5 from a total of 50 people commute by bicycle between zone i and j.
-60% of the commutes overall between i and j are made by males and 75% of commuter
-cycling in the zone is by males. This can be described in the language of R
-as follows:
+Next we estimate the number of male cyclists to be 3.75 (5 * 0.75):
 
-```{r}
+$$
+olc_m = olc * pcycle(z)_m
+$$
+
+From the two previous equations we calculate that the proportion of
+males who cycle is 0.125 (3.75 / 30):
+
+$$
+pmale_c = olc_m / tflow_m
+$$
+
+The new rate of female cycling can then be calculated by setting the proportion
+of females who cycle equal to $pmale_c$, as 2.5 (20 * 0.125):
+
+$$
+slc(gendereq)_f = tflow_f * pmale_c
+$$
+
+Finally the new overall rate of cycling is calculated as 6.25 (3.75 + 2.5):
+
+$$
+slc(gendereq) = olc_m + slc(gendereq)_f
+$$
+
+```{r, echo=FALSE}
 tflow <- 50
 olc <- 5 #  the currect rate of cycling between origin (o) and destination (d)
 ptrips_m <- 0.6 # the proportion of all trips o and d by males
 pcyclez_m <- 0.75 # the proportion of cycle trips in the zone/region made by males
-pcycle_m <- ptrips_m * pcyclez_m / (1 - ptrips_m * pcyclez_m)
-olc_m <- olc * pcycle_m
-pmale_c <- olc_m / (tflow * ptrips_m)
-```
-
-We can verify this by calculating the number of female cyclists per flow
-($olc_f$). In theory, $olc_m + olc_f$ should equal $olc$, set to 5 in this
-hypothetical example:
-
-```{r}
-pcycle_f <- 1 - pcycle_m
-olc_f <- olc * pcycle_f
-pfemale_c <- olc_f / (tflow * (1 - ptrips_m))
-print(pfemale_c)
-print(olc_m)
+tflow_m <- tflow * ptrips_m 
+tflow_f <- tflow * (1 - ptrips_m) 
+olc_m <- olc * pcyclez_m
+olc_f <- olc - olc_m
+pmale_c <- olc_m / tflow_m 
+slc_gendereq_f <- tflow_f * pmale_c
 print(olc_f)
-olc_m + olc_f
+print(slc_gendereq_f)
 ```
 
-SLC in the *gendereq* scenario ($SLC(gendereq)$) can then
-be derived as follows:
-
-$$
-pfemale(gendereq)_c = pmale_c
-$$
-
-$$
-slc(gendereq)_f = pfemale_c tflow_f
-$$
-
-Based on the above example, $SLC(gendereq)$
-scenario would be 6.8 cyclists, up from 5 cyclists in OLC.
-This represents an increase of just over 1/3 in the rate of cycling, for a 
-reasonably typical example.
-
-```{r}
-pfemale_gendereq_c <- pmale_c
-slc_gendereq_f <- pfemale_gendereq_c * (tflow * (1 - ptrips_m))
-olc_m + slc_gendereq_f
-```
-
+The increase to 6.25 cyclists from 5 in the *gendereq* scenario represents
+an increase
+of 25% from the base scenario. To verify that the numbers make sense,
+check if `olc_m / tflow_m` is equal to `slc_gendereq_f / tflow_f`.
+The answer is 12.5% in both cases. Gender equality in cycling has been reached.
 Note that that $SLC(gendereq)$ can be calculated based on any scenario.
-In our model, we estimate $SLC(gendereq)$ based on the Cycling Delivery Plan
+In our model, instead of using the conservative *baseline* scenario,
+we estimate $SLC(gendereq)$ based on the Cycling Delivery Plan
 ($cdp$) scenario.
-
 
 ## Go Dutch
 
