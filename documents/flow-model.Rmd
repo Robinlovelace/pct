@@ -4,15 +4,16 @@ title: Where to build bike paths? A generalisable flow-level model of cycling up
 author: "Robin Lovelace"
 date: "April 12, 2015"
 output:
+  word_document: default
   pdf_document:
     fig_caption: yes
     number_sections: yes
     toc: yes
-  word_document: default
 bibliography: ~/Documents/Transport.bib
 ---
 
 ```{r, echo=FALSE, include=FALSE}
+source("../set-up.R")
 pkgs <- c("stplanr", "knitr", "xtable", "sp", "grid", "png")
 vapply(pkgs, require, character.only = T, FUN.VALUE = logical(1))
 ```
@@ -140,6 +141,72 @@ the dependent variable is not the absolute number of cyclists, but a proportion
 of trips made that are expected to be made by bike.
 
 ## Baseline
+
+## Cycling Delivery Plan
+
+The Cycling Delivery Plan scenario (*cdp*) is based on the UK Government's 
+target to double cycling, from 0.8 billion stages currently to
+1.6 billion stages by 2025. Assuming increases in population are roughly
+offset by a continuation in the trend towards lower trip
+rates,^[Increases
+in population would mean the *proportion* of trips by bicycle
+would not need to double for the *absolute number* of trips to double.
+However, the rate of trips overall (measured in the number of trips
+per person per year by any mode for any purpose) is on a long-term
+downward trajectory which more than offsets the impact of population
+growth. See
+Crawford and Lovelace (2015) for a detailed discussion of this issue.
+The authors could not find evidence about how this trend was
+accounted for by the DfT in scenarios from the National Transport
+Moel (NTM) or elsewhere.]
+the *cdp* doubles the value of the distance decay curve
+predicted in *base* for all distances.
+
+Note that this does not necesarily
+result in a doubling in cycling. If the local rate of cycling in the
+study area is unexpectedly high given the distance decay curve in the
+model, the rate of cycling will less than double.
+The *cdp* scenario also relates to the *distribution* of trips
+in the study area compared with the data used for the model.
+If the distribution of
+all trips in the regression model
+is flatter than the distribution of cycling trips in the study area,
+a doubling in
+propensity will not lead to a doubling in cycling. If, on the other hand,
+the distribution of cycling trips in the study area mirrors high
+volume flows for which cycling is currently rare,  a doubling in propensity
+will more-than-double the rate of cycling. If the study flows are the same
+as the data used to train the model, *cpd* always results in a doubling in
+cycling. These concepts are illustrated in
+Fig. x below.
+
+```{r, echo=FALSE, warning=FALSE, fig.cap="The rate of cycling under the cpd scenario for a case study Local Authority (Coventry). OLC is represented in blue, SLC(cdp) is represented by the white lines."}
+l <- readRDS("../pct-data/coventry/l.Rds")
+flow <- l@data
+mod_logsqr <- glm(clc ~ dist + I(dist^0.5), data = flow, weights = All, family = "quasipoisson")
+flow$fitted <- mod_logsqr$fitted.values * flow$All
+coefs <- coef(mod_logsqr)
+ff <- stplanr::dd_logsqrt(x = flow$dist, a = exp(coefs[1]), b1 = coefs[2], b2 = coefs[3]) 
+# plot(ff, mod_logsqr$fitted.values) # perfect fit - function works
+flow$cdp <- ff * 2 * flow$All
+
+l2 <- rep(l$dist, l$All)
+l3 <- rep(l$dist, l$Bicycle)
+l4 <- rep(flow$dist, flow$cdp)
+# hist(l2)
+p2 <- ggplot() + geom_histogram(aes(l2), binwidth = 0.5) +
+  geom_histogram(aes(l3), binwidth = 0.5, fill = "blue") +
+  geom_histogram(aes(l4), binwidth = 0.5, col = "white", fill = NA, linewidth = 5) +
+  scale_y_log10() + xlab("Distance (km)")
+
+p1 <- ggplot() + geom_histogram(aes(l2), binwidth = 0.5) +
+  geom_histogram(aes(l3), binwidth = 0.5, fill = "blue") +
+  geom_histogram(aes(l4), binwidth = 0.5, col = "white", fill = NA, linewidth = 5) + coord_cartesian(ylim = c(0, 2000)) + xlab("Distance (km)")
+
+library(gridExtra)
+grid.arrange(p1, p2)
+```
+
 
 
 ## Gender equality
@@ -270,8 +337,8 @@ olc_m <- olc * pcyclez_m
 olc_f <- olc - olc_m
 pmale_c <- olc_m / tflow_m 
 slc_gendereq_f <- tflow_f * pmale_c
-print(olc_f)
-print(slc_gendereq_f)
+# print(olc_f)
+# print(slc_gendereq_f)
 ```
 
 The increase to 6.25 cyclists from 5 in the *gendereq* scenario represents
