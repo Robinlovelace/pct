@@ -9,13 +9,23 @@ The project is funded by the Department for Transport (DfT) so the initial
 case studies will be taken from the UK. However, it is expected that the 
 methods will be of use elsewhere. For that reason, attempts have been made
 to make the examples generalisable. All examples presented here
-are reproducible using code in this [repository](https://github.com/Robinlovelace/pct)
-and data stored in the [pct-data repository](https://github.com/Robinlovelace/pct-data/).
+are reproducible using code in this [repository](https://github.com/npct/pct)
+and data stored in the [pct-data repository](https://github.com/npct/pct-data/).
 
-So, if you run the following lines of code on your computer from within
-[this folder](https://github.com/Robinlovelace/pct/archive/master.zip), you should get the same result. Reproducible research!
+# Further information
+
+More information on the tool can be found in this press release:
+http://www.cedar.iph.cam.ac.uk/
+
+There is also a document that summarises the tool in slightly more detail,
+available [here](https://www.dropbox.com/s/8gn715qg99ymdl2/National%20Propensity%20to%20Cycle%20Tool%20info%20sheet.pdf?dl=0).
+
+
 
 ## A simple example
+
+If you run the following lines of code on your computer from within
+[this folder](https://github.com/Robinlovelace/pct/archive/master.zip), you should get the same result. This demonstrates the results are reproducible.
 
 
 ```r
