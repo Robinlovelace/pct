@@ -4,6 +4,7 @@ if(!require(devtools)) install.packages("devtools")
 if(!require(stplanr)) install_github("robinlovelace/stplanr")
 if(!require(geojsonio)) install_github("ropensci/geojsonio")
 pkgs <- c(
+  "ggmap",
   "foreign", # loads external data
   "rgdal",   # for loading and saving geo* data
   "dplyr",   # for manipulating data rapidly

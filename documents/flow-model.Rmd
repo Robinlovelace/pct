@@ -1,14 +1,13 @@
 ---
-title: Where to build bike paths? A generalisable flow-level model of cycling uptake
-  for sustainable transport planning
+title: Where to build bike paths? A generalisable flow-level model of cycling uptake for sustainable transport planning
 author: "Robin Lovelace"
 date: "April 12, 2015"
 output:
-  word_document: default
   pdf_document:
     fig_caption: yes
     number_sections: yes
     toc: yes
+  word_document: default
 bibliography: ~/Documents/Transport.bib
 ---
 
@@ -20,6 +19,36 @@ vapply(pkgs, require, character.only = T, FUN.VALUE = logical(1))
 
 
 # Introduction
+
+The National Propensity to Cycle Tool (NPCT) is an interactive policy support
+application designed to inform the decision-making process around where to
+invest in new sustainable transport infrastructure. Funded by the Department
+for Transport (DfT), the primary purpose of the NPCT
+is to be deployed nationwide and used by
+transport planners to help allocate new investment in cycling. The NPCT is
+based on open source software and requires input data that is widely available
+in many countries around the world. It therefore has great potential to assist
+with the design of transport policy worldwide, as part of a global transition
+away from fossil fuels that is required to prevent runaway climate change.
+The worldwide uptake of cycling, driven by well-placed infrastructure
+(the design of which can be assisted by tools such as the NPCT), 'soft' policy
+incentives and wider cultural shifts away from the car will also have
+enormous health benefits. 
+
+The aim of the present paper is to explain the underlying model which drives
+the scenarios used in the NPCT. The flow-level model (which operates at
+the level of origin-destination pairs over the study area) projects what
+the rate of cycling *could* be along travel 'desire lines' connecting
+residential origins with workplace, education or other destinations.
+It is important to note that the model is not predictive and does not
+assume the implementation of any specific policies (although further
+work on model could explore adding such capability). The model operates
+'under the hood' in the NPCT, meaning that the output of the NPCT is simply
+a visualisation of the model that will be useful for transport modellers,
+rather that a summary of the model overall.^[However, a 'model output' tab
+in the model...]
+
+
 
 # Data
 
@@ -140,14 +169,21 @@ Note that *total number of trips* is not an explanatory variable. This is becaus
 the dependent variable is not the absolute number of cyclists, but a proportion
 of trips made that are expected to be made by bike.
 
-## Baseline
+
+```{r, echo=FALSE}
+# ## Baseline
+# 
+# The baseline scenario (*baseline*)
+```
+
 
 ## Cycling Delivery Plan
 
-The Cycling Delivery Plan scenario (*cdp*) is based on the UK Government's 
-target to double cycling, from 0.8 billion stages currently to
-1.6 billion stages by 2025. Assuming increases in population are roughly
-offset by a continuation in the trend towards lower trip
+The Cycling Delivery Plan scenario (*cdp*) is based on the government's 
+target to double cycling in England, from 0.8 billion stages currently to
+1.6 billion stages by 2025 [@DepartmentforTransport2014].
+Assuming increases in population offset
+the trend towards lower trip
 rates,^[Increases
 in population would mean the *proportion* of trips by bicycle
 would not need to double for the *absolute number* of trips to double.
@@ -155,57 +191,81 @@ However, the rate of trips overall (measured in the number of trips
 per person per year by any mode for any purpose) is on a long-term
 downward trajectory which more than offsets the impact of population
 growth. See
-Crawford and Lovelace (2015) for a detailed discussion of this issue.
+[@Crawford2014] for a detailed discussion of this issue.
 The authors could not find evidence about how this trend was
 accounted for by the DfT in scenarios from the National Transport
 Moel (NTM) or elsewhere.]
-the *cdp* doubles the value of the distance decay curve
-predicted in *base* for all distances.
+the Cycling Delivery Plan will result in a doubling in the
+proportion of trips made by cycling nationwide.
+[@DepartmentforTransport2014] provide no discussion or
+breakdown in the geographic distribution of cycling uptake in
+the scenario, however, making it difficult for transport planners
+to know where new demand is likely to be greatest.
 
-Note that this does not necesarily
-result in a doubling in cycling. If the local rate of cycling in the
-study area is unexpectedly high given the distance decay curve in the
-model, the rate of cycling will less than double.
-The *cdp* scenario also relates to the *distribution* of trips
-in the study area compared with the data used for the model.
-If the distribution of
-all trips in the regression model
-is flatter than the distribution of cycling trips in the study area,
-a doubling in
-propensity will not lead to a doubling in cycling. If, on the other hand,
-the distribution of cycling trips in the study area mirrors high
-volume flows for which cycling is currently rare,  a doubling in propensity
-will more-than-double the rate of cycling. If the study flows are the same
-as the data used to train the model, *cpd* always results in a doubling in
-cycling. These concepts are illustrated in
-Fig. x below.
+Based on this policy context, *cpd* seeks to approximate the geographic
+distribution of growth in cycling under a scenario of doubling in cycling.
+Cycling does not double in all areas. Places that have high average
+commute distances and with an already high rate of cycling will see cycling
+increase by less than double; areas with a low current rate of cycling but
+high potential based on the number of short commute trips will see cycling
+more than double. The same logic applies to flows: origin-destination pairs
+that are close together but with a currently low rate of cycling tend to
+see the greatest increase in cycling under the  *cpd* scenario.
 
-```{r, echo=FALSE, warning=FALSE, fig.cap="The rate of cycling under the cpd scenario for a case study Local Authority (Coventry). OLC is represented in blue, SLC(cdp) is represented by the white lines."}
-l <- readRDS("../pct-data/coventry/l.Rds")
-flow <- l@data
-mod_logsqr <- glm(clc ~ dist + I(dist^0.5), data = flow, weights = All, family = "quasipoisson")
-flow$fitted <- mod_logsqr$fitted.values * flow$All
-coefs <- coef(mod_logsqr)
-ff <- stplanr::dd_logsqrt(x = flow$dist, a = exp(coefs[1]), b1 = coefs[2], b2 = coefs[3]) 
-# plot(ff, mod_logsqr$fitted.values) # perfect fit - function works
-flow$cdp <- ff * 2 * flow$All
+```{r, echo=FALSE}
+# Old description of cpd
+# The *cdp* scenario also relates to the *distribution* of trips
+# in the study area compared with the data used for the model.
+# If the distribution of
+# all trips in the regression model
+# is flatter than the distribution of cycling trips in the study area,
+# a doubling in
+# propensity will not lead to a doubling in cycling. If, on the other hand,
+# the distribution of cycling trips in the study area mirrors high
+# volume flows for which cycling is currently rare,  a doubling in propensity
+# will more-than-double the rate of cycling. If the study flows are the same
+# as the data used to train the model, *cpd* always results in a doubling in
+# cycling. These concepts are illustrated in
+# Fig. x below.
 
-l2 <- rep(l$dist, l$All)
-l3 <- rep(l$dist, l$Bicycle)
-l4 <- rep(flow$dist, flow$cdp)
-# hist(l2)
-p2 <- ggplot() + geom_histogram(aes(l2), binwidth = 0.5) +
-  geom_histogram(aes(l3), binwidth = 0.5, fill = "blue") +
-  geom_histogram(aes(l4), binwidth = 0.5, col = "white", fill = NA, linewidth = 5) +
-  scale_y_log10() + xlab("Distance (km)")
 
-p1 <- ggplot() + geom_histogram(aes(l2), binwidth = 0.5) +
-  geom_histogram(aes(l3), binwidth = 0.5, fill = "blue") +
-  geom_histogram(aes(l4), binwidth = 0.5, col = "white", fill = NA, linewidth = 5) + coord_cartesian(ylim = c(0, 2000)) + xlab("Distance (km)")
-
-library(gridExtra)
-grid.arrange(p1, p2)
+# ```{r, echo=FALSE, warning=FALSE, fig.cap="The rate of cycling under the cpd scenario for a case study Local Authority (Coventry). OLC is represented in blue, SLC(cdp) is represented by the white lines."}
+# l <- readRDS("../pct-data/coventry/l.Rds")
+# flow <- l@data
+# mod_logsqr <- glm(clc ~ dist + I(dist^0.5), data = flow, weights = All, family = "quasipoisson")
+# flow$fitted <- mod_logsqr$fitted.values * flow$All
+# coefs <- coef(mod_logsqr)
+# ff <- stplanr::dd_logsqrt(x = flow$dist, a = exp(coefs[1]), b1 = coefs[2], b2 = coefs[3]) 
+# # plot(ff, mod_logsqr$fitted.values) # perfect fit - function works
+# flow$cdp <- ff * 2 * flow$All
+# 
+# l2 <- rep(l$dist, l$All)
+# l3 <- rep(l$dist, l$Bicycle)
+# l4 <- rep(flow$dist, flow$cdp)
+# # hist(l2)
+# p2 <- ggplot() + geom_histogram(aes(l2), binwidth = 0.5) +
+#   geom_histogram(aes(l3), binwidth = 0.5, fill = "blue") +
+#   geom_histogram(aes(l4), binwidth = 0.5, col = "white", fill = NA, linewidth = 5) +
+#   scale_y_log10() + xlab("Distance (km)")
+# 
+# p1 <- ggplot() + geom_histogram(aes(l2), binwidth = 0.5) +
+#   geom_histogram(aes(l3), binwidth = 0.5, fill = "blue") +
+#   geom_histogram(aes(l4), binwidth = 0.5, col = "white", fill = NA, linewidth = 5) + coord_cartesian(ylim = c(0, 2000)) + xlab("Distance (km)")
+# 
+# library(gridExtra)
+# grid.arrange(p1, p2)
+# ```
 ```
+
+At the heart of the *cpd* scenario is a predictive model of the current rate
+of cycling as a function of route distance at the national level. The resulting
+distance decay curve is then applied locally. The additional number of cyclists
+for each flow is calculated by multiplying the proportion expected for the
+distance of the flow nationally. The new rate of cycling ($SLC(cdp)$)
+is the current rate of cycling plus this model-based estimate. To demonstrate
+how the scenario works, Fig. x illustrates the new and old rate of cycling
+in Local Authorities with high and low initial rates of cycling and the
+associated shifts in the distribution of trips by distance.
 
 
 

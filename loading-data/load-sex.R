@@ -1,4 +1,5 @@
 # Load gender equality
+source("set-up.R")
 
 library(downloader)
 # download("http://census.edina.ac.uk/ukborders/easy_download/prebuilt/shape/England_lad_2011_gen_clipped.tar.gz", "bigdata/England_lad_2011_gen_clipped.tar.gz")
@@ -41,7 +42,7 @@ las@data <- left_join(las@data, df, by = "CODE")
 
 # qtm(las, "clc") # test the map makes sense
 las@data[ which(las$clc > 0.1), ]
-las$log_pcycle <- log(las$clc)
+las$log_pcycle <- log(las$clc * 100)
 library(tmap)
 tmap::qtm(shp = las, "log_pcycle")
 
@@ -52,7 +53,7 @@ las$pmale <- las@data$clc_m * 100
 las$log_pcycle <- log(las$pcycle)
 
 tm_shape(las) +
-  tm_fill(c("pcycle", "pmale"))
+  tm_fill(c("log_pcycle", "pmale"))
 
 qplot(las$pcycle, las$pmale) +
   geom_smooth() +
@@ -62,7 +63,7 @@ qplot(las$pcycle, las$pmale) +
 
 las <- spTransform(las, CRS("+init=epsg:4326"))
 
-geojson_write(input = las, file = "pct-bigdata/national/las-pcycle.geojson")
-las_pcycle <- geojson_read("pct-bigdata/national/las-pcycle.geojson")
+# geojson_write(input = las, file = "pct-bigdata/national/las-pcycle.geojson")
+# las_pcycle <- geojson_read("pct-bigdata/national/las-pcycle.geojson") # fail
 
 tmap::qtm(shp = las, "pcycle")

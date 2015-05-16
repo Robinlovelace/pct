@@ -10,30 +10,30 @@ source("set-up.R") # pull in packages needed
 # # # # # # # #
 
 # Set local authority and ttwa zone names
-la <- "Lancaster" # name of the local authority
-ttwa_name <- "lancaster" # name of the travel to work area
+la <- "Manchester" # name of the local authority
+# ttwa_name <- "newcastle" # name of the travel to work area
 dir.create(paste0("pct-data/", la)) # on a unix machine
 
 # Minimum flow between od pairs, subsetting lines. High means fewer lines.
-mflow <- 200
+mflow <- 30
 mdist <- 10 # maximum euclidean distance (km) for subsetting lines
+buff_dist <- 0 # radius of buffer used to select additional msoas
 
 # # # # # # # # # # # #
 # Load national data  #
 # # # # # # # # # # # #
 
-# Travel to work areas (ttwa) see load-uk.R
-fttw <- "pct-bigdata/national/ttwa_all.geojson"
-ttwa_all <- readOGR(dsn = fttw, layer = "OGRGeoJSON")
-ttwa_all <- spTransform(ttwa_all, CRSobj = CRS("+init=epsg:27700"))
-ttwa_zone <- ttwa_all[ grep(ttwa_name, ttwa_all$TTWA07NM, ignore.case = T),]
+# # Travel to work areas (ttwa) see load-uk.R # comment out if not used
+# fttw <- "pct-bigdata/national/ttwa_all.geojson"
+# ttwa_all <- readOGR(dsn = fttw, layer = "OGRGeoJSON")
+# ttwa_all <- spTransform(ttwa_all, CRSobj = CRS("+init=epsg:27700"))
+# ttwa_zone <- ttwa_all[ grep(ttwa_name, ttwa_all$TTWA07NM, ignore.case = T),]
 
 # Extract la data
 ukmsoas <- shapefile("pct-bigdata/national/msoas.shp")
 
 # Load population-weighted centroids
 cents <- readOGR("pct-bigdata/national/cents.geojson", layer = "OGRGeoJSON")
-zcentre <- SpatialPoints(coords = gCentroid(cents), proj4string = CRS(proj4string(zones)))
 
 # Load local authorities
 las <- readOGR(dsn = "pct-bigdata/national/las-pcycle.geojson", layer = "OGRGeoJSON")
@@ -41,31 +41,32 @@ lasdat <- SpatialPointsDataFrame(coords = coordinates(las), data = las@data)
 x <- dplyr::select(las@data, clc, pcycle)
 lasdat@data <- x
 
-cuas <- readOGR(dsn = "pct-bigdata/national/cuas.geojson", layer = "OGRGeoJSON")
-proj4string(lasdat) <- proj4string(las)
-cuas2 <- aggregate(lasdat, cuas, mean, na.action = na.omit())
-qtm(cuas2,fill = "clc")
+# cuas <- readOGR(dsn = "pct-bigdata/national/cuas.geojson", layer = "OGRGeoJSON")
+# proj4string(lasdat) <- proj4string(las)
+# cuas <- aggregate(lasdat, cuas, mean, na.action = na.omit()) # todo: fix data
+# cua_shape <- cuas[grep(pattern = la, x = cuas@data$NAME)] # todo: fix
+# # tmap::qtm(cuas2,fill = "clc")
 
-proj4string(las) <- proj4string(zcentre)
-las_centre <- las[zcentre,]
-plot(las_centre)
-pmal <- las_centre@data$clc_m
+la_shape <- las[grep(pattern = la, x = las@data$NAME),]
+plot(la_shape) # update la data
+cents <- cents[la_shape,]
+points(cents)
 
 # Convert cents to OSGB CRS
-cents <- spTransform(cents, CRSobj = CRS("+init=epsg:27700"))
+cents <- spTransform(cents, CRSobj = proj4string(ukmsoas))
 
 # Extract zones to plot
-zones <- ukmsoas[ grep(la, ukmsoas$geo_label), ]
-zone <- gBuffer(zones, width = 0) # create la zone outline
+# zones <- ukmsoas[ grep(la, ukmsoas$geo_label), ] # extract by name
+zones <- ukmsoas[cents, ]
+zone <- gBuffer(zones, width = buff_dist) # create la zone outline
 plot(zones)
 plot(zone, lwd = 5, add = T)
 zone <- spTransform(zone, CRS("+init=epsg:4326"))
 
 # Check n. zones. If too few, add more
-# if(nrow(zones) < 50){
+if(nrow(zones) < 50){
 
-#   zbuf <- gBuffer(zcentre, width = 10000)
-  zbuf <- gBuffer(zones, width = 3000)
+  zbuf <- gBuffer(zones, width = buff_dist)
   plot(zbuf)
   plot(zones, col = "red", add = T)
   plot(cents, add = T)
@@ -73,7 +74,8 @@ zone <- spTransform(zone, CRS("+init=epsg:4326"))
   cents <- cents[zbuf, ]
   zones <- ukmsoas[ukmsoas$geo_code %in% cents$geo_code,]
   plot(zones, add = T)
-# }
+
+}
 
 nrow(zones) # updated n. zones
 
@@ -278,8 +280,8 @@ addids <- c(3:14, 23:31)
 
 # Aggregate bi-directional flows
 
-# Subset by bounding box
-l <- l[as.logical(gContains(zone, l, byid = T)),]
+# Subset by zone bounding box
+# l <- l[as.logical(gContains(zone, l, byid = T)),]
 nrow(l)
 
 # 4: by aggregating 2 way flows
@@ -297,8 +299,10 @@ rq <- rq[rq@data$id %in% idsel,]
 # Sanity test
 summary(l@data)
 cents_ttwa <- cents # copy cents data (we'll overwrite cents)
-cents <- cents_ttwa[zone,] # subset centroids geographically
-zones <- zones[cents,]
+
+# # Subset to zone
+# cents <- cents_ttwa[zone,] # subset centroids geographically
+# zones <- zones[cents,]
 plot(zone, lwd = 5)
 plot(zones, add = T)
 points(cents_ttwa, col = "red")
