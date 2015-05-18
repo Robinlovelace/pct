@@ -198,9 +198,9 @@ Moel (NTM) or elsewhere.]
 the Cycling Delivery Plan will result in a doubling in the
 proportion of trips made by cycling nationwide.
 [@DepartmentforTransport2014] provide no discussion or
-breakdown in the geographic distribution of cycling uptake in
-the scenario, however, making it difficult for transport planners
-to know where new demand is likely to be greatest.
+breakdown in the geographic distribution of potential cycling uptake in
+the scenario, however. The *cpd* scenario should help transport planners
+identify where new demand for cycling is likely to be greatest.
 
 Based on this policy context, *cpd* seeks to approximate the geographic
 distribution of growth in cycling under a scenario of doubling in cycling.
@@ -266,8 +266,6 @@ is the current rate of cycling plus this model-based estimate. To demonstrate
 how the scenario works, Fig. x illustrates the new and old rate of cycling
 in Local Authorities with high and low initial rates of cycling and the
 associated shifts in the distribution of trips by distance.
-
-
 
 ## Gender equality
 
