@@ -12,7 +12,7 @@ source("set-up.R") # pull in packages needed
 # Set local authority and ttwa zone names
 la <- "Manchester" # name of the local authority
 # ttwa_name <- "newcastle" # name of the travel to work area
-dir.create(paste0("pct-data/", la)) # on a unix machine
+dir.create(file.path("pct-data", tolower(la))) # on a unix machine
 
 # Minimum flow between od pairs, subsetting lines. High means fewer lines.
 mflow <- 30
@@ -167,7 +167,7 @@ l_local_sel <- l@data$Area.of.residence %in% zones$geo_code &
 if(nrow(l) > 2 * sum(l_local_sel) & nrow(l) > 5000){ # sample if too many lines
   l_all <- l
   f <- list.files(paste0("pct-data/", la, "/"))
-  if(sum(grepl("l_all", f)) == 0) saveRDS(l, paste0("pct-data/", la, "/l_all.Rds"))
+  if(sum(grepl("l_all", f)) == 0) saveRDS(l, file.path("pct-data", la, "l_all.Rds"))
 #   l <- readRDS(paste0("pct-data/", la, "/l_all.Rds")) # restart point
   set.seed(2050)
   # sample from all routes in the TTWZ - change 1 for different % outside zone
@@ -180,9 +180,9 @@ if(nrow(l) > 2 * sum(l_local_sel) & nrow(l) > 5000){ # sample if too many lines
 }
 
 # Create route allocated lines
-if(length(grep("rf_ttwa.Rds|rq_ttwa.Rds", list.files(paste0("pct-data/", la)))) >= 2){
-  rf <- readRDS(paste0("pct-data/", la, "/rf_ttwa.Rds")) # if you've loaded them
-  rq <- readRDS(paste0("pct-data/", la, "/rq_ttwa.Rds"))
+if(length(grep("rf_ttwa.Rds|rq_ttwa.Rds", list.files(file.path("pct-data", la)))) >= 2){
+  rf <- readRDS(file.path(("pct-data", la, "rf_ttwa.Rds")) # if you've loaded them
+  rq <- readRDS(file.path(("pct-data", la, "rq_ttwa.Rds"))
 } else{
   rf <- gLines2CyclePath(l[ l$dist > 0, ])
   rq <- gLines2CyclePath(l[ l$dist > 0, ], plan = "quietest")
@@ -190,8 +190,8 @@ if(length(grep("rf_ttwa.Rds|rq_ttwa.Rds", list.files(paste0("pct-data/", la)))) 
   # Process route data
   rf$length <- rf$length / 1000
   rq$length <- rq$length / 1000
-  saveRDS(rf, paste0("pct-data/", la, "/rf_ttwa.Rds")) # save the routes
-  saveRDS(rq, paste0("pct-data/", la, "/rq_ttwa.Rds"))
+  saveRDS(rf, file.path("pct-data", la, "rf_ttwa.Rds")) # save the routes
+  saveRDS(rq, file.path("pct-data", la, "rq_ttwa.Rds"))
   }
 rq$id <- rf$id <- l$id[l$dist > 0]
 
@@ -335,12 +335,12 @@ summary(cents)
 summary(zones)
 
 # Save objects
-saveRDS(zones, paste0("pct-data/", la, "/z.Rds"))
-saveRDS(cents, paste0("pct-data/", la, "/c.Rds"))
-saveRDS(l, paste0("pct-data/", la, "/l.Rds"))
-saveRDS(rf, paste0("pct-data/", la, "/rf.Rds"))
-saveRDS(rq, paste0("pct-data/", la, "/rq.Rds"))
-saveRDS(mod_logsqr, paste0("pct-data/", la, "/model.Rds"))
+saveRDS(zones, file.path("pct-data", la, "z.Rds"))
+saveRDS(cents, file.path("pct-data", la, "c.Rds"))
+saveRDS(l, file.path("pct-data", la, "l.Rds"))
+saveRDS(rf, file.path("pct-data", la, "rf.Rds"))
+saveRDS(rq, file.path("pct-data", la, "rq.Rds"))
+saveRDS(mod_logsqr, file.path("pct-data", la, "model.Rds"))
 
 # # Save data for wider ttwz area
 # saveRDS(ttwa_zone, paste0("pct-data/", la, "/ttw_zone.Rds"))
@@ -349,16 +349,16 @@ saveRDS(mod_logsqr, paste0("pct-data/", la, "/model.Rds"))
 
 # Create new folder in pct-shiny repo
 rname <- tolower(la)
-dname <- paste0("~/repos/pct-shiny/", rname, "/")
+dname <- file.path("~", "repos", "pct-shiny", rname)
 dir.create(dname)
 files <- list.files("~/repos/pct-shiny/manchester/", full.names = T)
 file.copy(files, dname)
-server <- readLines(paste0(dname, "server.R"))
+server <- readLines(file.path(dname, "server.R"))
 server <- gsub("manchester", la, server)
-writeLines(server, paste0(dname, "server.R"))
+writeLines(server, file.path(dname, "server.R"))
 
 # Save the script that loaded the lines into the data directory
-file.copy("loading-data/load.R", paste0("pct-data/", la, "/load.R"))
+file.copy("loading-data/load.R", file.path("pct-data", la, "load.R"))
 
 end_time <- Sys.time()
 
