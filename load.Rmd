@@ -32,15 +32,15 @@ and can be modified by others provided attribution to the original.
 The preset values used to select the study area and filter the flow data
 were as follows:
 
-```{r}
+```{r, warning=FALSE}
 # Set local authority and ttwa zone names
-la <- "Manchester" # name of the local authority
+la <- "manchester" # name of the local authority
 dir.create(paste0("pct-data/", la)) # on a unix machine
 
 # Minimum flow between od pairs, subsetting lines. High means fewer lines.
 mflow <- 30
 mdist <- 10 # maximum euclidean distance (km) for subsetting lines
-min_zones <- 50 # minumum number of zones in study area before buffer used
+min_zones <- 60 # minumum number of zones in study area before buffer used
 buff_dist <- 3 # buffer (km) used to select additional zones (often redundant)
 ```
 
@@ -48,7 +48,7 @@ buff_dist <- 3 # buffer (km) used to select additional zones (often redundant)
 
 The input zones area are summarised in this section.
 
-```{r plotzones, fig.cap="The study area (dark line), selected zones for training the model (grey) and the administrative zone of interest (red line)", echo=FALSE, message=FALSE, warning=FALSE}
+```{r plotzones, message=FALSE, warning=FALSE, results='hide'}
 ukmsoas <- shapefile("pct-bigdata/national/msoas.shp")
 
 # Load population-weighted centroids
@@ -56,6 +56,10 @@ cents <- readOGR("pct-bigdata/national/cents.geojson", layer = "OGRGeoJSON")
 
 # Load local authorities and districts
 las <- readOGR(dsn = "pct-bigdata/national/las-pcycle.geojson", layer = "OGRGeoJSON")
+```
+
+
+```{r, include=FALSE}
 # lasdat <- SpatialPointsDataFrame(coords = coordinates(las), data = las@data)
 
 # Load counties and unitary authorities
@@ -65,7 +69,7 @@ las <- readOGR(dsn = "pct-bigdata/national/las-pcycle.geojson", layer = "OGRGeoJ
 # cua_shape <- cuas[grep(pattern = la, x = cuas@data$NAME)] # todo: fix
 # # tmap::qtm(cuas2,fill = "clc")
 
-la_shape <- las[grep(pattern = la, x = las@data$NAME),]
+la_shape <- las[grep(pattern = la, x = las@data$NAME, ignore.case = T),]
 proj4string(la_shape) <- proj4string(ukmsoas)
 cents <- spTransform(cents, CRSobj = proj4string(ukmsoas))
 cents_la <- cents[la_shape,]
@@ -81,19 +85,17 @@ if(nrow(zones) < min_zones){
 }
 
 cents <- cents_la
-plot(zones, col = "lightgrey")
-plot(las, add = T)
-plot(zbuf, lwd = 5, add = T)
-plot(la_shape, border = "red", add = T, lwd = 3)
 ```
 
 The characteristics of zones are as follows:
 
-```{r}
-nrow(zones) # how many zones?
-summary(gArea(zones, byid = T) / 1000000) # average area of zones, sq km
+```{r, echo=FALSE}
+nzones <- nrow(zones) # how many zones?
+mzarea <- median(gArea(zones, byid = T) / 1000000) # average area of zones, sq km
 ```
 
+- Number of zones: `r nzones`, compared with 6791 in England
+- Median area of zones: `r mzarea` ha, compared with 3 ha in the UK
 
 ## Input flow data
 
@@ -107,45 +109,75 @@ flow <- flow[o & d, ] # subset flows with o and d in study area
 sel <- flow$All > mflow # subset flows by n. people using it
 ```
 
-```{r}
-nrow(flow) # how many OD pairs in the study area?
-sum(sel) / nrow(flow) * 100 # proportion of flows in subset
-sum(flow$All[sel]) / sum(flow$All) * 100 # % trips covered
+```{r, echo=FALSE}
+# nrow(flow) # how many OD pairs in the study area?
+# proportion of flows in min-flow based subset
+(pmflow <- round(sum(sel) / nrow(flow) * 100, 2)) 
+# % all trips covered
+(pmflowa <- round(sum(flow$All[sel]) / sum(flow$All) * 100, 2)) 
 ```
 
-```{r distance-dist, echo=FALSE, fig.cap="Illustration of lines in study area"}
+There are `r nrow(flow)` flows with origins and destinations in the study
+area. Of these, `r sum(sel)` meet the criteria that `r mflow` people travel
+on flow on a regular basis (a modifiable parameter used
+to reduce the computational requirements
+of the model). That's  `r pmflow`% for flow lines, accounting for
+`r pmflowa`% of commuters in the study area.
+
+```{r distance-dist, echo=FALSE, fig.cap="The study area (dark line), selected zones for training the model (grey) and the administrative zone of interest (red line). The black straight lines represent the most intensive commuting flows.", echo=FALSE, message=FALSE, warning=FALSE}
 flow <- flow[sel, ]
-nrow(flow) # new flow rate
+# nrow(flow) # new flow rate
 
 flow$id <- paste(flow$Area.of.residence, flow$Area.of.workplace)
 
 l <- gFlow2line(flow = flow, zones = cents)
-
+plot(zones, col = "lightgrey")
+plot(las, add = T)
+plot(zbuf, lwd = 5, add = T)
+plot(la_shape, border = "red", add = T, lwd = 3)
+lines(l[l$All > 100,])
 ```
 
 ```{r, echo=FALSE}
 proj4string(l) <- proj4string(cents)
 l$dist <- gLength(l, byid = T) / 1000 # Euclidean distance
-dsel <- l$dist < 10
+dsel <- l$dist < mdist
 
 l <- l[dsel,]
-
-l1 <- rep(l$dist, l$All) 
-luk <- readRDS("pct-bigdata/national/l_sam8.Rds")
-l2 <- rep(luk$dist, luk@data$All) 
-# hist(l1, freq = T)
-# hist(l2, freq = T)
-ggplot() +
-  geom_histogram(aes(l$dist, weight = l$All / sum(l$All)),
-    binwidth = 0.5, fill = "blue") +
-  geom_histogram(aes(luk$dist, weight = luk$All / sum(luk$All)),
-    binwidth = 0.5, col = "black", fill = NA, linesize = 5, linetype = 2) +
-  xlab("Distance (km)") + 
-  ylab("Proportion of trips in each band (under 10 km)")
+l <- l[l$dist > 0, ] # to remove flows of 0 length
 ```
 
+## Hilliness of flows
 
-```{r, echo=FALSE, eval=FALSE}
+The average hilliness of zones in the study area is
+`r round(mean(zones$avslope), 2)`
+degrees,
+compared with the national average of 
+`r round(mean(ukmsoas$avslope, na.rm = T), 2)`. This data is displayed in the
+figure below.
+
+```{r}
+qtm(zones, "avslope", fill.palette = "Blues")
+```
+
+```{r, echo=FALSE}
+# Hilliness of flows
+# (calculated as the average gradient of the zone
+# of the flow's origin and destination, in degrees)
+# is 
+# `r round(mean(flow$avslope * flow$All / mean(flow$All), na.rm = T), 2)`.
+# The UK
+# average is xx degrees
+```
+
+## Lines allocated to the road network
+
+The most computationally challenging part of the process is allocating the 
+flows to the travel network. We do this using CycleStreets.net, who
+estimate optimal routes as part of a journey planning application created
+for cyclists by cyclists. An illustration of these routes is presented below.
+
+```{r flow-vars, echo=FALSE}
 # # # # # # # # # # # # # # # # # #
 # Calculate flow-level variables: #
 # distances and olc for ag. model #
@@ -154,33 +186,10 @@ ggplot() +
 # Calculate distances (eventually use route distance)
 
 
-# Transform CRS for plotting
+# Transform CRS to WGS84 for plotting
 zones <- spTransform(zones, CRS("+init=epsg:4326"))
 cents <- spTransform(cents, CRS("+init=epsg:4326"))
 l <- spTransform(l, CRS("+init=epsg:4326"))
-
-# merge flow data with lines
-nrow(l)
-nrow(flow)
-l@data <- flow # copy flow data across
-
-plot(cents)
-lines(l) # show the lines on the map
-plot(la_shape, border = "red", lwd = 3)
-
-# # # # # # # # # # # # # # # # #
-# Subset lines to plotting area #
-# # # # # # # # # # # # # # # # #
-
-# Subset data to reduce overheads for plotting
-nrow(l)
-l_b4_sub <- l # backup data
-
-# Subset by distance
-summary(l$dist)
-l <- l[l$dist < mdist,]
-l <- l[l$dist > 0, ] # to remove flows of 0 length
-nrow(l)
 
 # # # # # # # # # # # # # # #
 # Allocate flows to network #
@@ -202,14 +211,15 @@ if(nrow(l) > 2 * sum(l_local_sel) & nrow(l) > 5000){ # sample if too many lines
   lsel <- c(lsel, which(l_local_sel))
   length(lsel)
   l <- l_all[lsel, ] # subset the lines
-  plot(l)
-  lines(l[2000:2600,], col = "blue") # ensure we have all the local ones
+  # plot(l)
+  # lines(l[2000:2600,], col = "blue") # ensure we have all the local ones
 }
 
 # Create route allocated lines
-if(length(grep("rf_ttwa.Rds|rq_ttwa.Rds", list.files(paste0("pct-data/", la)))) >= 2){
-  rf <- readRDS(paste0("pct-data/", la, "/rf_ttwa.Rds")) # if you've loaded them
-  rq <- readRDS(paste0("pct-data/", la, "/rq_ttwa.Rds"))
+if(length(grep("rf.Rds|rq.Rds", list.files(paste0("pct-data/", la)))) >= 2){
+  rf <- readRDS(paste0("pct-data/", la, "/rf.Rds")) # if you've loaded them
+  rq <- readRDS(paste0("pct-data/", la, "/rq.Rds"))
+  l <- readRDS(paste0("pct-data/", la, "/l.Rds"))
 } else{
   rf <- gLines2CyclePath(l[ l$dist > 0, ])
   rq <- gLines2CyclePath(l[ l$dist > 0, ], plan = "quietest")
@@ -219,9 +229,17 @@ if(length(grep("rf_ttwa.Rds|rq_ttwa.Rds", list.files(paste0("pct-data/", la)))) 
   rq$length <- rq$length / 1000
   saveRDS(rf, paste0("pct-data/", la, "/rf_ttwa.Rds")) # save the routes
   saveRDS(rq, paste0("pct-data/", la, "/rq_ttwa.Rds"))
+  saveRDS(l, paste0("pct-data/", la, "/l.Rds"))
   }
-rq$id <- rf$id <- l$id[l$dist > 0]
+```
 
+```{r plot-rlines, fig.cap="Sample of the straight and route-lines allocated to the travel network"}
+plot(l[1:300,])
+lines(rf[1:300,], col = "red")
+lines(rq[1:300,], col = "green")
+```
+
+```{r}
 
 # Allocate route factors to flows
 # nz <- which(l$dist > 0) # non-zero lengths = nz
@@ -230,12 +248,40 @@ l$dist_fast <- rf$length
 l$dist_quiet <- rq$length
 l$cirquity <- rf$length / l$dist
 l$distq_f <- rq$length / rf$length
+```
 
-# Check the data makes sense
-plot(cents)
-plot(zones, add = T)
+## Distance distributions
+
+The distance distribution of trips in the study area is displayed in the figure below, which compares the result with the distribution of trips nationwide.
+
+```{r, fig.cap="Distance distribution of all trips in study lines (blue) compared with national average (dotted bars)"}
+l1 <- rep(l$dist_fast, l$All) 
+luk <- readRDS("pct-bigdata/national/l_sam8.Rds")
+l2 <- rep(luk$dist_fast, luk@data$All) 
+# hist(l1, freq = T)
+# hist(l2, freq = T)
+ggplot() +
+  geom_histogram(aes(x = l$dist_fast, weight = l$All / sum(l$All)),
+    binwidth = 0.5, fill = "blue") +
+  geom_histogram(aes(luk$dist_fast, weight = luk$All / sum(luk$All)),
+    binwidth = 0.5, col = "black", fill = NA, linesize = 5, linetype = 2) +
+  xlab("Route distance (km)") + 
+  ylab("Proportion of trips in each band (under 10 km)") + 
+  xlim(c(0,13))
+
+pl5kmuk <- round(length(l2[l2 < 5]) / length(l2) * 100, 2)
+pl5km <- round(length(l1[l1 < 5]) / length(l1) * 100, 2)
+```
+
+Nationwide, `r pl5kmuk`% of trips are less than 5km; in the case study area
+`r pl5km`% of trips are less than 5km. Subsetting by distance (set
+to `r mdist` km) and removing inter-zone flows
+further reduces the number of flows from `r sum(sel)`
+to `r nrow(l)`.
+
+```{r plot-single-line}
 a = 11
-plot(l[l$dist > 0,][a,])
+plot(l[a,])
 lines(rf[a,], col = "red")
 lines(rq[a,], col = "green")
 
@@ -246,13 +292,88 @@ lines(rq[a,], col = "green")
 l$clc <- l$Bicycle / l$All
 flow_ttwa <- flow # save flows for the ttwa
 flow <- l@data
+```
 
+## The flow model
+
+To estimate the potential rate of cycling under different scenarios
+regression models operating at the flow level are used.
+These can be seen in the model script which is available
+[online](https://github.com/npct/pct/blob/master/models/aggregate-model.R).
+
+```{r, echo=FALSE, fig.cap="National vs local cycling characteristics with hilliness, captured in the model results"}
 source("models/aggregate-model.R") # this model creates the variable 'slc'
-cor(flow$clc, mod_logsqr$fitted.values) # crude indication of goodness-of-fit
+cormod <- cor(flow$clc, mod_logsqr$fitted.values) # crude indication of goodness-of-fit
 # summary(mod_logsqr)
 
+mod_nat <- readRDS("pct-bigdata/national/mod_logsqr_national_8.Rds")
+justdist <- data.frame(
+  dist_fast = 1:20,
+  avslope = 0,
+  type = "Flat"
+)
+
+justdist2 <- data.frame(
+  dist_fast = 1:20,
+  avslope = 2,
+  type = "Hilly"
+)
+
+justdist3 <- data.frame(
+  dist_fast = 1:20,
+  avslope = 0,
+  type = "Flat"
+)
+
+justdist4 <- data.frame(
+  dist_fast = 1:20,
+  avslope = 2,
+  type = "Hilly"
+)
+
+justdist5 <- rbind(justdist3, justdist4)
+justdist5$model <- "Local"
+
+justdist <- rbind(justdist, justdist2)
+justdist$model <- "National"
+
+justdist$npred <- exp(predict(mod_nat, justdist))
+justdist5$npred <- exp(predict(mod_logsqr, justdist))
+
+justdist <- rbind(justdist, justdist5)
+
+ggplot(justdist) +
+  geom_line(aes(dist_fast, npred, color = model, linetype = type)) +
+  xlab("Route distance (km)") + ylab("Expected number cycling")
+
+dfcos <- rbind(coef(mod_nat), coef(mod_logsqr))
+```
+
+The correlation between fitted and observed cycling in the model is
+`r round(cormod, 2)`, compared with 0.39 nationally.
+
+The values for the coefficients are presented in the table below.
+
+```{r, echo=FALSE}
+library(knitr)
+kable(dfcos, digits = 3)
+```
+
+## Cycling in the study area
+
+```{r, echo=FALSE}
+rcycle <- round(100 * sum(l$Bicycle) / sum(l$All), 1)
+natcyc <- sum(luk$Bicycle) / sum(luk$All)
+```
+
+The overall rate of cycling in the flows in the study area
+(after subsetting for distance) is `r rcycle`%, compared a
+rate from the national data (of equally short flows)
+of 5.0%.
+
+```{r, eval=FALSE}
+
 l$slc <- flow$plc
-# l <- l[l$dist > 0, ]
 l$base_olc <- l$Bicycle
 l$base_slc <- l$slc * l$All
 l$base_sic <- l$base_slc - l$base_olc
