@@ -4,8 +4,8 @@ source("set-up.R")
 library(downloader)
 # download("http://census.edina.ac.uk/ukborders/easy_download/prebuilt/shape/England_lad_2011_gen_clipped.tar.gz", "bigdata/England_lad_2011_gen_clipped.tar.gz")
 # untar(tarfile = "bigdata/England_lad_2011_gen_clipped.tar.gz", exdir = "bigdata/")
-# gMapshape(dsn = "bigdata/England_lad_2011_gen_clipped.shp", 1)
-las <- shapefile("bigdata/England_lad_2011_gen_clippedmapshaped_1%.shp")
+gMapshape(dsn = "bigdata/England_lad_2011_gen_clipped.shp", 4)
+las <- shapefile("bigdata/England_lad_2011_gen_clippedmapshaped_4%.shp")
 plot(las)
 las@data <- rename(las@data, GeographyCode = CODE)
 
@@ -40,10 +40,10 @@ head(las$CODE)
 head(df$CODE)
 las@data <- left_join(las@data, df, by = "CODE")
 
-# qtm(las, "clc") # test the map makes sense
+library(tmap)
+qtm(las, "clc") # test the map makes sense
 las@data[ which(las$clc > 0.1), ]
 las$log_pcycle <- log(las$clc * 100)
-library(tmap)
 tmap::qtm(shp = las, "log_pcycle")
 
 # Analysis

@@ -127,3 +127,12 @@ head(cents@data)
 # writeOGR(cents84, "pct-data/manchester-shiny/cents84", layer = "cents", driver = "GeoJSON")
 # shapefile(filename = "pct-data/manchester-shiny/cents.shp", object = cents84)
 # write.csv(cents@data, "pct-data/manchester-shiny/cents.csv")
+
+# # Rename variables of flow - run once then forget!
+# flow <- readRDS("pct-bigdata/national/flow.Rds")
+# flow <- rename(flow, From_home = Work.mainly.at.or.from.home, Light_rail = Underground..metro..light.rail..tram, Bus = Bus..minibus.or.coach, Motorbike = Motorcycle..scooter.or.moped, Car_driver = Driving.a.car.or.van, Car_passenger = Passenger.in.a.car.or.van, Foot = On.foot, Other = Other.method.of.travel.to.work)
+# saveRDS(flow, "pct-bigdata/national/flow.Rds")
+#
+
+
+
