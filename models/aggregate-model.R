@@ -36,9 +36,17 @@ source("set-up.R")
 
 # mod_logsqr <- glm(clc ~ dist_fast + I(dist_fast^0.5) + avslope, data = flow, weights = All, family = "quasipoisson") # with hilliness + fastest distance
 
+
+mod_logsqr <- glm(clc ~ dist_fast + I(dist_fast^0.5) + avslope + avslope * dist_fast, data = flow, weights = All, family = "quasipoisson")
+
+mod_inf <- glm(clc ~ dist_fast + I(dist_fast^0.5) + avslope + distq_f + avslope * dist_fast, data = flow, weights = All, family = "quasipoisson")
+
 # mod_logsqr <- glm(clc ~ dist_fast + I(dist_fast^0.5) + avslope + distq_f, data = flow, weights = All, family = "quasipoisson") # + quietness detour
 
-mod_logsqr <- glm(clc ~ dist_fast + I(dist_fast^0.5) + avslope + distq_f + cirquity, data = flow, weights = All, family = "quasipoisson") # + cirquity detour
+cor(flow$clc, mod_logsqr$fitted.values)
+cor(flow$clc, mod_inf$fitted.values)
+
+summary(mod_logsqr)
 
 flow$plc <- NA
 flow$plc[!is.na(l$All)] <- mod_logsqr$fitted.values # create plc from model
@@ -47,9 +55,7 @@ flow$plc[!is.na(l$All)] <- mod_logsqr$fitted.values # create plc from model
 # Diagnostics #
 # # # # # # # #
 
-cor(flow$clc, mod_logsqr$fitted.values)
-
-# summary(mod_logsqr) # goodness of fit
+ summary(mod_logsqr) # goodness of fit
 #
 # # Binning variables and validation
 # brks <- c(0, 0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 9.5, 12.5, 15.5, 20.5, 1000)
