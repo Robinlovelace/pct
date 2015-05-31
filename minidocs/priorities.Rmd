@@ -1,0 +1,13 @@
+---
+title: "Notes on 22nd"
+author: "Robin Lovelace"
+date: "May 22, 2015"
+output: html_document
+---
+
+Scoping report can do this:
+
+- prioritise cycling at national level
+- regional allocation of flows
+- scenarios looking at short (5 years), medium (10 years) and long (20 years) term
+
