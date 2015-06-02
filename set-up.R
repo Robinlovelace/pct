@@ -22,7 +22,7 @@ if(sum(!reqs) > 0) install.packages(pkgs[!reqs])
 # Load publicly available test data
 
 # Option 1: clone the repository directly - if you have git installed
-# system("git clone git@github.com:Robinlovelace/pct-data.git")
+# system2("git", args=c("clone", "git@github.com:Robinlovelace/pct-data.git", "--depth=1"))
 
 # Option 2: download and unzip the pct-data repository
 # download.file("https://github.com/Robinlovelace/pct-data/archive/master.zip", destfile = "pct-data.zip", method = "wget")
