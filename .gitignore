@@ -3,6 +3,8 @@ notes.Rmd
 .Rhistory
 .RData
 pct-data/
+bigdata/
+tmp/
 *.html
 *.pdf
 *shinyapps*

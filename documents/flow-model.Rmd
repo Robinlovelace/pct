@@ -384,6 +384,11 @@ $$
 slc(gendereq) = olc_m + slc(gendereq)_f
 $$
 
+Or
+$$
+slc(gendereq) = olc * p_cycle(z)_m * (1 + \frac{tflow_f}{tflow_m})
+$$
+5* 0.75*(1+ 20/30)
 ```{r, echo=FALSE}
 tflow <- 50
 olc <- 5 #  the currect rate of cycling between origin (o) and destination (d)
