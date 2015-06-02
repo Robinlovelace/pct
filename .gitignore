@@ -3,6 +3,8 @@ notes.Rmd
 .Rhistory
 .RData
 pct-data/
+bigdata/
+tmp/
 *.html
 *.pdf
 *shinyapps*
@@ -10,18 +12,5 @@ pct-data/
 *.tex
 *.mdb
 *.accb
-bigdata/
 *.orig
 pct-shiny
-cbs neighbourhoods.zip
-pct-data2
-infuse_msoa_lyr_2011mapshaped_5%.*
-wu03ew_v2.csv
-cents
-cents.RData
-pct-bigdata
-LC7103EW_2011STATH_NAT_OA_REL_1.1.1_20140319-0942-19509
-infuse_dist_lyr_2011.tgz
-wu01bew_msoa_v1.csv
-WU01BEW_msoa.txt
-reminder_on_the_conditions_of_use.txt
