@@ -1,0 +1,113 @@
+---
+title: "The flow model and user interface"
+author: "Robin Lovelace"
+date: "May 31, 2015"
+output: 
+  word_document: 
+    fig_caption: yes
+---
+
+```{r, include=FALSE}
+pkgs <- c("grid", "png", "knitr")
+lapply(pkgs, library, character.only = TRUE)
+opts_knit$set(root.dir = "../")
+```
+
+
+The main engine driving the local and national scenarios for the
+NPCT in Phase I is a model operating at the flow level.
+The unit of analysis is an origin-destination (OD) pair.
+The approach was to use distance, hilliness and other
+explanatory variables to predict distance decay
+functions for the current rate of cycling. The geographical
+distribution of cycling potential was estimated by applying
+new distance decay curves to the existing transport flows,
+allowing the NPCT to identify which 'desire lines' at the local
+level have the greatest potential for increased cycling.
+
+Overall, the model will identify routes in which there is a high
+rate of travel over short distances yet a low rate of cycling.
+Unexpectedly low rates of cycling, compared with model estimates,
+are indicative of poor infrastructure, cultural aversion to cycling
+or other factors not included in the model. The model does not
+identify the reason for high or low cycling rates along particular
+flow lines. However, it does draw attention to areas and routes
+that have the greatest potential for increased rates of cycling
+under various assumptions about the future.
+
+The primary source of input data for the model is taken from the 
+OD flow data results from the 2011 Census, provided by the WICID
+site. `wu03ew_v2.csv` is a 104 MB (12 MB compressed)
+comma-delimited file
+of flows between unique origin destination pairs, disaggregated by mode.
+The second key input is `cents.geojson`,
+representing populations-weighted centroids of local
+administrative zones (MSOAs).^[The license for these
+datasets was accessed from http://www.nationalarchives.gov.uk/doc/open-government-licence/version/2/ in
+March 2015.]
+
+Details of the model are described in detail in a technical appendix.
+Suffice to say that the model provides detailed break-downs of the
+rate of cycling under each model scenario, taking into account the
+current rate of travel, the cirquity of the local road network
+and hilliness (more explanatory factors will be added in Phase II).
+Example output from the model are presented in the figures below.
+
+```{r, echo=FALSE, fig.cap="Prototype model output on the rate of cycling by distance band, and under a range of scenarios, for Manchester"}
+# getwd()
+grid.raster(readPNG("figures/mod-output-eg.png"))
+```
+
+```{r, echo=FALSE, fig.cap="Model output illustrating the geographic distribution of potential cycling uptake at the city level by area (blue:yellow) and for the 30 'desire lines' with the highest potential for cycling increases. The results represent an early implementation of the Cycling Delivery Plan (CDP) scenario in Coventry"}
+grid.raster(readPNG("figures/mod-output-cov.png"))
+```
+
+The NPCT online tool was developed to allow for transport planners
+to gain maximum benefit from the various outputs of the model results.
+The primary interface to the model is through the 'Interactive map'
+tab. This provides a range of options for interacting with
+the model's outputs and for displaying
+different types of model output via a number of widgets.
+These widgets are both moveable and 'dockable', allowing the user
+to focus most on the aspects of the map that are of most interest.
+They are:
+
+1. The 'Scenario' widget, a dropdown menu with cascading effects
+affecting the model output for zones and lines.
+2. The 'Attribute' dropdown menu, allowing users to focus
+on the expected potential rate of cycling or increase current levels.
+3. 'Cycling Flows', which allows the user to view key flows as
+direct desire lines or as cyclist-optimised routes allocated
+to the road network via the CycleStreets.net API.
+4. The 'Freeze Lines' button, which allows the lines to move with 
+the current map zoom or to stay fixed for zooming-in to the map.
+5. 'Flows to show' allows the user to focus on specific set of
+routes or take a more strategic view of the study area with
+up to 50 lines (this can be increased in Phase II).
+
+Additional controls are revealed with an additional button for
+setting the basemap (allowing the user to quickly see the
+current cycling network from Open Street Map) and displaying flow
+data separately from zone data.
+
+Additional tabs provide further information to users. These are:
+
+- Lines Data and Zone Data, allowing users to see the raw
+data underlying the model, focussing on the zones and lines
+currently under investigation.
+- Help, a tab providing instruction to new users of the tool. In 
+Phase II of the project a video and interactive elements will
+be added to assist with training and to make the tool more accessible.
+- Model Output, a tab under development that will contain key
+information about the study area (such as presented in the
+Line Graph above). This will allow local transport planners to
+compare their area quantitatively with England and other 
+areas in terms of transport behaviour, rates of cycling
+and potential growth rates. Critically, this final tab will
+also present key model results such as the local parameters
+determining distance decay the extent to which hilliness
+seems to be a deterrent, compared with a model based on national
+data.
+
+
+

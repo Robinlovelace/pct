@@ -35,7 +35,7 @@ were as follows:
 
 ```{r, warning=FALSE}
 # Set local authority and ttwa zone names
-la <- "manchester" # name of the local authority
+la # print the name of the local authority
 dir.create(paste0("pct-data/", la)) # on a unix machine
 
 # Minimum flow between od pairs, subsetting lines. High means fewer lines.
@@ -390,8 +390,7 @@ of 5.0%.
 
 ## Scenarios
 
-```{r, echo=FALSE, fig.cap="Rate of cycling in model scenarios. Note the total percentage cycling is equal to the area under each line."}
-
+```{r, include=FALSE}
 l$slc <- flow$plc
 l$base_olc <- l$Bicycle
 l$base_slc <- l$slc * l$All
@@ -432,7 +431,9 @@ dfsp$scenario <- factor(dfsp$scenario)
 dfsp$scenario <- 
   factor(dfsp$scenario, levels = levels(dfsp$scenario)[c(5, 4, 1, 2, 3, 6)])
 scalenum <- sum(l$All) 
+```
 
+```{r, echo=FALSE, warning=FALSE, fig.cap="Rate of cycling in model scenarios. Note the total percentage cycling is equal to the area under each line."}
 ggplot(dfsp) +
   geom_freqpoly(aes(dist_fast, weight = slc,
     color = scenario), binwidth = 1) + 
@@ -444,18 +445,19 @@ dfsum <- summarise(group_by(dfsp, scenario, dist_band), Percent = sum(slc) / sum
 dfsum$Percent <- dfsum$Percent 
 dfspread <- spread(dfsum, scenario, Percent)
 dfspread$dist_band <- as.character(dfspread$dist_band)
-dfspreadf <-c("Total", colSums(dfspread[2:7]))
+dfspreadf <- c("Total", round(colSums(dfspread[2:7])* 100, 2))
 dfspread[3:7] <- do.call(cbind, apply(dfspread[3:7], 2, function(x) round(x / dfspread[2] * 100, 2)))
 dfspread <- rbind(dfspread, dfspreadf)
 dfspread <- dfspread[c(1, 2, 7, 3, 4, 5, 6)]
 ```
+
 
 ```{r, echo=FALSE}
 kable(dfspread)
 ```
 
 
-```{r}
+```{r, include=FALSE}
 # # # # # # # # # # # # # # # # # #
 # Extract area-level commute data #
 # # # # # # # # # # # # # # # # # #
@@ -487,7 +489,7 @@ for(i in 1:nrow(cents)){
   cents$distq_f[i] <- sum(l$distq_f[j] * l$All[j], na.rm = T )  / sum(l$All[j])
 }
 
-names(l) # which line names can be added for non-directional flows?
+# names(l) # which line names can be added for non-directional flows?
 # dput(c(names(l)[addids], c("cdp_slc", "cdp_sic")))
 addidsn <- c("All", "Work.mainly.at.or.from.home", "Underground..metro..light.rail..tram", 
 "Train", "Bus..minibus.or.coach", "Taxi", "Motorcycle..scooter.or.moped", 
@@ -504,7 +506,7 @@ addids <- which(names(l) %in% addidsn)
 
 # Subset by zone bounding box
 # l <- l[as.logical(gContains(zone, l, byid = T)),]
-nrow(l)
+# nrow(l)
 
 # 4: by aggregating 2 way flows
 l <- gOnewayid(l, attrib = c(addids))
@@ -514,18 +516,19 @@ l$slc <- l$base_slc / l$All
 
 nrow(l)
 idsel <- l$id
-plot(zbuf)
-lines(l, col = "green")
 rf <- rf[rf@data$id %in% idsel,]
 rq <- rq[rq@data$id %in% idsel,]
 
 # Sanity test
-summary(l@data)
+head(l@data[1:5])
 cents_ttwa <- cents # copy cents data (we'll overwrite cents)
 
 # # Subset to zone
 # cents <- cents_ttwa[zone,] # subset centroids geographically
 # zones <- zones[cents,]
+```
+
+```{r, echo=FALSE, fig.cap="Illustration of flows on travel network"}
 zbuf <- spTransform(zbuf, CRS("+init=epsg:4326"))
 plot(zbuf)
 plot(zones, add = T)
@@ -545,8 +548,8 @@ lines(rf, col = "blue")
 # Transfer cents data to zones
 c_in_z <- names(cents) == "avslope"
 zones@data <- left_join(zones@data, cents@data[,!c_in_z])
-summary(cents)
-summary(zones)
+# summary(cents)
+# summary(zones)
 
 # 
 # # Save objects
@@ -573,8 +576,10 @@ summary(zones)
 # writeLines(server, paste0(dname, "server.R"))
 # 
 # # Save the script that loaded the lines into the data directory
-# file.copy("loading-data/load.R", paste0("pct-data/", la, "/load.R"))
+file.copy("load.Rmd", paste0("pct-data/", la, "/load.Rmd"))
+git 
 ```
+
 
 ## Time taken
 
