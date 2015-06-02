@@ -16,7 +16,7 @@ library(readr)
 
 # link geographical zones to data
 # https://wicid.ukdataservice.ac.uk/cider/info.php?geogtype=96&lablist=1
-linkla <- read_csv("pct-bigdata/national/la-old-new.csv")
+linkla <- read_csv("bigdata/national/la-old-new.csv", col_types = "icccc")
 head(linkla)
 linkla <- rename(linkla, GeographyCode = ONS)
 df <- read_csv("bigdata/DC7101EWla_2011CMLADH_NAT_LAD_REL_1.1.1_20140228-1007-06168/DC7101EWla_2011CMLADH_NAT_LAD_REL_1.1.1/DC7101EWlaDATAA5.CSV")
