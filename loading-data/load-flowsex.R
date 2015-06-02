@@ -15,46 +15,33 @@ names(flowsex) <- c("Area.of.residence", "Area.of.workplace", "All", "Male", "Fe
 # # # # # # # # # #
 
 # ttwa data from documents/ttwa.Rmd - SpatialPolygon of study area
-study_area <- readRDS("pct-data/manchester/manc-ttwa.Rds")
-plot(study_area)
+source("buildmaster.R") # load data from build file
+plot(zbuf) # study area (scope of analysis)
 
 # Loading the (maybe smaller, maybe equal in size) area to plot
-plot_area <- shapefile("pct-data/manchester/manc-msoa-lores.shp") # polygon
-library(maptools)
-# create outline
-plot_area <- unionSpatialPolygons(plot_area, IDs = rep(1, nrow(plot_area)))
-if(proj4string(plot_area) != proj4string(study_area)){
-  proj4string(plot_area) <- proj4string(study_area)
-}
+plot(zones, add = T) # zones to plot
 
 # # # # # # # # #
 # Subset flows  #
 # in study area #
 # # # # # # # # #
 
-cents <- shapefile("bigdata/centroids/MSOA_2011_EW_PWC")
-cents <- cents[study_area,] # subset centroids geographically
-cents_study <- cents # copy cents data (we'll overwrite cents)
-o <- flowsex$Area.of.residence %in% cents$MSOA11CD
-d <- flowsex$Area.of.workplace %in% cents$MSOA11CD
-flowsex <- flowsex[o & d, ] # subset flows with o and d in study area
-
-flow <- readRDS("bigdata/national/flow.Rds")
-flow <- dplyr::select(flow, Area.of.residence, Area.of.workplace, Bicycle)
-o <- flow$Area.of.residence %in% cents$MSOA11CD
-d <- flow$Area.of.workplace %in% cents$MSOA11CD
-flow <- flow[o & d, ]
+flowsex$id <- paste(flowsex$Area.of.residence, flowsex$Area.of.workplace)
+flowsex <- flowsex[flowsex$id %in% flow$id,]
 
 # add Bicyle to flowsex
-flowsex <- left_join(flow, flowsex, by = c("Area.of.residence", "Area.of.workplace"))
+
+plot(flow$All, flowsex$All) # shows not 100% identical
+flow_to_join <- dplyr::select(flow, id, Bicycle)
+flowsex <- left_join(flow_to_join, flowsex)
+
 # # # # # # # # #  #
 # Get av nos males #
 # cycling in zone  #
 # # # # # # # # #  #
-las_pcycle <- geojson_read("bigdata/national/las-pcycle.geojson", parse=T)
-las_pcycle <- las_pcycle$features$properties
-area_pcycle <- las_pcycle[las_pcycle$NAME == 'Manchester',]
-p_trips_male <- area_pcycle$pmale
+las_pcycle <- readOGR("pct-bigdata/national/las-pcycle.geojson", "OGRGeoJSON")
+area_pcycle <- las_pcycle@data[las_pcycle$NAME == 'Manchester',]
+p_trips_male <- area_pcycle$clc_m
 
 
-flowsex$gendereq = flowsex$Bicycle / flowsex$All * p_trips_male * (1+ flowsex$Female / flowsex$Male)
+flowsex$gendereq = flowsex$Bicycle / flowsex$All * p_trips_male * (1 + flowsex$Female / flowsex$Male)
