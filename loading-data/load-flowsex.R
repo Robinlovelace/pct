@@ -45,3 +45,21 @@ p_trips_male <- area_pcycle$clc_m
 
 
 flowsex$gendereq = flowsex$Bicycle / flowsex$All * p_trips_male * (1 + flowsex$Female / flowsex$Male)
+
+summary(flowsex$gendereq)
+
+# from flow-model.Rmd: pcycle(z) m ∗ tf low ∗ ptrips f
+tflow_m <- flowsex$Male
+tflow_f <- flowsex$Female
+clc_m <- flow$Bicycle * p_trips_male
+pmale_c <- clc_m / tflow_m
+slc_gendereq_f <- tflow_f * pmale_c
+slc_gendereq <- clc_m + slc_gendereq_f
+# final result (need to deal with inf/na values)
+
+summary(slc_gendereq)
+plot(flowsex$Bicycle, slc_gendereq)
+abline(a = 0, b = 1)
+
+plot(flowsex$Bicycle, flowsex$gendereq)
+abline(a = 0, b = 1)
