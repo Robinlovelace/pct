@@ -72,3 +72,19 @@ for(i in which(fleeds$Area.of.residence == leeds$geo_code[1])){
 }
 ```
 
+## Set the `CS_API_KEY` Environment variable
+
+Some of the examples pull data from the
+[CycleStreets.net API](http://www.cyclestreets.net/api/).
+Once you have a token, you can add it in Ubuntu as
+a session variable
+
+```{r, engine='bash', eval = FALSE}
+echo "export CS_API_KEY='my_token'" >> ~/.profile
+```
+
+or system wide variable
+
+```{r, engine='bash', eval = FALSE}
+sudo echo "export CS_API_KEY='my_token'" > /etc/profile.d/cyclestreet.sh
+```

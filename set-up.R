@@ -31,4 +31,4 @@ if(sum(!reqs) > 0) install.packages(pkgs[!reqs])
 
 # Option 3: download data manually from https://github.com/Robinlovelace/pct-data/archive/master.zip
 
-cckey <- readLines("~/Dropbox/dotfiles/cyclestreets-api-key-rl")
+cckey <- Sys.getenv('CS_API_KEY')
