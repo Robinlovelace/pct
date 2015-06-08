@@ -37,7 +37,7 @@ if(proj4string(plot_area) != proj4string(study_area)){
 # in study area #
 # # # # # # # # #
 
-cents <- shapefile("bigdata/centroids/MSOA_2011_EW_PWC.shp")
+cents <- shapefile("private-data/centroids/MSOA_2011_EW_PWC.shp")
 cents <- cents[study_area,] # subset centroids geographically
 cents_study <- cents # copy cents data (we'll overwrite cents)
 o <- flow$Area.of.residence %in% cents$MSOA11CD

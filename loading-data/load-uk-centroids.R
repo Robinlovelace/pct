@@ -17,13 +17,13 @@ library(raster)
 # download.file(url = url, destfile = "oa-cents.zip", method = "curl")
 #
 # zips <- list.files(path = ".", pattern = "*.zip")
-# dir.create("bigdata/centroids")
+# dir.create("private-data/centroids")
 # for(i in zips){
-#   unzip(zipfile = i, exdir = "bigdata/centroids/")
+#   unzip(zipfile = i, exdir = "private-data/centroids/")
 # }
 # file.remove(zips)
 
-cents_msoa <- shapefile("bigdata/centroids/MSOA_2011_EW_PWC.shp")
-cents_lsoa <- shapefile("bigdata/centroids/LSOA_2011_EW_PWC.shp")
+cents_msoa <- shapefile("private-data/centroids/MSOA_2011_EW_PWC.shp")
+cents_lsoa <- shapefile("private-data/centroids/LSOA_2011_EW_PWC.shp")
 
 # plot(cents_msoa)

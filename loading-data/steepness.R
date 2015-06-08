@@ -42,8 +42,8 @@ url <- "ftp://srtm.csi.cgiar.org/SRTM_V41/SRTM_Data_GeoTiff/" # base url
 
 tiles <- c("srtm_37_02.zip", "srtm_38_02.zip")
 for(i in tiles){
-  # download.file(paste0(url, i), destfile = paste0("bigdata/", i), method = "curl")
-  unzip(paste0("bigdata/", i), exdir = "bigdata/")
+  # download.file(paste0(url, i), destfile = paste0("private-data/", i), method = "curl")
+  unzip(paste0("private-data/", i), exdir = "private-data/")
 }
 
 # For UK
@@ -53,15 +53,15 @@ for(i in tiles){
 
 # # Download files in a loop - warning: takes some time!
 # for(i in tiles){
-#   download.file(paste0(url, i), destfile = paste0("bigdata/", i), method = "curl")
-#   unzip(paste0("bigdata/", i), exdir = "bigdata/")
+#   download.file(paste0(url, i), destfile = paste0("private-data/", i), method = "curl")
+#   unzip(paste0("private-data/", i), exdir = "private-data/")
 # }
 
 # # # # # # # #  #
 # Load srtm data #
 # # # # # # # #  #
 
-f <- list.files(path = "bigdata/", pattern = paste(gsub(".zip", ".tif", tiles), sep = "|", collapse = "|"), full.names = T)
+f <- list.files(path = "private-data/", pattern = paste(gsub(".zip", ".tif", tiles), sep = "|", collapse = "|"), full.names = T)
 uksrtm <- raster(f[1])
 for(i in f[-1]){
   uksrtm <- raster::merge(uksrtm, raster(i))
@@ -89,9 +89,9 @@ eng_lsoa_cents <- gCentroid(eng_lsoa, byid = T)
 # # # # # # # # # # # # # #
 
 # ukslope <- terrain(uksrtm, opt = "slope", unit = "degrees")
-# writeRaster(ukslope, filename = "bigdata/dutchslope.asc")
-# writeRaster(ukslope, filename = "bigdata/dutchslope.tif")
-# ukslope <- raster("bigdata/ukslope.grd")
+# writeRaster(ukslope, filename = "private-data/dutchslope.asc")
+# writeRaster(ukslope, filename = "private-data/dutchslope.tif")
+# ukslope <- raster("private-data/ukslope.grd")
 # system.time(
 # avslope <- raster::extract(ukslope, eng_lsoa, method = 'bilinear', fun = mean, na.rm = T)
 #   )
@@ -111,7 +111,7 @@ eng_lsoa$avslope <- avslope
 # # # # # # # #
 
 # write.csv(eng_lsoa@data, "/tmp/height-slope.csv")
-# writeOGR(eng_lsoa, dsn = "bigdata/", layer = "terrain_shape", driver = "ESRI Shapefile")
+# writeOGR(eng_lsoa, dsn = "private-data/", layer = "terrain_shape", driver = "ESRI Shapefile")
 
 # # # # # #
 # Merging #
@@ -139,7 +139,7 @@ summary(merged$avslope_binned)
 
 # Re-aggregate data to different levels
 
-lsoas <- shapefile("bigdata/terrain_shape.shp")
+lsoas <- shapefile("private-data/terrain_shape.shp")
 msoas <- shapefile("pct-data/national/infuse_msoa_lyr_2011mapshaped_5%.shp")
 head(avslope)
 head()

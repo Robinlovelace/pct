@@ -2,11 +2,11 @@
 # see load.R
 
 # see https://wicid.ukdataservice.ac.uk/cider/wicid/downloads.php)
-# f <- "bigdata/WU01BEW_msoa_v1.zip" # Not in bigdata repo as it is senstive
-# unzip("bigdata/WU01BEW_msoa_v1.zip", exdir = "bigdata/")
+# f <- "private-data/WU01BEW_msoa_v1.zip" # Not in bigdata repo as it is senstive
+# unzip("private-data/WU01BEW_msoa_v1.zip", exdir = "private-data/")
 
 library(readr)
-flowsex <- read_csv("bigdata/wu01bew_msoa_v1.csv", col_names=F, skip=12)
+flowsex <- read_csv("private-data/wu01bew_msoa_v1.csv", col_names=F, skip=12)
 head(flowsex)
 names(flowsex) <- c("Area.of.residence", "Area.of.workplace", "All", "Male", "Female")
 

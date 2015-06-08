@@ -13,4 +13,4 @@ p_leeds_lines <- ggplot() +
   theme_nothing()
 # saveRDS(p_leeds_lines, "figures/plp_leeds_lines.Rds")
 
-# ggsave("bigdata/figures/leeds-flow-bicycle.png")
+# ggsave("private-data/figures/leeds-flow-bicycle.png")
