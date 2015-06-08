@@ -36,6 +36,7 @@ were as follows:
 ```{r, warning=FALSE}
 # Set local authority and ttwa zone names
 la # print the name of the local authority
+la <- tolower(la)
 dir.create(paste0("pct-data/", la)) # on a unix machine
 
 # Minimum flow between od pairs, subsetting lines. High means fewer lines.

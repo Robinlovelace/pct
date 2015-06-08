@@ -1,7 +1,7 @@
 la <- "manchester"
 
 library(knitr)
-knit(
+knitr::knit2html(
   input = "load.Rmd",
   output = paste0("pct-data/", la, "/model-output.html"),
   envir = globalenv()
