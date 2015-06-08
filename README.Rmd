@@ -13,28 +13,26 @@ The project is funded by the Department for Transport (DfT) so the initial
 case studies will be taken from the UK. However, it is expected that the 
 methods will be of use elsewhere. For that reason, attempts have been made
 to make the examples generalisable. All examples presented here
-are reproducible using code in this [repository](https://github.com/Robinlovelace/pct)
-and data stored in the [pct-data repository](https://github.com/Robinlovelace/pct-data/).
+are reproducible using code in this [repository](https://github.com/npct/pct)
+and data stored in the [pct-data repository](https://github.com/npct/pct-data/).
 
-So, if you run the following lines of code on your computer from within
-[this folder](https://github.com/Robinlovelace/pct/archive/master.zip), you should get the same result. Reproducible research!
+If you run the following lines of code on from a local copy of the [pct repository](https://github.com/npct/pct) you will get the same results.
 
 ## A simple example
 
 ```{r, message=FALSE}
-# system("git clone git@github.com:Robinlovelace/pct-data.git") # see set-up.R
 source("set-up.R")
 # load some flow data
-fleeds <- read.csv("pct-data/leeds/sample-leeds-centre-dists.csv")
+fleeds <- read.csv("README_files/data/sample-leeds-centre-dists.csv")
 # load the zones
-leeds <- readOGR("pct-data/leeds/", "leeds-central-sample")
+leeds <- readOGR("README_files/data", "leeds-central-sample")
 ```
 
 Now we can estimate propensity to cycle, by using the distance
 decay function from [(Iacono et al. 2010)](http://linkinghub.elsevier.com/retrieve/pii/S0966692309000210):
 
 $$
- p = \alpha \times e^{- \beta \times d}
+ p = \alpha e^{- \beta d}
 $$
 
 where $\alpha$, the proportion of made for the shortest distances
@@ -46,7 +44,7 @@ To implement this understanding in R code we can use the following function:
 ```{r}
 # Distance-dependent mode switch probs
 iac <- function(x, a = 0.3, b = 0.2){
-  a * exp(1)^(-b * x)
+  a * exp(-b * x)
 }
 ```
 
@@ -77,7 +75,7 @@ for(i in which(fleeds$Area.of.residence == leeds$geo_code[1])){
 Some of the examples pull data from the
 [CycleStreets.net API](http://www.cyclestreets.net/api/).
 Once you have a token, you can add it in Ubuntu as
-a session variable
+a session variable using the following in your terminal
 
 ```{r, engine='bash', eval = FALSE}
 echo "export CS_API_KEY='my_token'" >> ~/.profile
@@ -87,4 +85,20 @@ or system wide variable
 
 ```{r, engine='bash', eval = FALSE}
 sudo echo "export CS_API_KEY='my_token'" > /etc/profile.d/cyclestreet.sh
+```
+
+## Set up rgdal
+
+The version of gdal needs to be newer than 1.11
+```{r}
+rgdal::getGDALVersionInfo()
+# Should return GDAL 1.11.2, released 2015/02/10 (or newer)
+
+```
+
+It is possible to use the following Personal Package Archive (PPA) to get the latest version of gdal
+
+```{r, engine='bash', eval = FALSE}
+sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable && sudo apt-get update
+sudo apt-get install gdal-bin libgdal-dev
 ```
