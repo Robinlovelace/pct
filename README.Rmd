@@ -6,8 +6,11 @@ output:
 ---
 # pct: Propensity to cycle tool
 
-This repository allows users to estimate the 'propensity to cycle' between
-different origin-destination pairs.
+This repository allows users to estimate the potential
+for cycling to grow at the local level. Specifically,
+it allows estimation of the cycling potential between
+different origin-destination pairs under different
+scenarios.
 
 The project is funded by the Department for Transport (DfT) so the initial
 case studies will be taken from the UK. However, it is expected that the 
