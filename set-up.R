@@ -13,7 +13,11 @@ pkgs <- c(
   "raster",  # GIS functions
   "maptools", # GIS functions
   "stplanr", # Sustainable transport planning with R
-  "geojsonio" # loads geojsons
+  "geojsonio", # loads geojsons
+  "tidyr", # tidies up your data!
+  "readr", # reads your data fast
+  "scales", # for tweaks to ggmap
+  "knitr" # for knitting it all together
   )
 # Which packages do we require?
 reqs <- as.numeric(lapply(pkgs, require, character.only = TRUE))

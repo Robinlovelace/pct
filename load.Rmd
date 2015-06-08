@@ -9,7 +9,6 @@ output:
 ```{r, include=FALSE}
 start_time <- Sys.time() # for timing the script
 source("set-up.R") # pull in packages needed
-library(scales)
 ```
 
 This document was produced automatically at `r start_time`.
@@ -33,6 +32,11 @@ and can be modified by others provided attribution to the original.
 The preset values used to select the study area and filter the flow data
 were as follows:
 
+```{r, echo=FALSE}
+if(!exists("la")) la <- "manchester"
+```
+
+
 ```{r, warning=FALSE}
 # Set local authority and ttwa zone names
 la # print the name of the local authority
@@ -52,7 +56,6 @@ buff_dist <- 3 # buffer (km) used to select additional zones (often redundant)
 The input zones area are summarised in this section.
 
 ```{r plotzones, message=FALSE, warning=FALSE, results='hide'}
-library(rgdal)
 ukmsoas <- shapefile("pct-bigdata/national/msoas.shp")
 
 # Load population-weighted centroids
@@ -105,6 +108,15 @@ mzarea <- round(median(gArea(zones, byid = T) / 10000), 2) # average area of zon
 
 ```{r, echo=FALSE}
 flow <- readRDS("pct-bigdata/national/flow_eng_avlslope.Rds")
+
+# Load flow-sex data. See loading-data/load-flowsex.R - this is a local file
+if(file.exists("private-data/wu01bew_msoa_v1.csv")){
+  flowsex <- read_csv("private-data/wu01bew_msoa_v1.csv", col_names=F, skip=12)
+} else{
+  print("Warning: data for gender equality scenario missing")
+}
+
+names(flowsex) <- c("Area.of.residence", "Area.of.workplace", "All", "Male", "Female")
 
 # Subset by zones in the study area
 o <- flow$Area.of.residence %in% cents$geo_code
@@ -374,7 +386,6 @@ The correlation between fitted and observed cycling in the model is
 The values for the coefficients are presented in the table below.
 
 ```{r, echo=FALSE}
-library(knitr)
 kable(dfcos, digits = 3)
 ```
 
@@ -425,7 +436,6 @@ dfscen <- dfscen[-which(names(dfscen) == "slc")]
 dfscen <- dfscen[-which(names(dfscen) == "base_slc")]
 # head(dfscen)
 
-library(tidyr)
 dfsp <- gather(dfscen, key = scenario, value = slc, -dist_fast)
 # head(dfsp)
 dfsp$scenario <- factor(dfsp$scenario)
@@ -579,9 +589,7 @@ zones@data <- left_join(zones@data, cents@data[,!c_in_z])
 # 
 # # Save the script that loaded the lines into the data directory
 file.copy("load.Rmd", paste0("pct-data/", la, "/load.Rmd"))
-git 
 ```
-
 
 ## Time taken
 
