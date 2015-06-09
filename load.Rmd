@@ -33,7 +33,7 @@ The preset values used to select the study area and filter the flow data
 were as follows:
 
 ```{r, echo=FALSE}
-if(!exists("la")) la <- "manchester"
+if(!exists("la")) la <- "manchester" # create default LA name if none exists
 ```
 
 
@@ -45,8 +45,8 @@ la_path <- file.path("pct-data", la)
 if(!dir.exists(la_path)) dir.create(la_path) # on a unix machine
 
 # Minimum flow between od pairs, subsetting lines. High means fewer lines.
-mflow <- 30
-mdist <- 10 # maximum euclidean distance (km) for subsetting lines
+mflow <- 100
+mdist <- 15 # maximum euclidean distance (km) for subsetting lines
 min_zones <- 60 # minumum number of zones in study area before buffer used
 buff_dist <- 3 # buffer (km) used to select additional zones (often redundant)
 ```
@@ -63,6 +63,7 @@ cents <- readOGR("pct-bigdata/national/cents.geojson", layer = "OGRGeoJSON")
 
 # Load local authorities and districts
 las <- readOGR(dsn = "pct-bigdata/national/las-pcycle.geojson", layer = "OGRGeoJSON")
+sel_la <- grepl(pattern = la, x = las$NAME, ignore.case = T)
 ```
 
 
@@ -109,14 +110,16 @@ mzarea <- round(median(gArea(zones, byid = T) / 10000), 2) # average area of zon
 ```{r, echo=FALSE}
 flow <- readRDS("pct-bigdata/national/flow_eng_avlslope.Rds")
 
-# Load flow-sex data. See loading-data/load-flowsex.R - this is a local file
+# Load flow-sex data. This is a local file
 if(file.exists("private-data/wu01bew_msoa_v1.csv")){
   flowsex <- read_csv("private-data/wu01bew_msoa_v1.csv", col_names=F, skip=12)
 } else{
   print("Warning: data for gender equality scenario missing")
+  print("See loading-data/load-flowsex.R")
 }
 
-names(flowsex) <- c("Area.of.residence", "Area.of.workplace", "All", "Male", "Female")
+names(flowsex) <- c("Area.of.residence", "Area.of.workplace", "All.fs", "Male", "Female")
+flowsex$id <- paste(flowsex$Area.of.residence, flowsex$Area.of.workplace)
 
 # Subset by zones in the study area
 o <- flow$Area.of.residence %in% cents$geo_code
@@ -145,6 +148,8 @@ flow <- flow[sel, ]
 # nrow(flow) # new flow rate
 
 flow$id <- paste(flow$Area.of.residence, flow$Area.of.workplace)
+flowsex <- dplyr::select(flowsex, Male, Female, id)
+flow <- left_join(flow, flowsex, by = "id")
 
 l <- gFlow2line(flow = flow, zones = cents)
 plot(zones, col = "lightgrey")
@@ -243,6 +248,8 @@ if(length(grep("rf.Rds|rq.Rds", list.files(paste0("pct-data/", la)))) >= 2){
   # Process route data
   rf$length <- rf$length / 1000
   rq$length <- rq$length / 1000
+  rf$id <- l$id
+  rq$id <- l$id
   saveRDS(rf, paste0("pct-data/", la, "/rf_ttwa.Rds")) # save the routes
   saveRDS(rq, paste0("pct-data/", la, "/rq_ttwa.Rds"))
   saveRDS(l, paste0("pct-data/", la, "/l.Rds"))
@@ -422,7 +429,16 @@ l$npred <- exp(predict(mod_nat, flow))
 l$cdp_slc <-l$All * (l$clc + l$npred) # may be more that 1
 l$cdp_sic <- l$cdp_slc - l$Bicycle
 
-l$gendereq_slc <- l$All * (l$slc + runif(nrow(l), 0, max = 0.1))
+# gendereq scenario
+area_pcycle <- las@data[sel_la,]
+p_trips_male <- area_pcycle$clc_m # proportion of bicycle trips  by males
+
+clc_m <- l$Bicycle * p_trips_male
+pmale_c <- clc_m / l$Male
+slc_gendereq_f <- l$Female * pmale_c
+slc_gendereq <- clc_m + slc_gendereq_f
+
+l$gendereq_slc <- slc_gendereq
 l$gendereq_sic <- l$gendereq_slc - l$base_olc
 
 l$dutch_slc <- l$All * (l$slc + runif(nrow(l), 0, max = 0.2))
@@ -565,6 +581,7 @@ zones@data <- left_join(zones@data, cents@data[,!c_in_z])
 
 # 
 # # Save objects
+# Save objects # uncomment these lines to save model output
 # saveRDS(zones, paste0("pct-data/", la, "/z.Rds"))
 # saveRDS(cents, paste0("pct-data/", la, "/c.Rds"))
 # saveRDS(l, paste0("pct-data/", la, "/l.Rds"))
