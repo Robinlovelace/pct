@@ -45,7 +45,7 @@ la_path <- file.path("pct-data", la)
 if(!dir.exists(la_path)) dir.create(la_path) # on a unix machine
 
 # Minimum flow between od pairs, subsetting lines. High means fewer lines.
-mflow <- 100
+mflow <- 50
 mdist <- 15 # maximum euclidean distance (km) for subsetting lines
 min_zones <- 60 # minumum number of zones in study area before buffer used
 buff_dist <- 3 # buffer (km) used to select additional zones (often redundant)
@@ -55,7 +55,7 @@ buff_dist <- 3 # buffer (km) used to select additional zones (often redundant)
 
 The input zones area are summarised in this section.
 
-```{r plotzones, message=FALSE, warning=FALSE, results='hide'}
+```{r plotzones, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 ukmsoas <- shapefile("pct-bigdata/national/msoas.shp")
 
 # Load population-weighted centroids
@@ -293,12 +293,13 @@ histdf <- rbind(hdfl, hdfu)
 ggplot(histdf) +
   geom_histogram(aes(dist_fast, weight = All, fill = Scope, linetype = Scope),
     position = "identity", colour = "black", binwidth = 0.5) +
-  scale_fill_manual(values = c("blue", NA)) +
+  scale_fill_manual(values = c("lightblue", NA)) +
   scale_linetype(c(1, 2), guide = "none") +
   scale_y_continuous(labels = percent) + 
   xlab("Route distance (km)") + 
   ylab("Proportion of trips in each band (under 10 km)") + 
-  xlim(c(0,13))
+  xlim(c(0,13)) + 
+  theme_bw()
 
 pl5kmuk <- round(sum(luk$All[luk$dist_fast < 5]) /
     sum(luk$All) * 100, 2)
@@ -381,7 +382,8 @@ justdist <- rbind(justdist, justdist5)
 
 ggplot(justdist) +
   geom_line(aes(dist_fast, npred, color = model, linetype = type)) +
-  xlab("Route distance (km)") + ylab("Expected number cycling")
+  xlab("Route distance (km)") + ylab("Expected number cycling") +
+  theme_bw()
 
 dfcos <- round(rbind(coef(mod_nat), coef(mod_logsqr)), 3)
 dfcos <- cbind(Model = c("National", "Local"), dfcos)
@@ -466,7 +468,8 @@ ggplot(dfsp) +
   geom_freqpoly(aes(dist_fast, weight = slc,
     color = scenario), binwidth = 1) + 
   ylab("Total number of trips") +
-  xlim(c(0,12))
+  xlim(c(0,12)) +
+  theme_bw()
 
 dfsp$dist_band <- cut(dfsp$dist_fast, c(0, 2, 5, 10, 20))
 dfsum <- summarise(group_by(dfsp, scenario, dist_band), Percent = sum(slc) / sum(l$All))
@@ -477,6 +480,8 @@ dfspreadf <- c("Total", round(colSums(dfspread[2:7])* 100, 2))
 dfspread[3:7] <- do.call(cbind, apply(dfspread[3:7], 2, function(x) round(x / dfspread[2] * 100, 2)))
 dfspread <- rbind(dfspread, dfspreadf)
 dfspread <- dfspread[c(1, 2, 7, 3, 4, 5, 6)]
+dfspread$All <- round(as.numeric(dfspread$All) * 100, 1)
+dfspread$All[nrow(dfspread)] <- dfspread$All[nrow(dfspread)] / 100
 ```
 
 
@@ -556,7 +561,7 @@ cents_ttwa <- cents # copy cents data (we'll overwrite cents)
 # zones <- zones[cents,]
 ```
 
-```{r, echo=FALSE, fig.cap="Illustration of flows on travel network"}
+```{r, echo=FALSE, results='hide', fig.cap="Illustration of flows on travel network"}
 zbuf <- spTransform(zbuf, CRS("+init=epsg:4326"))
 plot(zbuf)
 plot(zones, add = T)
@@ -568,7 +573,7 @@ lines(rf, col = "blue")
 
 
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
 # # # # # # # # #
 # Save the data #
 # # # # # # # # #
@@ -582,12 +587,12 @@ zones@data <- left_join(zones@data, cents@data[,!c_in_z])
 # 
 # # Save objects
 # Save objects # uncomment these lines to save model output
-# saveRDS(zones, paste0("pct-data/", la, "/z.Rds"))
-# saveRDS(cents, paste0("pct-data/", la, "/c.Rds"))
-# saveRDS(l, paste0("pct-data/", la, "/l.Rds"))
-# saveRDS(rf, paste0("pct-data/", la, "/rf.Rds"))
-# saveRDS(rq, paste0("pct-data/", la, "/rq.Rds"))
-# saveRDS(mod_logsqr, paste0("pct-data/", la, "/model.Rds"))
+saveRDS(zones, paste0("pct-data/", la, "/z.Rds"))
+saveRDS(cents, paste0("pct-data/", la, "/c.Rds"))
+saveRDS(l, paste0("pct-data/", la, "/l.Rds"))
+saveRDS(rf, paste0("pct-data/", la, "/rf.Rds"))
+saveRDS(rq, paste0("pct-data/", la, "/rq.Rds"))
+saveRDS(mod_logsqr, paste0("pct-data/", la, "/model.Rds"))
 # 
 # # # Save data for wider ttwz area
 # # saveRDS(ttwa_zone, paste0("pct-data/", la, "/ttw_zone.Rds"))
