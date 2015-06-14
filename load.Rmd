@@ -60,6 +60,7 @@ ukmsoas <- shapefile("pct-bigdata/national/msoas.shp")
 
 # Load population-weighted centroids
 cents <- readOGR("pct-bigdata/national/cents.geojson", layer = "OGRGeoJSON")
+cents$geo_code <- as.character(cents$geo_code)
 
 # Load local authorities and districts
 las <- readOGR(dsn = "pct-bigdata/national/las-pcycle.geojson", layer = "OGRGeoJSON")
@@ -78,18 +79,20 @@ sel_la <- grepl(pattern = la, x = las$NAME, ignore.case = T)
 # # tmap::qtm(cuas2,fill = "clc")
 
 la_shape <- las[grep(pattern = la, x = las@data$NAME, ignore.case = T),]
-proj4string(la_shape) <- proj4string(ukmsoas)
-cents <- spTransform(cents, CRSobj = proj4string(ukmsoas))
 cents_la <- cents[la_shape,]
-zones <- ukmsoas[cents_la, ]
+zones <- ukmsoas[ukmsoas@data$geo_code %in% cents_la@data$geo_code, ]
 zbuf <- gBuffer(zones, width = buff_dist * 1000) # create la zone outline
+
+# convert to osbg
+cents <- spTransform(cents, CRSobj = proj4string(ukmsoas))
+
 
 # Extract zones to plot
 # zones <- ukmsoas[ grep(la, ukmsoas$geo_label), ] # extract by name
 
 if(nrow(zones) < min_zones){
   cents_la <- cents[zbuf, ]
-  zones <- ukmsoas[cents_la, ]
+  zones <- ukmsoas[ukmsoas@data$geo_code %in% cents_la@data$geo_code , ]
 }
 
 cents <- cents_la

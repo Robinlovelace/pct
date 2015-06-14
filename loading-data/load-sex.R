@@ -4,7 +4,7 @@ source("set-up.R")
 library(downloader)
 # download("http://census.edina.ac.uk/ukborders/easy_download/prebuilt/shape/England_lad_2011_gen_clipped.tar.gz", "private-data/England_lad_2011_gen_clipped.tar.gz")
 # untar(tarfile = "private-data/England_lad_2011_gen_clipped.tar.gz", exdir = "private-data/")
-gMapshape(dsn = "private-data/England_lad_2011_gen_clipped.shp", 4)
+# gMapshape(dsn = "private-data/England_lad_2011_gen_clipped.shp", 4)
 las <- shapefile("private-data/England_lad_2011_gen_clippedmapshaped_4%.shp")
 plot(las)
 las@data <- rename(las@data, GeographyCode = CODE)
@@ -16,7 +16,7 @@ library(readr)
 
 # link geographical zones to data
 # https://wicid.ukdataservice.ac.uk/cider/info.php?geogtype=96&lablist=1
-linkla <- read_csv("private-data/national/la-old-new.csv", col_types = "icccc")
+linkla <- read_csv("pct-bigdata/national/la-old-new.csv", col_types = "icccc")
 head(linkla)
 linkla <- rename(linkla, GeographyCode = ONS)
 df <- read_csv("private-data/DC7101EWla_2011CMLADH_NAT_LAD_REL_1.1.1_20140228-1007-06168/DC7101EWla_2011CMLADH_NAT_LAD_REL_1.1.1/DC7101EWlaDATAA5.CSV")

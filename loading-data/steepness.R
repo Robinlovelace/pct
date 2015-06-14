@@ -48,14 +48,14 @@ for(i in tiles){
 
 # For UK
 # which tiles are you interested in?
-# tiles <- c("srtm_35_02.zip", "srtm_36_02.zip", "srtm_37_02.zip", "srtm_35_01.zip", "srtm_36_01.zip" )
-# paste0(url, tiles)
+tiles <- c("srtm_35_02.zip", "srtm_36_02.zip", "srtm_37_02.zip", "srtm_35_01.zip", "srtm_36_01.zip" )
+paste0(url, tiles)
 
 # # Download files in a loop - warning: takes some time!
-# for(i in tiles){
-#   download.file(paste0(url, i), destfile = paste0("private-data/", i), method = "curl")
-#   unzip(paste0("private-data/", i), exdir = "private-data/")
-# }
+for(i in tiles){
+  # download.file(paste0(url, i), destfile = paste0("private-data/", i), method = "curl")
+  unzip(paste0("private-data/", i), exdir = "private-data/")
+}
 
 # # # # # # # #  #
 # Load srtm data #
@@ -68,7 +68,7 @@ for(i in f[-1]){
 }
 
 proj4string(uksrtm) <- CRS("+init=epsg:4326")
-writeRaster(uksrtm, filename = "/tmp/nl-alts.geotiff")
+writeRaster(uksrtm, filename = "/media/robin/data/data-to-add/ukalt.asc")
 uksrtm2 <- projectRaster(uksrtm, crs = CRS("+init=epsg:27700")) # warning: not necessary, computationally intensive
 uksrtm2 # to find resolution
 
@@ -88,9 +88,8 @@ eng_lsoa_cents <- gCentroid(eng_lsoa, byid = T)
 # Convert height to slope #
 # # # # # # # # # # # # # #
 
-# ukslope <- terrain(uksrtm, opt = "slope", unit = "degrees")
-# writeRaster(ukslope, filename = "private-data/dutchslope.asc")
-# writeRaster(ukslope, filename = "private-data/dutchslope.tif")
+ukslope <- terrain(uksrtm, opt = "slope", unit = "degrees")
+writeRaster(ukslope, filename = "/media/robin/data/data-to-add/ukslope.asc")# writeRaster(ukslope, filename = "private-data/dutchslope.tif")
 # ukslope <- raster("private-data/ukslope.grd")
 # system.time(
 # avslope <- raster::extract(ukslope, eng_lsoa, method = 'bilinear', fun = mean, na.rm = T)
