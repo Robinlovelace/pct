@@ -2,14 +2,17 @@
 title: Where to build bike paths? A generalisable flow-level model of cycling uptake
   for sustainable transport planning
 author: "Robin Lovelace"
+header-includes:
+  - \usepackage{amsmath}
 date: "April 12, 2015"
 output:
   pdf_document:
     fig_caption: yes
+    keep_tex: yes
     number_sections: yes
     toc: yes
   word_document: default
-bibliography: ~/Documents/Transport.bib
+bibliography: pctbib.bib
 ---
 
 ```{r, echo=FALSE, include=FALSE}
@@ -308,10 +311,8 @@ $SLC_f$ may rise above $SLC_m$ in this case.
 per flow who cycle that becomes equal, i.e.
 
 $$
-\begin{align*}
-pcycle(gendereq)_f &= pcycle_m \\
-\frac{SLC(gendereq)_f}{tflowf} &= \frac{olc_m}{tflow_m}
-\end{align*}
+pcycle(gendereq)_f = pcycle_m \\
+\frac{SLC(gendereq)_f}{tflowf} = \frac{olc_m}{tflow_m}
 $$
 
 where $olc_m$ is the observed level of males cycling,
@@ -329,14 +330,12 @@ $$
 and therefore the total flow for gender equality $SLC(gendereq)$would be
 
 $$
-\begin{align*}
-SLC(gendereq) &= olc_m + SLC(gendereq)_f\\
-              &= olc * pcycle(z)_m * \left(1 + \frac{tflow_f}{tflow_m}\right)
-\end{align*}
+SLC(gendereq) = olc_m + SLC(gendereq)_f\\
+              = olc * pcycle(z)_m * \left(1 + \frac{tflow_f}{tflow_m}\right)
 $$
 
 ```{r, echo=FALSE, fig.cap="Cycling and the gender balance of cycling in England. The choropleth maps illustrate the spatial distribution of the two variables. The scatter plot illustrates the relationship between the two variables cycle commuting (x axis) against the proportion of commuter cyclists who are male (y axis) for all 326 Local Authorities (including Districts) in the UK."}
-grid.raster(readPNG("/home/robin/Dropbox/DfT bid/figures/las-gender-pcycle.png"))
+grid.raster(readPNG("../figures/las-gender-pcycle.png"))
 ```
 
 To illustrate how this method works in practice, imagine a flow in which
@@ -348,10 +347,8 @@ The first stage is to break $tflow$ down into male and female constituents,
 of 30 and 20, respectively.  Then
 
 $$
-\begin{align*}
-SLC(gendereq)_f &= 5* 0.75 * \left(1+ \frac{20}{30} \right) \\
-                &= 6.25
-\end{align*}
+SLC(gendereq)_f = 5* 0.75 * \left(1+ \frac{20}{30} \right) \\
+                = 6.25
 $$
 
 ```{r, echo=FALSE}
@@ -407,3 +404,8 @@ This Appendix summarises the work from the perspective of practitioners
 by describing how the NPCT may be used to inform the decision-making process.
 
 # References
+
+```{r, echo=FALSE, eval=FALSE}
+system("bibtool -x documents/flow-model.aux -o ~/Documents/Transport.bib")
+```
+

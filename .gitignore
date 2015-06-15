@@ -12,6 +12,10 @@ figure
 *shinyapps*
 *.docx
 *.tex
+*.aux
+*.log
+*.gz
+*.toc
 *.mdb
 *.accb
 *.orig
