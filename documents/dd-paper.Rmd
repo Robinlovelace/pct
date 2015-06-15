@@ -1,7 +1,7 @@
 ---
 title: 'Distance decay: exploring a universal concept for modelling transport systems'
 author: "Robin Lovelace"
-cls: ~/Dropbox/Templates/citation-styles/journal-of-transport-geography.csl
+cls: journal-of-transport-geography.csl
 output:
   html_document: 
     keep_md: yes
@@ -10,7 +10,7 @@ output:
   pdf_document:
     fig_caption: yes
     toc: yes
-bibliography: ~/Documents/Transport.bib
+bibliography: Transport.bib
 ---
 
 ```{r, include=FALSE}
