@@ -1,0 +1,34 @@
+---
+title: "newton-mobility"
+author: "Robin Lovelace"
+output: word_document
+---
+
+## Field of Specialisation*
+
+Please state the applicant's field of specialisation (100 characters including spaces).
+
+## Publications*
+
+Provide details of authors, titles, and reference of five of your recent publications in refereed journals in reverse chronological order (max 1600 characters including spaces).
+
+## Project Title
+Give the full title of your proposed project (max 100 characters including spaces).
+
+## Research Aims
+
+State scientific aims (max 800 characters including spaces).
+
+## Research proposal
+
+Outline the nature and purpose of your research project including a description of the experimental methods and techniques you will be using (max 4000 characters including spaces).
+
+## Resources required
+
+List other project participants from both teams, their current academic role/post and why you wish to include them on the project (max 2500 characters including spaces). NOTE: There are no restrictions on the number of participants per team but all participants should be working/studying in a university or research institute and only participants working within the applicant’s and co-applicant’s research group directly involved in the collaborative project are eligible to claim travel and subsistence against the award should the application be successful.
+
+
+## Lay Report
+
+Provide a lay summary of your proposed project. This should be understandable by an A-level science student. Explain why you have chosen to work in this subject area and what it is about your proposed research that you find particularly exciting, interesting or important. Also explain the potential impact or wider benefits to society of your research (max of 3,500 characters including spaces).
+

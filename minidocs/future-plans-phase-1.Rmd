@@ -1,6 +1,6 @@
 ---
 title: "Options for the NPCT interactive tool, Phase II"
-output: pdf_document
+output: word_document
 ---
 
 # Additional features
