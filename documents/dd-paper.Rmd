@@ -286,7 +286,7 @@ We use a variety of datasets for this study. Primarily, we use data on distance
 vs *clc* (current level of cycling) derived from the census (Fig. 1).
 
 ```{r, fig.cap="The relationship between distance and current level of cycling amongst 8 different groups."}
-f <- "/home/robin/Dropbox/DfT bid/Data analysis/Test_DD/TestPlanck_150303/150304_SegmentationCompare_8cat.xlsx"
+f <- "data-sources/150304_SegmentationCompare_8cat.xlsx"
 nts_seg <- read.xls(f, sheet = 2) # load in the .xlsx file with dist:pcycle values
 nts_seg <- rename(nts_seg, dist = X) # rename the "X" column as dist (miles)
 ntss <- gather(nts_seg, segment, clc, -dist)

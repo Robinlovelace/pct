@@ -10,7 +10,7 @@ cents@data <- rename(cents@data, geo_code = MSOA11CD)
 # From http://www.ons.gov.uk/ons/guide-method/geography/products/census/spatial/centroids/index.html
 # oaps <- shapefile("private-data/centroids/OA_2011_EW_PWC.shp")
 
-oagen_mode <- read.csv("/media/robin/data/data-to-add/msoa-2011-sex-method-ttw-nomis-lc7103ew.csv", stringsAsFactors = F)
+oagen_mode <- read.csv("private-data/msoa-2011-sex-method-ttw-nomis-lc7103ew.csv", stringsAsFactors = F)
 # oagen_mode <- read.csv("private-data/LC7103EW_2011STATH_NAT_OA_REL_1.1.1_20140319-0942-19509/LC7103EW_2011STATH_NAT_OA_REL_1.1.1/LC7103EWDATA05.CSV", stringsAsFactors = F)
 names(oagen_mode)
 oagen_mode$fem <- oagen_mode$Sex..Females..Method.of.travel.to.work..2001.specification...All.other.methods.of.travel.to.work..measures..Value / (oagen_mode$Sex..Males..Method.of.travel.to.work..2001.specification...All.other.methods.of.travel.to.work..measures..Value + oagen_mode$Sex..Females..Method.of.travel.to.work..2001.specification...All.other.methods.of.travel.to.work..measures..Value)
