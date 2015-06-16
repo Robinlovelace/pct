@@ -1,6 +1,6 @@
 ---
-title: "NPCT model results"
-author: "Robin Lovelace"
+title: "National Propensity to Cycle Tool - local results"
+author: "Created by the NPCT team"
 output: 
   html_document: 
     fig_caption: yes
@@ -33,7 +33,7 @@ The preset values used to select the study area and filter the flow data
 were as follows:
 
 ```{r, echo=FALSE}
-if(!exists("la")) la <- "manchester" # create default LA name if none exists
+if(!exists("la")) la <- "leeds" # create default LA name if none exists
 ```
 
 
@@ -45,7 +45,7 @@ la_path <- file.path("pct-data", la)
 if(!dir.exists(la_path)) dir.create(la_path) # on a unix machine
 
 # Minimum flow between od pairs, subsetting lines. High means fewer lines.
-mflow <- 50
+mflow <- 30
 mdist <- 15 # maximum euclidean distance (km) for subsetting lines
 min_zones <- 60 # minumum number of zones in study area before buffer used
 buff_dist <- 3 # buffer (km) used to select additional zones (often redundant)
@@ -110,7 +110,7 @@ mzarea <- round(median(gArea(zones, byid = T) / 10000), 2) # average area of zon
 
 ## Input flow data
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, results='hide'}
 flow <- readRDS("pct-bigdata/national/flow_eng_avlslope.Rds")
 
 # Load flow-sex data. This is a local file
@@ -342,63 +342,12 @@ regression models operating at the flow level are used.
 These can be seen in the model script which is available
 [online](https://github.com/npct/pct/blob/master/models/aggregate-model.R).
 
-```{r, echo=FALSE, fig.cap="National vs local cycling characteristics with hilliness, captured in the model results"}
+```{r, echo=FALSE}
 source("models/aggregate-model.R") # this model creates the variable 'slc'
 cormod <- cor(flow$clc, mod_logsqr$fitted.values) # crude indication of goodness-of-fit
 # summary(mod_logsqr)
 
 mod_nat <- readRDS("pct-bigdata/national/mod_logsqr_national_8.Rds")
-justdist <- data.frame(
-  dist_fast = 1:20,
-  avslope = 0,
-  type = "Flat"
-)
-
-justdist2 <- data.frame(
-  dist_fast = 1:20,
-  avslope = 2,
-  type = "Hilly"
-)
-
-justdist3 <- data.frame(
-  dist_fast = 1:20,
-  avslope = 0,
-  type = "Flat"
-)
-
-justdist4 <- data.frame(
-  dist_fast = 1:20,
-  avslope = 2,
-  type = "Hilly"
-)
-
-justdist5 <- rbind(justdist3, justdist4)
-justdist5$model <- "Local"
-
-justdist <- rbind(justdist, justdist2)
-justdist$model <- "National"
-
-justdist$npred <- exp(predict(mod_nat, justdist))
-justdist5$npred <- exp(predict(mod_logsqr, justdist))
-
-justdist <- rbind(justdist, justdist5)
-
-ggplot(justdist) +
-  geom_line(aes(dist_fast, npred, color = model, linetype = type)) +
-  xlab("Route distance (km)") + ylab("Expected number cycling") +
-  theme_bw()
-
-dfcos <- round(rbind(coef(mod_nat), coef(mod_logsqr)), 3)
-dfcos <- cbind(Model = c("National", "Local"), dfcos)
-```
-
-The correlation between fitted and observed cycling in the model is
-`r round(cormod, 2)`, compared with 0.39 nationally.
-
-The values for the coefficients are presented in the table below.
-
-```{r, echo=FALSE}
-kable(dfcos, digits = 3)
 ```
 
 ## Cycling in the study area
@@ -446,10 +395,18 @@ slc_gendereq <- clc_m + slc_gendereq_f
 l$gendereq_slc <- slc_gendereq
 l$gendereq_sic <- l$gendereq_slc - l$base_olc
 
-l$dutch_slc <- l$All * (l$slc + runif(nrow(l), 0, max = 0.2))
+# Dutch scenario - coefficients calculated from Dutch NTS by A. Goodman
+mod_dutch <- mod_nat
+mod_dutch$coefficients[1] <- -0.3253
+mod_dutch$coefficients[2] <- -0.3543
+mod_dutch$coefficients[3] <- 0.7750
+l$dutch_slc <- l$All * exp(predict(mod_dutch, flow))
 l$dutch_sic <- l$dutch_slc - l$base_olc
 
-l$ebike_slc <- l$All * (l$slc + runif(nrow(l), 0, max = 0.3))
+mod_ebike <- mod_dutch
+mod_ebike$coefficients[2] <- -0.3
+
+l$ebike_slc <- l$All * exp(predict(mod_ebike, flow))
 l$ebike_sic <- l$ebike_slc - l$base_olc
 
 dfscen <- dplyr::select(l@data, contains("slc"), All, olc = Bicycle, dist_fast)
@@ -574,7 +531,62 @@ lines(rq, col = "green")
 lines(rf, col = "blue")
 ```
 
+## Flow model results
 
+To estimate the potential rate of cycling under different scenarios
+regression models operating at the flow level are used.
+These can be seen in the model script which is available
+[online](https://github.com/npct/pct/blob/master/models/aggregate-model.R).
+
+```{r, echo=FALSE, fig.cap="National vs local cycling characteristics with hilliness, captured in the model results"}
+source("models/aggregate-model.R") # this model creates the variable 'slc'
+cormod <- cor(flow$clc, mod_logsqr$fitted.values) # crude indication of goodness-of-fit
+# summary(mod_logsqr)
+
+mod_nat <- readRDS("pct-bigdata/national/mod_logsqr_national_8.Rds")
+
+justdist1 <- data.frame(
+  dist_fast = 1:20,
+  avslope = 1,
+  type = "Flat")
+
+justdist2 <- justdist1
+justdist2$avslope <- 1.5
+justdist2$type <- "Hilly"
+
+justdist <- rbind(justdist1, justdist2) # for prediction
+justdist$model <- "National"
+
+justdist5 <- justdist6 <- justdist7 <- justdist # replicate
+justdist5$model <- "Local"
+justdist6$model <- "Dutch"
+justdist7$model <- "Ebike"
+
+justdist$npred <- exp(predict(mod_nat, justdist))
+justdist5$npred <- exp(predict(mod_logsqr, justdist))
+justdist6$npred <- exp(predict(mod_dutch, justdist))
+justdist7$npred <- exp(predict(mod_ebike, justdist))
+
+justdist <- rbind(justdist, justdist5, justdist6, justdist7)
+
+ggplot(justdist) +
+  geom_line(aes(dist_fast, npred, color = model, linetype = type),
+    size = 1.5) +
+  xlab("Route distance (km)") + ylab("Expected number cycling") +
+  theme_bw()
+
+dfcos <- round(rbind(coef(mod_nat), coef(mod_logsqr)), 3)
+dfcos <- cbind(Model = c("National", "Local"), dfcos)
+```
+
+The correlation between fitted and observed cycling in the model is
+`r round(cormod, 2)`, compared with 0.39 nationally.
+
+The values for the coefficients are presented in the table below.
+
+```{r, echo=FALSE}
+kable(dfcos, digits = 3)
+```
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
 # # # # # # # # #
