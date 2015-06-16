@@ -33,7 +33,7 @@ The preset values used to select the study area and filter the flow data
 were as follows:
 
 ```{r, echo=FALSE}
-if(!exists("la")) la <- "leeds" # create default LA name if none exists
+if(!exists("la")) la <- "coventry" # create default LA name if none exists
 ```
 
 
@@ -45,10 +45,10 @@ la_path <- file.path("pct-data", la)
 if(!dir.exists(la_path)) dir.create(la_path) # on a unix machine
 
 # Minimum flow between od pairs, subsetting lines. High means fewer lines.
-mflow <- 30
+mflow <- 50
 mdist <- 15 # maximum euclidean distance (km) for subsetting lines
 min_zones <- 30 # minumum number of zones in study area before buffer used
-buff_dist <- 3 # buffer (km) used to select additional zones (often redundant)
+buff_dist <- 10 # buffer (km) used to select additional zones (often redundant)
 ```
 
 ## Input zone data
