@@ -4,11 +4,11 @@ title: 'Estimating propensity to cycle in Sao Paulo: a flow-level model and inte
 author: "Robin Lovelace"
 date: "April 12, 2015"
 output:
+  word_document: default
   pdf_document:
     fig_caption: yes
     number_sections: yes
     toc: yes
-  word_document: default
 bibliography: ~/Documents/Transport.bib
 ---
 

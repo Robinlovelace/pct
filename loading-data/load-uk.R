@@ -13,21 +13,34 @@ library("raster")
 las <- readOGR(dsn = "pct-bigdata/national/las-pcycle.geojson", layer = "OGRGeoJSON")
 nrow(las) # 326 las (including districts) in England
 
-download.file(url = "https://geoportal.statistics.gov.uk/Docs/Boundaries/County_and_unitary_authorities_(E+W)_2012_Boundaries_(Full_Extent).zip", destfile = "cuas.zip", method = "wget")
-unzip("cuas.zip")
-cuas <- shapefile("CTYUA_DEC_2012_EW_BFE.shp")
-object.size(cuas) / 1000000 # 22 mb: too big!
-gMapshape("CTYUA_DEC_2012_EW_BFE.shp", percent = 3)
-cuas <- shapefile("CTYUA_DEC_2012_EW_BFEmapshaped_3%.shp")
+# download.file(url = "https://geoportal.statistics.gov.uk/Docs/Boundaries/County_and_unitary_authorities_(E+W)_2012_Boundaries_(Full_Extent).zip", destfile = "cuas.zip", method = "wget")
+# download.file(url = "http://census.edina.ac.uk/ukborders/easy_download/prebuilt/shape/England_ct_2011_gen_clipped.zip", destfile = "cuas.zip", method = "wget")
+
+
+unzip("cuas.zip", exdir = "private-data/")
+file.remove("cuas.zip")
+lfs <- list.files(path = "private-data/", pattern = "CTYU", full.names = T)
+gMapshape("private-data/CTYUA_DEC_2012_EW_BFE.shp", percent = 3)
+cuas <- shapefile("pct-bigdata/national/CTYUA_DEC_2012_EW_BFEmapshaped_3%.shp")
+# writeOGR(obj = cuas, dsn = "pct-bigdata/national/cuas", layer = "OGRGeoJSON", driver = "GeoJSON")
+
+cuas <- shapefile("pct-bigdata/national/cuas.shp")
+head(cuas)
+cuas <- cuas[grep(pattern = "E", x = cuas@data$CTYUA12CD), ]
+shapefile(x = cuas, file = "pct-bigdata/national/cuas.shp")
+# geojson_write(cuas, file = "pct-bigdata/national/cuas-jsonio.geojson")
+# cuas <- readOGR(dsn = "pct-bigdata/national/cuas", layer = "OGRGeoJSON")
+# cuas <- geojson_read("pct-bigdata/national/cuas.geojson", what = "sp") # fails
+# file.remove(lfs)
+qtm(cuas)
+nrow(cuas)
 object.size(cuas) / 1000000 # 1 mb now!
-plot(cuas)
 nrow(cuas) # only 174 counties and unitary authorities
-torem <- list.files(pattern = "ua|UA")
-file.remove(torem)
 bbox(cuas)
 cuas <- spTransform(cuas, CRSobj = CRS("+init=epsg:4326"))
+qtm(cuas)
 geojson_write(input = cuas, file = "pct-bigdata/national/cuas.geojson")
-
+nrow(cuas)
 
 # # # # # # # # #
 # lsoa dataset  #

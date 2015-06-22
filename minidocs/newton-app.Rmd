@@ -2,26 +2,147 @@
 title: "newton-mobility"
 author: "Robin Lovelace"
 output: word_document
+bibliography: ../documents/Transport.bib
 ---
+
+Application details:
+
+This needs to be submitted by **3pm** UK time on 18th June.
+
+The form can be found here: https://e-gap.royalsociety.org/
+
+The 'Organisations' tab needs to be set to University of Leeds (see below).
+
+The 'Departmental Support' tab needs to have support from 2 'heads of school': one in the UK (Dr David Bell - D.J.Bell@leeds.ac.uk ) and one in 
+Brazil.
+
+## Financial details
+
+It is suggested that the following financial details are used:
+
+Flights to Brazil: £1,200 - This is required for face-to-face contact.
+
+Subsistance: £30 per day for 60 days = £1,800.
+
+Research Costs: £0 - paid for by MobiLab
+
+
 
 ## Field of Specialisation*
 
-Please state the applicant's field of specialisation (100 characters including spaces).
+*Please state the applicant's field of specialisation (100 characters including spaces).*
 
-## Publications*
+Transport modelling and geo-computation for sustainable transport planning
 
-Provide details of authors, titles, and reference of five of your recent publications in refereed journals in reverse chronological order (max 1600 characters including spaces).
+## Publications
+
+Lovelace, R., Birkin, M., Ballas, D., van Leeuwen, E., & Birkin, M. (2015). Evaluating the performance of Iterative Proportional Fitting for spatial microsimulation: new tests for an established technique. Journal of Artificial Societies and Social Simulation, 18(2), 21. Retrieved from http://jasss.soc.surrey.ac.uk/18/2/21.html
+
+Lovelace, R., Roberts, H., & Kellar, I. (2015). Who, where, when: the demographic and geographic distribution of bicycle crashes in West Yorkshire. Transportation Research Part F: Traffic Psychology and Behaviour. Retrieved from http://eprints.whiterose.ac.uk/83930/
+
+Crawford, F., & Lovelace, R. (2015). The benefits of getting England cycling. Retrieved from http://www.ctc.org.uk/news/20150120-research-shows-growth-cycling-worth-%C2%BC-trillion-england%E2%80%99s-economy
+
+Lovelace, R., Ballas, D., & Watson, M. (2014). A spatial microsimulation approach for the analysis of commuter patterns: from individual to regional levels. Journal of Transport Geography, 34(0), 282–296. doi:http://dx.doi.org/10.1016/j.jtrangeo.2013.07.008
+
+Lovelace, R., Beck, S. B. M. B. M., Watson, M., & Wild, A. (2011). Assessing the energy implications of replacing car trips with bicycle trips in Sheffield, UK. Energy Policy, 39(4), 2075–2087. doi:10.1016/j.enpol.2011.01.051
+
+
 
 ## Project Title
-Give the full title of your proposed project (max 100 characters including spaces).
+
+Estimating propensity to cycle in Sao Paulo: a flow-level model and interactive tool
 
 ## Research Aims
 
 State scientific aims (max 800 characters including spaces).
 
+The overall goal of this placement is to foster sharing of expertise
+in methods for sustainable transport planning between Brazil and the
+UK. This will be acheived through the following
+sub-aims:
+
+- To demonstrate the applicability of 
+the National Propensity to Cycle Tool in new
+contexts, specifically in rapidly developing 'mega cities' such as Sao Paulo.
+
+- To provide a mechanism for the transfer of skills and methodological
+expertise between researchers in the UK and
+Brazil, including the creation of an interactive on-line planning support
+tool in Sao-Paulo, the first of its kind in Brazil.
+
+- To create foundations for further work, including the development of
+open source software for urban development that can be used worldwide.
+
 ## Research proposal
 
-Outline the nature and purpose of your research project including a description of the experimental methods and techniques you will be using (max 4000 characters including spaces).
+*Outline the nature and purpose of your research project including a description of the experimental methods and techniques you will be using (max 4000 characters including spaces).*
+
+The aim of the international placement is to
+implement, refine and further
+develop work begun in the UK to create a National Propensity to Cycle Tool
+(NPCT). Funded by the English Department for Transport
+(DfT), the NPCT project aims to provide new evidence on the question of 
+*where* new sustainable transport interventions should be prioritised.
+The flagship output of the NPCT is an interactive on-line planning
+tool, which provides real-time feedback to transport planners for exploring
+current rates of cycling and where this could be boosted at the city level.
+
+From an *academic perspective*, the project will fill a research gap in the transport
+evaluation and modelling literature.
+Active travel research has traditionally focussed on overall cost:benefit ratios.
+The impact of the location of new infrastructure on these ratios has
+been relatively under-studied, especially in the context of active travel.
+
+*Methodologically*, the project will also break new ground as its main output
+will be an interactive on-line map, available to transport planners
+(and eventually the public) to assist with open decision-making processes.
+Specifically, the use of the recently developed R package **shiny** in tandem
+with the JavaScript library **leaflet** is a first in the field.
+
+The extension of the NPCT project to Sao Paulo has substantial
+*policy implications*. In the long-run, demonstration of the methodology in
+a developing world context, in addition to its utilisation in the West, should
+help with the deployment of interactive on-line transport planning tools
+for improved active travel provision worldwide. There are strong reasons for
+choosing Sao Paulo as the next place outside of Europe for the tool's deployment.
+There is political momentum behind the idea of
+increased active travel in Sao Paulo and evidence that
+walking and cycling is associated with health benefits from a sample of
+3 cities in Brazil [@Reis2013].
+
+Underlying the estimates of increased cycling level is a General Linear regression
+Model (GLM), which uses a number of explanatory variables to estimate the expected
+proportion of trips that *should* be made between all OD pairs in the study area.
+At present distance, hilliness, age distribution and gender split of trips are
+the input variables. This model could be expanded
+to include the quality of
+transport network, the level of car-use and the accident rate.
+
+The flows are allocated to the travel network using the Application Programming
+Interface (API) of
+[CycleStreets.net](http://www.cyclestreets.net/api/), an on-line journey planner
+developed by cyclists for cyclists. A unique feature of this method is that it
+allows routes to be allocated for the *fastest*, *quietest* and *most balanced*
+journeys. This is useful for transport planners seeking to assess on which
+roads new cycle paths are most urgently needed (using the fastest route)
+and how much of a detour cyclists must currently take to find a 'quiet' path
+(assuming there is a quiet path available at all). 
+
+Although the CycleStreets.net API currently works only for the UK and parts of
+continental Europe, it is open software and based on OpenStreetMap data. A version
+could be created for Brazil. Alternatively, a third-part route planner such as
+OSRM^[See http://project-osrm.org/] or GraphHopper^[See https://graphhopper.com/]
+could be used.
+
+Most of the code underlying the NPCT project is open source, so the method is
+easily reproducible.^[See https://github.com/npct] In addition, an R package is
+under development to help automate some of the data processing and
+analysis that underlies the NPCT methodology.^[See https://github.com/Robinlovelace/stplanr]
+
+Based on the above, it is proposed that Dr Robin Lovelace visits the
+MobiLab research centre in Sao Paulo for a 1 month placement. This will allow
+for the development of an NPCT method for Sao Paulo and potentially other
+cities in Latin America.
 
 ## Resources required
 
@@ -30,5 +151,32 @@ List other project participants from both teams, their current academic role/pos
 
 ## Lay Report
 
-Provide a lay summary of your proposed project. This should be understandable by an A-level science student. Explain why you have chosen to work in this subject area and what it is about your proposed research that you find particularly exciting, interesting or important. Also explain the potential impact or wider benefits to society of your research (max of 3,500 characters including spaces).
+*Provide a lay summary of your proposed project. This should be understandable by an A-level science student. Explain why you have chosen to work in this subject area and what it is about your proposed research that you find particularly exciting, interesting or important. Also explain the potential impact or wider benefits to society of your research (max of 3,500 characters including spaces).*
+
+This document sets out a research plan to deploy the NPCT methodology
+in Soa Paulo. The work can be justified on academic, methodological and
+policy grounds.
+
+Specifically, the research seeks to identify travel corridors and routes
+along the transport network where new **bicycle paths** would
+have a greatest positive impact on citizens. The focus
+on infrastructure at the city level is timely because of the rapid
+roll-out of pro-cycling interventions worldwide, primarily in terms of bicycle
+paths and bicycle share schemes
+[@OBrien2013]. In Latin America alone,
+substantial capital injections over the last 5 years have boosted cycling in
+many cities, including
+Bogotá, Rio de Janeiro and Sao Paulo [@Mosquera2012; @Jones2013b].
+However, the speed of investment
+meant that there has been limited time to decide precisely where the new
+network should be place to maximise benefit-cost ratios. 
+
+There is clearly a need for local authorities to strategically plan and
+justify future pro-walking and cycling investments worldwide.
+The NPCT method is ideally suited to meet this need and Sao Paulo is
+the ideal city in which to demonstrate the method.
+
+
+
+
 

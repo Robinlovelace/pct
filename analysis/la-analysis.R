@@ -3,11 +3,15 @@ source("set-up.R")
 
 # downloader::download("http://census.edina.ac.uk/ukborders/easy_download/prebuilt/shape/infuse_dist_lyr_2011_clipped.zip", "lamerged.zip")
 # unzip("lamerged.zip", exdir = "pct-bigdata/national/")
+# downloader::download("http://census.edina.ac.uk/ukborders/easy_download/prebuilt/shape/England_lad_2011_gen_clipped.tar.gz", destfile = "private-data/")
+# unzip("private-data/Eng")
 
-# las <- readOGR("pct-bigdata/national/las-pcycle.geojson", what = "sp")
+las <- geojson_read("pct-bigdata/national/las-pcycle.geojson", what = "sp")
 # gMapshape("pct-bigdata/national/infuse_dist_lyr_2011_clipped.shp", percent = 0.1)
-las <- shapefile("pct-bigdata/national/infuse_dist_lyr_2011_clippedmapshaped_0.1%.shp")
+# las <- shapefile("pct-bigdata/national/infuse_dist_lyr_2011_clippedmapshaped_0.1%.shp")
 
+cuas <- shapefile("pct-bigdata/national/cuas.shp")
+qtm(cuas)
 plot(las)
 nrow(las)
 names(las)
@@ -53,10 +57,29 @@ allnames[1:50]
 names(ldf)[4:53]
 names(ldf)[(1:99) + 3] <- allnames
 
+lasen <- shapefile("private-data/England_lad_2011_gen_clippedmapshaped_4%.shp")
+lasen@data <- rename(lasen@data, geo_code = CODE)
+head(lasen)
+names(las)
+head(las)
+
+# head(las@data$CODE)
+if(is.null(las@data$geo_code)){
+  las@data <- rename(las@data, geo_code = CODE)
+}
 head(las@data$geo_code)
+lasen@data <- left_join(lasen@data, las@data)
 ldf <- rename(ldf, geo_code = CODE)
 head(ldf$geo_code)
+las <- lasen
+
+
 ldf2 <- left_join(las@data, ldf)
+summary(ldf2)
+summary(las$geo_code == ldf2$geo_code)
+head(las)
+las@data <- left_join(las@data, ldf2)
+
 
 # Debugging join to contain no data
 ldf2[1:3, 1:20]
@@ -72,6 +95,7 @@ ldf2[grepl("Corn", ldf2$geo_label),]
 las@data <- ldf2
 
 names(las)
+las <- las[!is.na(las@data$All_All),]
 qtm(las, "Foot_[5,10)")
 qtm(las, "Car_[40,60)", fill.palette = "Reds")
 las$shortcar <- las@data$`Car_[0,2)` / las@data$`All_[0,2)`
@@ -86,10 +110,14 @@ bbox(las)
 las <- spTransform(las, CRSobj = CRS("+init=epsg:4326"))
 
 qtm(las, "shortcar", fill.palette = "YlOrRd", scale = 0.7)
+nrow(las)
 
-
-las <- las[!is.na(las$All_All),]
+# las <- las[!is.na(las$All_All),]
+las2 <- las[!is.na(las$All_All),]
+qtm(las2) # error: the selection breaks continuity...
 las$shortcar <- las$shortcar * 100
+
+library(leaflet)
 
 # Leaflet map
 qpal <- colorQuantile(palette = "YlOrRd", las$shortcar, n = 5)
@@ -101,3 +129,11 @@ leaflet(las) %>%
 
 
 object.size(las) / 1000000
+
+lasen <- las[grepl(pattern = "E", las@data$geo_code),]
+bbox(cuas)
+bbox(las)
+las_outline <- gBuffer(cuas, width = 0.001)
+plot(las_outline)
+plot(lasen)
+qtm(lasen)

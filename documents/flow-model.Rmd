@@ -2,17 +2,18 @@
 title: Where to build bike paths? A generalisable flow-level model of cycling uptake
   for sustainable transport planning
 author: "Robin Lovelace"
-header-includes:
-  - \usepackage{amsmath}
 date: "April 12, 2015"
 output:
+  word_document: default
   pdf_document:
     fig_caption: yes
     keep_tex: yes
     number_sections: yes
     toc: yes
-  word_document: default
-bibliography: pctbib.bib
+  html_document:
+    toc: yes
+header-includes: \usepackage{amsmath}
+bibliography: Transport.bib
 ---
 
 ```{r, echo=FALSE, include=FALSE}
@@ -24,33 +25,90 @@ vapply(pkgs, require, character.only = T, FUN.VALUE = logical(1))
 
 # Introduction
 
-The National Propensity to Cycle Tool (NPCT) is an interactive policy support
-application designed to inform the decision-making process around where to
-invest in new sustainable transport infrastructure. Funded by the Department
-for Transport (DfT), the primary purpose of the NPCT
-is to be deployed nationwide and used by
-transport planners to help allocate new investment in cycling. The NPCT is
-based on open source software and requires input data that is widely available
-in many countries around the world. It therefore has great potential to assist
-with the design of transport policy worldwide, as part of a global transition
-away from fossil fuels that is required to prevent runaway climate change.
-The worldwide uptake of cycling, driven by well-placed infrastructure
-(the design of which can be assisted by tools such as the NPCT), 'soft' policy
-incentives and wider cultural shifts away from the car will also have
-enormous health benefits.
+The National Propensity to Cycle Tool (NPCT) is 
+an interactive policy support
+application for 
+developing transport policies, funded by the UK's Department
+for Transport (DfT). The NPCT will be deployed
+nationwide and used by Local Authority transport planners
+to prioritise investment in cycling. The tool's main purpose
+is to help prioritise where to build new strategic cycle paths
+and related infrastructure at the city level.
 
-The aim of the present paper is to explain the underlying model which drives
-the scenarios used in the NPCT. The flow-level model (which operates at
-the level of origin-destination pairs over the study area) projects what
-the rate of cycling *could* be along travel 'desire lines' connecting
-residential origins with workplace, education or other destinations.
-It is important to note that the model is not predictive and does not
-assume the implementation of any specific policies (although further
-work on model could explore adding such capability). The model operates
-'under the hood' in the NPCT, meaning that the output of the NPCT is simply
-a visualisation of the model that will be useful for transport modellers,
-rather that a summary of the model overall.^[However, a 'model output' tab
-in the model...]
+This paper describes the model underlying the
+NPCT and explains some of the decisions that were made relating to
+the data and methods that it uses.
+The model is open and transparent,
+based on input data that
+is widely available in many countries around the world.
+The model is implemented in R, an open-source language for
+statistical computing. All of the code has been made available
+under the MIT license on the GitHub platform.^[See [github.com/npct/pct](https://github.com/npct/pct).]
+
+Although the original model was developed for
+England, it has the
+potential to assist with the design of transport policy worldwide.
+There is much momentum behind active travel in cities across the world.
+Planning support tools such as the NPCT will help the
+associated investment to be spent optimally.
+
+```{r, echo=FALSE}
+# This transition is needed to prevent runaway
+# climate change . The worldwide uptake of cycling, driven by well-placed
+# infrastructure,
+# 'soft' policy incentives and wider cultural shifts away from the car will also
+# have enormous health benefits.
+# The design of such infrastructure and policies
+# can be enhanced by tools such as the
+# NPCT. Given the tool's great potential for wider social benefit, it is
+# vital to communicate the underlying methods and software.
+
+# The aim of the present paper is to explain the underlying model which drives
+# the scenarios used in the NPCT. This is of academic interest due to
+# the increased accuracy with which the method can estimate the
+# spatial distribution for cycle infrastructure. It is also of
+# great policy relevance during a time of transition away from energy inefficient
+# forms of transport such as the personal automobile.
+```
+
+The model operates at the flow-level. 
+A 'flow' in this context constitutes an
+origin-destination pair: the place where the trip begins and
+a destination where it ends.
+The model takes the current rate of cycling and other variables per flow
+and uses this to project the future rate of cycling
+per flow under various scenarios.
+These desire lines connect residential
+origins with workplace, education or other destinations. It is important to
+note that the model is not intended to be
+predictive and does not assume the implementation of
+any specific policies (although further work on model could explore adding such
+capability). The model operates 'under the hood' in the NPCT, meaning that the
+output of the NPCT is simply a visualisation of the model's pre-calculated
+outputs: rather than interacting with the code that drives the model directly,
+users interact with visualisations of the model output. This makes the user
+interface more accessible. The user is not required to perform any of the model
+set-up for the model to run, but can access all of the underlying code
+through the project's repository if they would like to change any of the
+model's internals or add new features.^[See
+[github.com/npct/pct](https://github.com/npct/pct).]
+
+A 'model output' tab was added to the
+user interface, which served 3 purposes: to avoid 'hiding' the
+underlying model from users, encourage modifications to
+and enhancements to the code and to ensure transparency.
+The tab was also a response to feedback during the user
+testing sessions: during user testing
+a number of transport
+planners had requested further information about the model.
+The 'model output' tab
+contains key statistics, diagnostic plots and model-results on a per-region
+basis. This means that a different summary document is provided depending on
+which local authority the user is currently exploring. Some of the outputs of
+the Model Output tab are illustrated in Fig. xx to Fig. xx below.
+The complete model output document for Manchester is provided in Appendix X.
+
+
 
 # Data
 
@@ -83,7 +141,7 @@ on-line, as part of an R package for sustainable transport planning,
 The two input datasets and single output, a set of geographically defined
 lines with attributes for each flow in both directions
 (which we label `flowlines`) are illustrated in the tables (1 and 2)
-and figure (1) below.
+and Fig. x below.
 
 ```{r tflow, echo=FALSE, results='asis'}
 t1 <- xtable(head(flow[c(1:3, 12)]), caption = "Sample of the 'flow' input dataset, representing the number of people who commute from locations within and between administrative zones (MSOAs)", label = "tbl:flow")
@@ -95,9 +153,10 @@ t2 <- xtable(as.data.frame(cents[1:3,-c(3,4)]), caption = "Sample of the 'cents'
 print(t1, type = "latex", comment = FALSE, caption.placement = "top")
 ```
 
-```{r, echo=FALSE, fig.cap="Illustration of 'flow data' converted into geographical lines between origin and destination pairs. Width represents the total number of trips. Note the circles, which represent intra-zone flow."}
-data("flowlines")
-plot(flowlines, lwd = flowlines$All / 10)
+```{r, echo=FALSE, fig.cap="Illustration of 'flow data' converted into geographical lines between origin and destination pairs for Coventry. Width represents the total number of trips. Note the use of population-weighted (as opposed to geographic) centroids used for the point of departure."}
+# data("flowlines")
+# plot(flowlines, lwd = flowlines$All / 10)
+grid.raster(readPNG("~/Dropbox/DfT bid/figures/coventry-centroids.png"))
 ```
 
 Although the details may
@@ -126,12 +185,89 @@ March 2015.]
 
 To ensure reproducibility and enable deployment of the model outside the
 original case study area of Manchester, a systematic data loading method was
-developed. The computational work to load the various datasets is contained
+developed. The computational work to load the various datasets is
+undertaken by scripts contained
 in the folder `loading-data` in the project's central repository.^[See https://github.com/npct/pct/tree/master/loading-data].
+The majority of these only need to be run once; all open-access
+data that was created this way was saved in a separate folder:
+[github.com/npct/pct-data](https://github.com/npct/pct-data).
+
 In the UK, local transport decisions (such as the location of new cycle paths)
-are often made at the Local Authority level [@Gaffron2003].
- some work to debug the
-data and ensure cross-compatibility of the results)
+are often made at level of
+County and Unitary Authorities (CUAs), of which there are 152 in
+England [@Gaffron2003].
+Phase I of the NPCT project focussed instead on smaller administrative units:
+Local Authority Districts (LADs), of which there are 324 across England
+(see Fig. x). For the case study towns of Manchester and Coventry, this
+made no difference: LADs and CUAs have the same boundaries for these areas.
+For Norwich, however, the LAD is much smaller than the CUA and is less
+practical for strategic transport planning at the MSOA level. For this reason
+we implemented a buffer selection methodology to expand the scope of the
+selection, described in the next section. 
+After some work to ensure the cross-compatibility of pre-2011 and post-2011
+redefinition of CUAs codes, it was found we could implement the model at the
+CUA level.
+
+It would also be possible use other geographic regions as the building
+blocks of the model.
+Travel to Work Zones (TTWs) are 'commuting watersheds' that correspond to
+cohesive regions, the centres of which are known employment centres:
+a more scientific version of the NPCT could use TTWs as the regions for building
+the model; building the model 'in one go' at the national level would also
+be a possibility.
+
+For pragmatic reasons, however, we suggest that the NPCT will be of most use
+to transport planners if it operates at the level at which funding is allocated.
+As mentioned above, this is at the CUA level.
+An increasing proportion of transport funding
+in England is also being allocated to Local Enterprise Partnerships (LEPs)
+and Combined Authorities (CAs), larger (and often overlapping) geographic
+regions.
+Based on these insights our
+recommendation for Phase II is to build the NPCT for every CUA in
+the nation and for selected LEPs and CAs where strategic
+cycling plans are being planned. These plans could change based on
+feedback from the Department for Transport.
+
+```{r cuas-lads, echo=FALSE, fig.cap="Local Authority District (LAD, above) and County and Unitary Authority (CUA, below) levels of transport planning. These are potential regional units for the National Propensity to Cycle Tool"}
+grid.raster(readPNG("~/Dropbox/DfT bid/figures/cuas-las.png"))
+```
+
+## Variable zone and flowline selection criteria
+
+In the same way that flow-lines are the unit of analysis for the model,
+*zones* are the basic unit of visualisation of the
+results over geographic space (it becomes overly complex to 
+show more than around 50 flow-lines on the map at any one time).
+For reasons related to computational and time resources, it
+makes sense to take a sample of the flow lines for the model.
+The route allocation algorithm, implemented 'in the cloud' by
+CycleStreets.net, is the major bottle-neck at present in terms of
+computational time. To make the model scalable and flexible,
+we set parameters defining which flows would be sampled.
+The most straightforward way to reduce the number of flows
+whilst retaining the overall travel pattern is to set a minimum
+number on the number of people using it for commuting. Because
+the distribution of number of commuters per flow is highly
+skewed, a high proportion of commuters can be represented by
+a relatively small proportion of flow lines. In Manchester,
+for example, 15% of flow lines (those used by 30+ commuters)
+account for almost 70% of commuters. The number 30 can be changed
+to any number that represents a reasonable balance between being
+comprehensive on the one hand and fast to save and load on the other.
+Setting the maximum Euclidean distance is another way to reduce the number
+of flow lines. We used a value of 15 km, based on the assumption that distances
+beyond around 20km are not feasible to cycle on a daily basis. 
+
+In contrast to the flow lines, the main issue with sampling zones was that
+there seemed to be *too few* of them at the LAD level to gain a comprehensive
+understanding of the travel system. We therefore created another parameter,
+`buff_dist`, which represents the distance buffer around the LAD in question
+to sample additional zones if the total number sampled without a buffer
+fell below some threshold. We set this number to 60 for Manchester
+so zones outside the long and thin LAD shape would be selected. This
+has the additional advantage of preventing breaks in continuity 
+(and zero flows) between different regions in the model.
 
 # Model scenarios
 
@@ -196,7 +332,7 @@ growth. See
 [@Crawford2014] for a detailed discussion of this issue.
 The authors could not find evidence about how this trend was
 accounted for by the DfT in scenarios from the National Transport
-Moel (NTM) or elsewhere.]
+Model (NTM) or elsewhere.]
 the Cycling Delivery Plan will result in a doubling in the
 proportion of trips made by cycling nationwide.
 [@DepartmentforTransport2014] provide no discussion or
@@ -316,12 +452,12 @@ pcycle(gendereq)_f = pcycle_m \\
 $$
 
 where $olc_m$ is the observed level of males cycling,
-$SLC(gendereq)_f$ is number of females cycling in the gender equality senario, and
+$SLC(gendereq)_f$ is number of females cycling in the gender equality scenario, and
 $tflow_m$ and $tflow_f$ are the total numbers of males
-and females in the flow respectivly.
+and females in the flow respectively.
 There is data about the gender make up of cycling flows at zone level $pcycle(z)$,
 and we assume that all flows have this same proportion of male cyclists.
-This allows us to estiamte the number of males cycling as $olc_m = olc * pcycle_m$,
+This allows us to estimate the number of males cycling as $olc_m = olc * pcycle_m$,
 so that
 $$
 SLC(gendereq)_f = olc * pcycle_m * \left( \frac{tflow_f}{tflow_m} \right)
@@ -398,7 +534,7 @@ Potential extensions of the model include:
 - Deployment of the tool and underlying flow model in different
 countries.^[This would depend on having ]
 
-# Appendix: Using the tool
+# Using the tool
 
 This Appendix summarises the work from the perspective of practitioners
 by describing how the NPCT may be used to inform the decision-making process.
