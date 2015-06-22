@@ -38,19 +38,17 @@ and related infrastructure at the city level.
 This paper describes the model underlying the
 NPCT and explains some of the decisions that were made relating to
 the data and methods that it uses.
-The model is open and transparent,
-based on input data that
-is widely available in many countries around the world.
-The model is implemented in R, an open-source language for
+The model is open source and transparent,
+based on input datasets that
+are widely available in many countries around the world.
+The model is implemented in R, a mature language for
 statistical computing. All of the code has been made available
 under the MIT license on the GitHub platform.^[See [github.com/npct/pct](https://github.com/npct/pct).]
 
-Although the original model was developed for
-England, it has the
-potential to assist with the design of transport policy worldwide.
+Although the original model was developed for England, it has the potential to assist with the design of transport policy in many settings.
 There is much momentum behind active travel in cities across the world.
 Planning support tools such as the NPCT will help the
-associated investment to be spent optimally.
+associated investment to be spent effectively.
 
 ```{r, echo=FALSE}
 # This transition is needed to prevent runaway
@@ -71,32 +69,42 @@ associated investment to be spent optimally.
 # forms of transport such as the personal automobile.
 ```
 
-The model operates at the flow-level. 
-A 'flow' in this context constitutes an
-origin-destination pair: the place where the trip begins and
-a destination where it ends.
-The model takes the current rate of cycling and other variables per flow
-and uses this to project the future rate of cycling
-per flow under various scenarios.
-These desire lines connect residential
-origins with workplace, education or other destinations. It is important to
-note that the model is not intended to be
-predictive and does not assume the implementation of
-any specific policies (although further work on model could explore adding such
-capability). The model operates 'under the hood' in the NPCT, meaning that the
+The model operates at the flow-level and, by aggregating
+data from these flows, at the level of geographic zones. 
+A 'flow'in this context constitutes an origin-destination pair: the place where
+a trip begins and the destination where it ends. Flows therefore represent
+'desire lines', typically connecting residential origins with workplace,
+educational or other destinations.
+The model takes the current rate of cycling and other variables per flow and uses
+this to simulate what the rate of cycling per flow could be
+under various scenarios of the future. 
+It is important to note that the model is not intended to be predictive and does
+not assume the implementation of any specific policies (although further work
+could explore adding such capability). 
+
+The model described in this paper
+operates 'under the hood' in the NPCT on-line interface.
+This means that the
 output of the NPCT is simply a visualisation of the model's pre-calculated
-outputs: rather than interacting with the code that drives the model directly,
+outputs. Rather than interacting with the code that drives the model directly,
 users interact with visualisations of the model output. This makes the user
 interface more accessible. The user is not required to perform any of the model
 set-up for the model to run, but can access all of the underlying code
-through the project's repository if they would like to change any of the
-model's internals or add new features.^[See
+through the project's on-line.^[See
 [github.com/npct/pct](https://github.com/npct/pct).]
+Thus practictioners can further develop the model if they have the
+skills and time to do so, for example to add new explanatory variables
+specific to the local area. We plan to encourage a user community to
+build around the tool in Phase II of the project, for example,
+through advanced training sessions for transport planners with
+programming experience.
 
-A 'model output' tab was added to the
-user interface, which served 3 purposes: to avoid 'hiding' the
-underlying model from users, encourage modifications to
-and enhancements to the code and to ensure transparency.
+To communicate the model and the results it produces to
+non experts, a 'model output' tab was added.
+This feature of the 
+user interface, which serves 3 additional purposes: to avoid 'hiding' the
+underlying model from users; to encourage modifications
+and enhancements to the code; and to ensure transparency.
 The tab was also a response to feedback during the user
 testing sessions: during user testing
 a number of transport
@@ -108,27 +116,35 @@ which local authority the user is currently exploring. Some of the outputs of
 the Model Output tab are illustrated in Fig. xx to Fig. xx below.
 The complete model output document for Manchester is provided in Appendix X.
 
-
-
 # Data
 
 The basic model requires only two sets of input data
 (although more refined versions benefit from many additional datasets):
 
 - *Flow data* estimating the rate of movement between different places.
-This data is available from various sources including
+Data on mode of travel enables regression models to estimate local
+distance decay curves. We use this approach for the NPCT although
+it would also be possible to estimate cycling potential in cases where
+no break-down by mode is possible.
+Flow data is available from various sources including
 flows derived from mobile telephone service providers
-[@smoreda2013spatiotemporal], Census data on commuting [@Rae2009],
-public transport data [@Kitchin2013], as well as the traditional household
-travel survey [@TransportforNSW2014]. Some combination of these sources
-will provide the data for all trip purposes and for most settings. Flow data is
+[@smoreda2013spatiotemporal],
+public transport data [@Kitchin2013], household
+travel surveys [@TransportforNSW2014] and,
+the source used in the model presented below,
+Census data on commuting [@Rae2009]. Census data is advantageous due
+to its coverage, high geographic resolution and assurances surrounding
+data quality. In cases where no census data is available
+(e.g. in relation to shopping trips), some combination of the afforementioned
+'Big Data' sources
+can provide a reasonable approximation of real world travel flows. Flow data is
 generally provided as a 'flow matrix' (with rows representing origins
 and columns destinations) or a longer table of origin-destination pairs.
 
 - *Geographical data* on the coordinates of trip origins and destinations.
-As a bare minimum, this means the (preferably population and/or
-work location-weighted) centroids of each zone in the study area, but could
-also include mobile telephone masts or nodes on the public transport network.
+At a bare minimum, this means the centroids of each zone in the study area, preferably weighted by population and/or work location-weighted.  In addition to this, geographic variables could also include additional
+features of the urban environment that affect cyclists, such as
+hilliness and nodes on the public transport network.
 
 The flow model described in this paper can work for
 anywhere that has access to such data. To link
