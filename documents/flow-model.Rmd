@@ -1,9 +1,9 @@
 ---
-title: "The National Propensity to Cycle Tool: A generalisable flow-level model of cycling uptake for sustainable transport planning"
+title: 'The National Propensity to Cycle Tool: A generalisable flow-level model of
+  cycling uptake for sustainable transport planning'
 author: "Robin Lovelace"
 date: "April 12, 2015"
 output:
-  word_document: default
   pdf_document:
     fig_caption: yes
     keep_tex: yes
@@ -11,6 +11,7 @@ output:
     toc: yes
   html_document:
     toc: yes
+  word_document: default
 header-includes: \usepackage{amsmath}
 bibliography: Transport.bib
 ---
@@ -203,10 +204,12 @@ of flow data are likely to be applicable in many settings.
 The model for England described in this paper uses the following open datasets:
 
 - `wu03ew_v2.csv`, a 104 MB (12 MB compressed) comma-delimited
-(human readable text) file
-of flows between unique origin destination pairs, disaggregated by mode (see Table \ref{tbl:flow}). Note that this is a square table, usually loaded as a `data.frame`
-in R. Note the origin and destination codes in the top row of table \ref{tbl:flow}
+text file
+of flows between unique origin destination pairs, disaggregated by mode (see Table \ref{tbl:flow}). Note that this is a square table, which was loaded as a `data.frame`
+in R. Note the origin and destination codes in some rows
 are the same, indicating *intra-zone* flow.
+This is the case in the top row of table \ref{tbl:flow}
+
 
 - `cents.geojson`, representing population-weighted centroids of local
 administrative zones. For Phase I of the NPCT we used Medium Super
@@ -224,6 +227,8 @@ data format GeoJSON. This file was originally downloaded as a Shapefile
 under the UK's Open Government Licence.
 The license was accessed from [nationalarchives.gov.uk](http://www.nationalarchives.gov.uk/doc/open-government-licence/version/2/) in
 March 2015.]
+
+# Method
 
 ## Loading data for local government areas
 
@@ -360,6 +365,10 @@ question from which the additional zones are sampled.  This approach has the
 additional advantage of preventing breaks in continuity (and zero flows)
 between different regions in the model.
 
+## Modelling distance decay
+
+
+
 # Model scenarios
 
 Once the input data has been processed and sub-setted to the area of interest,
@@ -432,9 +441,20 @@ not yet have data in a suitable form for the model such as weather):
 - Age. This is certainly related to physical fitness, and also willingness to
 ride a bicycle.
 
-- Gender. There is evidence that women are more put-off cycling
-by poor transport infrastructure and heavy traffic than men, so this could be
-linked to a measure of transport infrastructure quality.
+```{r, echo=FALSE}
+# - Gender. There is evidence that women are more put-off cycling
+# by poor transport infrastructure and heavy traffic than men, so this could be
+# linked to a measure of transport infrastructure quality.
+```
+
+- Weather. It rains in some places more than others and there is evidence
+to suggest that this is a deterent to cycling. This could be included with
+reference to interpolated rasters of estimated rainfall.
+
+- Age. There is evidence that much of the uptake in cycling in some
+areas has been due to students and other mobile groups taking up cycling
+when they move away from home. This could represented in the model as
+% of students or % of people between 16 and 30 in each area.
 
 - Infrastructure quality. Preliminary tests with the commuting data suggest that
 having a direct off-road path along the flow line is a strong predictor of the
@@ -567,8 +587,8 @@ Based on a representative sample of flows in the UK,
 among those making trips with a 'fastest route' distance of between 4 and 5 km,
 the proportion who used a cycle as their main mode was 5.0%.
 Under the 'national doubling' assumption of the *cdp* scenario, this
-implies that the total increase in the proportion of cyclists in this distance band is 5.0% - i.e. $pcycle(nmod) = 5.0%$.   In the case study city of Manchester, the proportion of commuters travelling 4 to 5 km to work,
-who used a cycle as their main mode, was 4.6% ($pcycle = 4.6%$).
+implies that the total increase in the proportion of cyclists in this distance band is 5.0% - i.e. $pcycle(nmod) = 0.05$.   In the case study city of Manchester, the proportion of commuters travelling 4 to 5 km to work,
+who used a cycle as their main mode, was 4.6% ($pcycle = 4.6$).
 All else being equal (specifically, assuming average hilliness
 in Manchester is equal to the national average), the number cycling to
 work in this case under the Cycling Delivery Plan scenario
@@ -681,7 +701,7 @@ To illustrate how this method works in practice, imagine a flow in which
 30 of the total trips in the flow are made by males
 ($tflow_m = 30$) and 20 by females ($tflow_f = 20$).
 In addition, 70% of commuter cycling in the wider zone is by
-males ($pmale_{cyclist}_zone = 0.70$). This means that
+males ($pmale_{cyclist}(zone) = 0.70$). This means that
 an estimated $5 * 0.70 = 3.5$ cycle commuters are male ($OLC_m = 3.5$) and 
 1.5 are female ($OLC_f = 1.5$).
 These are not whole numbers but represent the average
@@ -690,7 +710,7 @@ number expected in many flows with the same characteristics.
 Applying the formulae presented on the previous page:
 
 $$
-SLC(gendereq)_f = OLC * pmale_{cyclists}(zone) * (1 + \frac{tflow_f}{tflow_m})
+SLC(gendereq)_f = OLC * pmale_{cyclists}zone * (1 + \frac{tflow_f}{tflow_m})
 $$
 
 $$
@@ -727,6 +747,21 @@ we estimate $SLC(gendereq)$ based on the Cycling Delivery Plan
 cycling with a concurrent increase in gender equity.
 
 ## Go Dutch
+
+The 'Go Dutch' scenario represents the rate of cycling that would occur if
+people cycled as much as the Dutch do, for trips of the same length. It is
+important to note that this is not a 'top down' scenario in which the national
+level of cycling is set to levels found in The Netherlands. The scenario is
+'bottom up' because the proportion of trips being cycled is set per flow
+and the end result for any particular region depends on the local distribution
+of trip distances.
+Although the Dutch currently cycle far more frequently than the
+English for short trips, their propensity to cycle still drops rapidly with
+distance, with relatively few utility trips being made beyond around 15 km.
+
+Based on these insights, the essence of the 'Go Dutch' scenario
+(henceforth simply *dutch*) is the application of distance decay parameters
+found in the Netherlands to local trips.
 
 ## Electric bicycles
 
