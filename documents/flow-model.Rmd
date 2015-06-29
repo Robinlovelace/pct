@@ -183,7 +183,7 @@ print(t1, type = "latex", comment = FALSE, caption.placement = "top")
 ```{r, echo=FALSE, fig.cap="Illustration of 'flow data' converted into geographical lines between origin and destination pairs for Coventry. Width represents the total number of trips. Note the use of population-weighted (as opposed to geographic) centroids used for the point of departure."}
 # data("flowlines")
 # plot(flowlines, lwd = flowlines$All / 10)
-grid.raster(readPNG("~/Dropbox/DfT bid/figures/coventry-centroids.png"))
+grid.raster(readPNG("../figures/coventry-centroids.png"))
 ```
 
 Although the details may
@@ -324,7 +324,7 @@ from using TTWAs as the regional geography for local scenario development and
 visualisation. 
 
 ```{r cuas-lads, echo=FALSE, fig.cap="Local Authority District (LAD, above) and County and Unitary Authority (CUA, below) levels of transport planning. These are potential regional units for the National Propensity to Cycle Tool"}
-grid.raster(readPNG("~/Dropbox/DfT bid/figures/cuas-las.png"))
+grid.raster(readPNG("../figures/cuas-las.png"))
 ```
 
 ## Variable zone and flowline selection criteria
