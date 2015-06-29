@@ -20,7 +20,7 @@ bibliography: Transport.bib
 if(grepl(pattern = "pct$", x = getwd())){
   setwd("documents")
 }
-source("../set-up.R")
+# source("../set-up.R")
 pkgs <- c("stplanr", "knitr", "xtable", "sp", "grid", "png")
 vapply(pkgs, require, character.only = T, FUN.VALUE = logical(1))
 ```
@@ -626,38 +626,43 @@ in Phase I, although as explained above additional variables could easily added.
 The resulting national
 distance decay curve is then applied locally. The additional number of cyclists
 for each flow is calculated by multiplying the proportion expected for the
-distance of the flow nationally. The new percent cycling
-is the current rate of cycling plus this model-based estimate:
+distance of the flow nationally. 
+The new rate of cycling (pcycle(cpd) is the current rate of
+cycling plus this model-based estimate:
 
 $$
-SLC(cdp) = (pcycle + pcycle(nmod)) * tflow
+pcycle(cdp) = (pcycle + pcycle(natmod)) 
 $$
 
 where $pcycle$ is the proportion of commuters who cycle per flow
-in the 2011 Census and $pcycle(nmod)$ is the proportion of commuters expect to
-cycle based on the national-level regression model. The sum of these values
-is multiplied by $tflow$, the total number of commuters, by all modes,
-in order to convert the proportion into
-a number of cyclists.
+in the 2011 Census and $pcycle(natmod)$ is the proportion of commuters expected to
+cycle based on the national-level regression model.
+The sum of these values
+is multiplied by $tflow$, the total number of commuters all modes,
+to convert the proportion into
+a number of cyclists, i.e.:
 
-```{r, echo=FALSE}
-# add stuff here! (from AG)
-```
-
+$$
+SLC(cdp) = (pcycle + pcycle(natmod)) * tflow
+$$
 
 An example of this scenario for illustrative purposes is as follows.
 Based on a representative sample of flows in the UK,
 among those making trips with a 'fastest route' distance of between 4 and 5 km,
 the proportion who used a cycle as their main mode was 5.0%.
 Under the 'national doubling' assumption of the *cdp* scenario, this
-implies that the total increase in the proportion of cyclists in this distance band is 5.0% - i.e. $pcycle(nmod) = 0.05$.   In the case study city of Manchester, the proportion of commuters travelling 4 to 5 km to work,
+implies that the total increase in the proportion of cyclists in this distance band is 5.0% --- i.e. $pcycle(natmod) = 0.05$.
+In the case study city of Manchester, the proportion of commuters
+travelling 4 to 5 km to work,
 who used a cycle as their main mode, was 4.6% ($pcycle = 4.6$).
-All else being equal (specifically, assuming average hilliness
-in Manchester is equal to the national average), the number cycling to
-work in this case under the Cycling Delivery Plan scenario
-($SLC(cpd)$) in Manchester would be 
-4.6% + 5.0% = 9.6% (4.6% + 5%)
-of $tflow$.
+
+All else being equal (specifically, assuming average hilliness in
+Manchester is equal to the national average), the number percent of
+commuters cycling to work in this case under the Cycling Delivery Plan 
+scenario (*SLC(cpd)*) would be 4.6% + 5.0% = 9.6%.
+The total number of commuters cycling to work in Manchester
+($SLC(cpd)$) would thus be 9.6% multiplied by $tflow$,
+i.e. the proportion cycling multiplied by the total number of commuters.
 
 Note that this does not mean
 that *all* flows in Manchester between 4 and 5 km would be projected to have
@@ -665,7 +670,7 @@ a 9.6% proportion of cycle commuters in the *cdp* scenario.
 The initial level of cycling
 (*pcycle*) will vary widely: a flow with an exceptionally high initial rate
 of cycling, for example $pcycle$ = 30%, would end up with a projected
-rate of cycling of 35% ($pcycle(slc)$ = 35%). Likewise, a flow of
+rate of cycling of 35% ($pcycle(cdp)$ = 35%). Likewise, a flow of
 4.5 km that has no cycling currently would be projected to reach 5%.
 
 ## Gender equality
