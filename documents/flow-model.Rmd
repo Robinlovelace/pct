@@ -4,6 +4,7 @@ title: 'The National Propensity to Cycle Tool: A generalisable flow-level model 
 author: "Robin Lovelace"
 date: "April 12, 2015"
 output:
+  word_document: default
   pdf_document:
     fig_caption: yes
     keep_tex: yes
@@ -11,7 +12,6 @@ output:
     toc: yes
   html_document:
     toc: yes
-  word_document: default
 header-includes: \usepackage{amsmath}
 bibliography: Transport.bib
 ---
@@ -47,10 +47,23 @@ The model is implemented in R, a mature language for
 statistical computing. All of the code has been made available
 under the MIT license on the GitHub platform.^[See [github.com/npct/pct](https://github.com/npct/pct).]
 
-Although the original model was developed for England, it has the potential to assist with the design of transport policy in many settings.
-There is much momentum behind active travel in cities across the world.
-Planning support tools such as the NPCT will help the
-associated investment to be spent effectively.
+The research was funded by the UK's Department for Transport and this paper
+focusses on Phase I of the work. In 'Phase II' we will extend to the model
+to the entirety of England. Key lessons were learned during Phase I and,
+where applicable, these are discussed in relation to future plans.
+Although the original model was developed for England, the NPCT methodology
+has the potential to
+assist with the design of transport policy in many settings.
+The present paper reports results from 3 case study or 'pilot' cities which
+acted as a 'proof of concept' for the Department of Transport: Coventry,
+Manchester and Norwich. The method is described in a generalisable way,
+however, so it is applicable to any city or region where appropriate datasets
+are available.
+The 'generalisability' of the method is important due to the
+momentum behind active travel in cities across the world.
+Planning support tools such as the NPCT can help the
+associated investment to be spent effectively, yielding very high returns on
+research expenditure.
 
 ```{r, echo=FALSE}
 # This transition is needed to prevent runaway
@@ -110,30 +123,6 @@ build around the tool in Phase II of the project, for example,
 through advanced training sessions for transport planners with
 programming experience.
 
-Users can view a summary of the model without going through all the
-underlying code via the 'Model Output' tab (Fig. x).
-This feature of the user interface serves 3 additional purposes: 
-to avoid 'hiding' the underlying model from users; to encourage modifications
-and enhancements to the code; and to ensure transparency.
-The tab was added in response to feedback during the user
-testing sessions, during which a number of transport
-planners had requested further information about the model.
-The output tab also communicates the results of the model, including through key statistics, diagnostic plots and model-results on a per-region
-basis. This means that a different summary document is provided depending on
-which local authority the user is currently exploring. 
-The complete model output document for Manchester is provided in Appendix X.
-
-```{r, echo=FALSE, fig.cap="The Output Tab of the National Propensity to Cycle Tool"}
-grid.raster(readPNG("../figures/model-outpute.png"))
-```
-
-
-```{r, echo=FALSE}
-# Some of the outputs of
-# the Model Output tab are illustrated in Fig. xx to Fig. xx below.
-```
-
-
 # Data
 
 The basic model requires only two sets of input data
@@ -174,7 +163,7 @@ an R function called `gFlow2Lines()` was
 created.^[The source code of `gFlow2Lines()` has been made available
 online, as part of an R package for sustainable transport planning,
 **stplanr**. See [github.com/Robinlovelace/stplanr/](https://github.com/Robinlovelace/stplanr/blob/master/R/gFlow.R).]
-Table 1, Table 2 and Figure x illustrate the two input datasets along with the
+Table 1, Table 2 and Fig. 1 illustrate the two input datasets along with the
 single output, namely a set of geographically defined lines with attributes for
 each flow in both directions (labelled flowlines).
 
@@ -207,9 +196,11 @@ The model for England described in this paper uses the following open datasets:
 text file
 of flows between unique origin destination pairs, disaggregated by mode (see Table \ref{tbl:flow}). Note that this is a square table, which was loaded as a `data.frame`
 in R. Note the origin and destination codes in some rows
-are the same, indicating *intra-zone* flow.
-This is the case in the top row of table \ref{tbl:flow}
-
+are the same, indicating *intra-zone* flow, meaning trips which begin and
+end in the same zone, as is the case in the top row of Table \ref{tbl:flow}.
+In summary, this dataset describes the overall pattern of travel behaviour
+in a region (for commuting in this case) in terms of 'desire lines' between
+hundreds of geographically dispersed origins and destinations.
 
 - `cents.geojson`, representing population-weighted centroids of local
 administrative zones. For Phase I of the NPCT we used Medium Super
@@ -226,7 +217,9 @@ a small (1.7 MB) human-readable text file stored in the open
 data format GeoJSON. This file was originally downloaded as a Shapefile
 under the UK's Open Government Licence.
 The license was accessed from [nationalarchives.gov.uk](http://www.nationalarchives.gov.uk/doc/open-government-licence/version/2/) in
-March 2015.]
+March 2015.] In summary this dataset shows the user where people live, an
+important determinant of whether they will benefit from new infrastructure in
+their local area.
 
 # Method
 
@@ -267,7 +260,7 @@ more than one regional geography and considering running at least one
 version of the model at the national level. We plan to
 implement these recommendations in Phase II.
 Another solution to the problem of 'edge zones' 
-is to create buffers around the the regions (see Fig. x).
+is to create buffers around the the regions.
 
 ```{r, echo=FALSE}
 # The wider national policy context should be considered when selecting
@@ -279,10 +272,30 @@ In the UK, transport decisions (such as where to build new cycle paths)
 are often made at the local level [@Gaffron2003]. At present, this
 primarily means at the level of local Highway Authorities, which
 generally have the same boundaries as County and Unitary Authorities (CUAs).
-There are 152 CUAs in England (some of which are illustrated in Fig. x).
+There are 152 CUAs in England (some of which are illustrated in Fig. 2).
 We recommend these as the regional unit for Phase II of the
 project.^[Some work is required to ensure the compatibility of pre 2011
 and post 2011 codes.]
+
+For pragmatic reasons we suggest that the NPCT will be of most use
+to transport planners if it can as closely as possible match up where funding
+is allocated and planning decisions are made.
+As mentioned above, in the UK this is at the CUA level.
+In the UK an increasing proportion of transport funding
+in England is also being allocated to Local Enterprise Partnerships (LEPs)
+and Combined Authorities (CAs), larger (and often overlapping) geographic
+regions. Based on these insights, and feedback from practitioners, our
+recommendation for Phase II is to build the NPCT for every CUA in
+the nation and for selected LEPs and CAs where strategic
+cycling plans are being planned. These plans could change based on
+feedback from the Department for Transport.
+
+We will also explore the possibility of
+running the model at the national level. This would involve setting
+appropriate selection criteria to filter-out the majority of
+origin-destination pairs to avoid exceeding computational resources.
+The demarcation of regional boundaries is deemed useful for focussing
+on one region at a time.
 
 Phase I of the NPCT project focussed instead on smaller administrative units:
 Local Authority Districts (LADs). There are 324 LADs across England.
@@ -290,7 +303,7 @@ For the case study towns of Manchester and Coventry, the choice between
 CUA and LAD levels
 made no difference as LADs and CUAs have the same boundaries for these areas.
 For Norwich, however, the LAD is much smaller than the CUA and is less
-practical for strategic transport planning at the MSOA level (Fig. x).
+practical for strategic transport planning at the MSOA level (Fig. 2).
 For this reason
 we implemented a buffer selection methodology to expand the scope of the
 selection, as described in the next section. Before describing the
@@ -305,23 +318,6 @@ Versions of the NPCT model developed for more scientific purposes would benefit
 from using TTWAs as the regional geography for local scenario development and
 visualisation. 
 
-For pragmatic reasons we suggest that the NPCT will be of most use
-to transport planners if it can as closely as possible match up where funding
-is allocated and planning decisions are made.
-As mentioned above, in the UK this is at the CUA level.
-In the UK an increasing proportion of transport funding
-in England is also being allocated to Local Enterprise Partnerships (LEPs)
-and Combined Authorities (CAs), larger (and often overlapping) geographic
-regions. Based on these insights our
-recommendation for Phase II is to build the NPCT for every CUA in
-the nation and for selected LEPs and CAs where strategic
-cycling plans are being planned. These plans could change based on
-feedback from the Department for Transport.
-
-We also plan to run the model 'in one go' at the national level, although
-appropriate selection criteria would be needed to filter-out the majority of
-origin-destination pairs to avoid exceeding computational resources.
-
 ```{r cuas-lads, echo=FALSE, fig.cap="Local Authority District (LAD, above) and County and Unitary Authority (CUA, below) levels of transport planning. These are potential regional units for the National Propensity to Cycle Tool"}
 grid.raster(readPNG("~/Dropbox/DfT bid/figures/cuas-las.png"))
 ```
@@ -330,13 +326,18 @@ grid.raster(readPNG("~/Dropbox/DfT bid/figures/cuas-las.png"))
 
 Flow-lines are the unit of analysis for the model, but processing multiple
 flows within the model can require considerable time and computational resources.
-For our NPCT phase 1 model, the route allocation algorithm, implemented 'in the cloud' by CycleStreets.net, is the major bottle-neck at present in terms of
-computational time.  In order to make the model scalable and flexible, it may be desirable that only a sub-sample of flow-lines should be processed within the model. 
+For our NPCT phase 1 model, the route allocation algorithm, implemented 'in the
+cloud' by CycleStreets.net (an online routing service for cyclists, by cyclists),
+is the major bottle-neck at present in terms of
+computational time.  In order to make the model scalable and flexible,
+it may be desirable that only a sub-sample of flow-lines should be processed
+within the model. 
 We therefore sought to reduce the number of flows whilst retaining the overall
 travel pattern. The most straightforward way to do this is to only include only
 flows that are used by a minimum number of commuters. Because
 the distribution of number of commuters per flow is highly
-skewed, a high proportion of commuters can be represented by
+skewed by high numbers of commuters using a few major 'commuter corridors',
+a high proportion of commuters can be represented by
 a relatively small proportion of flow lines. In Manchester,
 for example, 15% of flow lines (those used by 30+ commuters)
 account for almost 70% of commuters. The number 30 is a parameter that
@@ -358,15 +359,72 @@ In our model testing, we found that there often seemed to be too few zones
 at the LAD level to gain a comprehensive understanding of the travel system.
 We therefore created buffers around each LAD from which we sampled additional
 zones if the total number sampled without a buffer fell below some threshold.
-We set this number to 60 for Manchester so zones outside the long and thin LAD
-shape would be selected.  Implementing this procedure involved creating a
+We set this threshold to 60 for Manchester. Because there are 57 MSOA
+zones in Manchester, this led to the selection of additional zones
+outside the long and thin Manchester LAD.
+Implementing this procedure involved creating a
 parameter, `buff_dist`, which represents the distance buffer around the LAD in
 question from which the additional zones are sampled.  This approach has the
 additional advantage of preventing breaks in continuity (and zero flows)
 between different regions in the model.
 
+## The Model Output tab
+
+Users can view a summary of the model, including the subsetting
+criteria mentioned above, without going through all the
+underlying code. This is thanks to the 'Model Output' tab (Fig. 3).
+This feature of the user interface serves 3 additional purposes: 
+to avoid 'hiding' the underlying model from users; to encourage modifications
+and enhancements to the code; and to ensure transparency.
+The tab was added in response to feedback during the user
+testing sessions, during which a number of transport
+planners had requested further information about the model.
+The output tab also communicates the results of the model, including through key statistics, diagnostic plots and model-results on a per-region
+basis. This means that a different summary document is provided depending on
+which local authority the user is currently exploring. 
+The complete model output document for Manchester is provided in Appendix X.
+
+```{r, echo=FALSE, fig.cap="The Output Tab of the National Propensity to Cycle Tool"}
+grid.raster(readPNG("../figures/model-outpute.png"))
+```
+
+
+```{r, echo=FALSE}
+# Some of the outputs of
+# the Model Output tab are illustrated in Fig. xx to Fig. xx below.
+```
+
 ## Modelling distance decay
 
+To estimate the number of cyclists at the flow level, a regression model
+was used. The optimisation seeks to modify a number of model parameters that
+link the *explanatory variables* described above to the *dependent variable*:
+the proportion of trips made by bicycle per flow ($pcycle$). Central to this
+model is *distance decay*, which describes the (non-linear) relationship
+between the distance of a trip and the probability of it being made by bicycle.
+After trying various functional forms, we found that the distance decay
+curve displayed in Fig. 4, and variations thereof, involving changing
+the parameters. 
+
+```{r, echo=FALSE, fig.cap="The distance decay curve resulting from the log-square-root function. The green lines represent increases of 0.25 times the the original values and the red lines represent -0.1 times the original value."}
+grid.raster(readPNG("../figures/log-sqrt-params.png"))
+```
+
+
+The gradual decline of
+$pcycle$ with increasing distance results in a 'long tail' distribution,
+typical of exponential decay. Thus we estimated
+the $log$ of $pcycle$ rather than $pcycle$ directly. Also, to avoid
+estimates that are above 1 or below zero, we applied a *logit link*
+to the model to improve model fit. Including hilliness as a 
+dependent variable, the final model formula was as follows:
+
+$$
+log(pcycle) \approx \frac{exp(\alpha + \beta_1 X1 + \beta_2 X1 + \beta3 X2)}{exp(1 + \alpha + \beta_1 X1 + \beta_2 X1 + \beta3 X2)}
+$$
+
+where $X1$ is distance (km, route distance), $X2$ is the hilliness per flow and
+$\alpha$ and $\beta$ are parameters to be estimated.
 
 
 # Model scenarios
@@ -384,7 +442,8 @@ included the route distance of each flow, hilliness and the total current
 flow for all modes. By aggregating the origins of all flows, the model
 also estimates the proportion of commuters cycling to work among inhabitants in
 each area. (Aggregating by destination would also allow an estimate of the
-number incoming cyclists per work destination.) In descending order of
+number incoming cyclists per work destination, which would be useful for
+assessing features such as new cycling parking.) In descending order of
 importance (in the UK context), the factors implemented in NPCT in phase I were:
 
 - Distance between origins and destinations. This was calculated in the first
@@ -577,11 +636,6 @@ is multiplied by $tflow$, the number of commuters (by all modes)
 to convert the proportion into
 a number of cyclists.
 
-To demonstrate
-how the scenario works, Fig. x illustrates the new and old rate of cycling
-in Local Authorities with high and low initial rates of cycling and the
-associated shifts in the distribution of trips by distance.
-
 An example of this scenario for illustrative purposes is as follows.
 Based on a representative sample of flows in the UK,
 among those making trips with a 'fastest route' distance of between 4 and 5 km,
@@ -634,7 +688,7 @@ SLC = SLC_m + SLC_f
 $$
 
 More males cycle than females in every Local Authority in the country
-(Figure x). For this reason, the *gendereq* scenario
+(Fig. 5). For this reason, the *gendereq* scenario
 is based on the assumption that the rate of cycling amongst
 females increases to match the rate of cycling amongst males, rather than vice
 versa. Under *gendereq* $SLC_m$ remains constant. The challenge is to
@@ -761,36 +815,162 @@ distance, with relatively few utility trips being made beyond around 15 km.
 
 Based on these insights, the essence of the 'Go Dutch' scenario
 (henceforth simply *dutch*) is the application of distance decay parameters
-found in the Netherlands to local trips.
+found in the Netherlands to each flow in the study area.
 
 ## Electric bicycles
 
+The purpose of this scenario is to demonstrate the increased rate of cycling
+that is possible due the electric bicycles (hence the scenario name, *ebike*).
+This is the most ambitious of the scenarios presented in this paper and it
+builds on 'Go Dutch', but starting with Dutch model parameters. 
+
+To ensure that the scenario represents the impact on longer trips,
+it is the first (linear) $\beta$ parameter that is increased by a small amount.
+In Phase I we increased this value by 0.025 a value sufficiently small to avoid
+generating an implausibly high rate of cycling but sufficiently large to create
+a noticeable effect.
+In Phase II we will base the changes to the distance decay parameters on
+real data from the Dutch National Travel Survey.
+
 # Results
+
+To demonstrate
+how the scenarios work in practice and to provide an overview of the results,
+Fig. 6 illustrates the observed ($OLC$, from the
+2011 Census) and scenario-based levels of cycling
+in two Local Authorities (Manchester and Norwich). Note that while Manchester
+has a much higher total number of trips than Norwich, the proportion of those
+trips that are made by bicycle is lower. There is noticeable distance decay
+of for all modes of transport, especially for bicycle trips in Norwich,
+where bicycle trips above 7.5 km observed from 2011 Census data are
+comparatively rare.
+
+Note that although Manchester and Norwich have very
+different initial levels of cycling, the final level estimated from the
+*dutch* and *ebike* scenarios are similar, reflecting local trip distributions
+and overiding the initial rate of cycling. Note also that the *cpd* scenario
+in Manchester has a considerably higher rate of cycling than the *gendereq*
+scenario, wheras in Norwich these scenarios are very similar. This is because
+Manchester is starting from a lower baseline, so a doubling nationwide
+results in a relatively high absolute increase in cycling locally. In Norwich,
+by contrast, the current rate of cycling is considerably greater than the
+national average, so the *cdp* scenario represents less than a doubling in
+cycling.
+
+```{r, echo=FALSE, fig.cap="Results of observed and scenario-based levels of cycling from NPCT model runs for Manchester (left) and Norwich (right)."}
+grid.raster(readPNG("../figures/man-nor-output.png"))
+```
+
+The difference between the spatial distribution in cycling potential between
+the shorter-term Cycling Delivery Plan (*cdp*) and longer-term Go Dutch
+(*dutch*) scenarios is illustrated in Fig. 7. Note that the top 20 flows
+in Norwich under *cdp* assumptions is dominated by the current rate of cycling,
+wheras under *dutch* assumptions, the distribution shifts to flows that
+are more representative of short-distance flows in across the city overall.
+In both cases the flows are focussed around Norwich city centre: the region
+has a monocentric regional economy, making trips beyond around 5 km from the
+centre much less likely to be made by bicycle.
+
+```{r, echo=FALSE, fig.cap="Model output illustrating the top 20 most cycled flows in Norwich under Cycling Delivery Plan and Go Dutch scenarios."}
+grid.raster(readPNG("../figures/nor-cdp-dutch.png"))
+```
+
+The equivalent results are shown for Manchester in Fig. 8. This shows that
+Manchester has a polycentric structure, favouring the construction of bicycle
+paths between the various sub-centres, not just in radial routes to a single
+centre. Note in both scenarios the large increase in the level of cycling in
+between *cdp* (which represents only a doubling nationwide) and *dutch*
+scenarios (which represents a more ambitious plan for cycling uptake).
+
+```{r, echo=FALSE, fig.cap="Model output illustrating the top 20 most cycled flows in Manchester under Cycling Delivery Plan and Go Dutch scenarios."}
+grid.raster(readPNG("../figures/man-cdp-dutch.png"))
+```
+
+To illustrate the importance of the difference between the 'fastest' and
+'quietest' routes calculated by CycleStreets.net for our model, Fig. 9
+illustrates the route with the highest cycling potential under the
+*cdp* scenario. The 'quietest' route is substantially further, with a
+distance of 2.8 km (as shown by clicking on the line). The 'fastest'
+route is more direct (with a route distance of 2.3 km) but it passes
+along Trinity Way (the A6042), a busy dual carraige way. This suggests
+that new cycle infrastructure along this route would be well-used by
+commuters.
+
+```{r, echo=FALSE, fig.cap="Close-up of the 'fastest' and 'quietest' routes from CycleStreets.net of the flow with highest cycling potential under the *cdp* scenario in Manchester."}
+grid.raster(readPNG("../figures/fast-quiet-man.png"))
+```
+
 
 # Discussion
 
-The flexibility of the approach outlined in this paper ensures that the
-method can be used in many different contexts. Because the underlying
-methods and computation are transparent and open source, it is
-possible to harness them in many different ways. This flexibility
+The flexibility of the approach outlined in this paper ensures that it
+can be used in many different contexts. Because the underlying
+methods and computer code are transparent and open source, it is
+possible to use the NPCT as a foundation for further work. This flexibility
 has been demonstrated by the tool's ability to be deployed in any
-Local Authority in England, for a range of cycling scenarios, with
-the results presented in a range of ways. However, the flexibility
-of the approach would allow it to be used in contexts that go well
+Local Authority (or other administrative area)
+in England for a range of cycling scenarios, with
+wide-ranging results that can be presented in many ways.
+The results demonstrate the utility of the tool for the cost-effective
+allocation of investment and local targetting of policies within
+a single country or region. Potential applications go far
 beyond re-running the model for different cities in the same country.
 Potential extensions of the model include:
 
 - Deployment of the tool and underlying flow model in different
-countries.^[This would depend on having ]
+countries. This would depend on having appropriate flow data. As indicated
+above, the datasets required for the NPCT are increasingly available, from
+a range of sources.
 
-# Using the tool
+- International and inter-regional comparisons of model results. This could
+help answer long-standing questions such as: "do areas with the highest
+cycling potential receive the greatest amount of cycling investment?" and
+"is there a strong link between a country's propensity to cycle and actual
+rates of cycling?"
 
-This Appendix summarises the work from the perspective of practitioners
-by describing how the NPCT may be used to inform the decision-making process.
+- The extension of the model to cover different trip-types and demographic
+groups to enable more targetted cycling policies. This could include the
+addition of an 'education layer', based on the location of schools and data
+on travel to school patterns, informing the construction of a network of an
+off-road 'cycle to school' network to enable children healthy, economic and
+independent means for undertaking the daily 'school commute'. This would
+also have a large financial saving by eliminating thousands of adult hours
+stuck in traffic.
+
+Because the model is open source, others are free to take the tool and
+modify it for their own needs. We actively encourage practitioners to modify
+the scenarios, input data and display of the results to suit their local needs,
+which will vary considerably from place to place. It is hoped that an active
+user community is built-up around the tool, enabling transport planners to
+decide the precise contents of the software that are most useful for them.
+It is likely that many of the new features added by the community have not
+been considered in this paper. After all, the people who best understand the
+requirements of transport planners (and other users of the tool), are the
+'end users' themselves. By reducing the barriers to entry into the
+creation and visualisation of evidence-based scenarios of change in travel
+behaviour, the NPCT methodology can empower transport decision-makers across
+England and beyond to
+supplement their own understandings of where need for new infrastructure is
+greatest. The increased cost-effectiveness of policies that the NPCT enables
+will also help to build business cases for further investment and policy change,
+critical for a transition away from the private car and towards active travel.
+
+```{r, echo=FALSE}
+# # Using the tool
+# 
+# This Appendix summarises the work from the perspective of practitioners
+# by describing how the NPCT may be used to inform the decision-making process.
+```
+
 
 # References
 
 ```{r, echo=FALSE, eval=FALSE}
-system("bibtool -x documents/flow-model.aux -o ~/Documents/Transport.bib")
+file.copy("~/Documents/Transport.bib", "documents/Transport.bib", overwrite = T)
+# this fails
+# system("bibtool -x documents/flow-model.aux -o ~/Documents/Transport.bib")
+
+file.copy("documents/flow-model.docx", "~/Dropbox/DfT bid/Draft Writeups/Robin/flow-model.docx", overwrite = T)
+
 ```
 

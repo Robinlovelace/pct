@@ -115,7 +115,7 @@ mzarea <- round(median(gArea(zones, byid = T) / 10000), 2) # average area of zon
 ```
 
 - Number of zones: `r nzones`, compared with 6791 in England
-- Median area of zones: `r mzarea` ha, compared with 300 ha in the UK
+- Median area of zones: `r mzarea` ha, compared with 300 ha across England
 
 ## Input flow data
 
@@ -149,10 +149,10 @@ pmflowa <- round(sum(flow$All[sel]) / sum(flow$All) * 100, 2)
 ```
 
 There are **`r nrow(flow)`** flows with origins and destinations in the study
-area. Of these, **`r sum(sel)`** meet the criteria that `r mflow` people travel
-on flow on a regular basis (a modifiable parameter used
+area. Of these, **`r sum(sel)`** meet the criteria that `r mflow` people 
+reported travelling between these two areas in the 2011 Census (a modifiable parameter used
 to reduce the computational requirements
-of the model). That's  **`r pmflow`%** of flows, accounting for
+of the model). That is  **`r pmflow`%** of flows, accounting for
 **`r pmflowa`%** of commutes in the study area.
 
 ```{r distance-dist, echo=FALSE, fig.cap="The study area (dark line), selected zones for training the model (grey) and the administrative zone of interest (red line). The black straight lines represent the most intensive commuting flows.", echo=FALSE, message=FALSE, warning=FALSE}
