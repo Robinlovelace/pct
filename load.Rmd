@@ -2,7 +2,8 @@
 title: "National Propensity to Cycle Tool - local results"
 author: "Created by the NPCT team"
 output:
-  word_document: default
+  word_document: 
+    fig_caption: yes
   html_document:
     fig_caption: yes
 ---
@@ -94,7 +95,7 @@ zbuf <- gBuffer(zones, width = buff_dist * 1000) # create la zone outline
 
 # convert to osbg
 cents <- spTransform(cents, CRSobj = proj4string(ukmsoas))
-
+la_shape <- spTransform(la_shape, CRSobj = proj4string(ukmsoas))
 
 # Extract zones to plot
 # zones <- ukmsoas[ grep(la, ukmsoas$geo_label), ] # extract by name
@@ -250,8 +251,8 @@ if(nrow(l) > 2 * sum(l_local_sel) & nrow(l) > 5000){ # sample if too many lines
 
 # Create route allocated lines
 if(length(grep("rf.Rds|rq.Rds", list.files(paste0("pct-data/", la)))) >= 2){
-  rf <- readRDS(paste0("pct-data/", la, "/rf.Rds")) # if you've loaded them
-  rq <- readRDS(paste0("pct-data/", la, "/rq.Rds"))
+  rf <- readRDS(paste0("pct-data/", la, "/rf_ttwa.Rds")) # if you've loaded them
+  rq <- readRDS(paste0("pct-data/", la, "/rq_ttwa.Rds"))
   # l <- readRDS(paste0("pct-data/", la, "/l.Rds"))
   nrow(rf) == nrow(l)
 } else{
@@ -270,6 +271,7 @@ if(length(grep("rf.Rds|rq.Rds", list.files(paste0("pct-data/", la)))) >= 2){
 ```
 
 ```{r plot-rlines, echo = FALSE, fig.cap="Sample of the straight and route-lines allocated to the travel network"}
+library(sp)
 plot(l[1:300,])
 lines(rf[1:300,], col = "red")
 lines(rq[1:300,], col = "green")
@@ -280,10 +282,11 @@ lines(rq[1:300,], col = "green")
 # Allocate route factors to flows
 # nz <- which(l$dist > 0) # non-zero lengths = nz
 l$dist_quiet <- l$dist_fast <- l$cirquity <- l$distq_f <- NA
-l$dist_fast <- rf$length
-l$dist_quiet <- rq$length
-l$cirquity <- rf$length / l$dist
-l$distq_f <- rq$length / rf$length
+if(nrow(rf) == nrow(l)) print("Warning, lines and routes are different lengths")
+  l$dist_fast <- rf$length
+  l$dist_quiet <- rq$length
+  l$cirquity <- rf$length / l$dist
+  l$distq_f <- rq$length / rf$length
 ```
 
 ## Distance distributions
@@ -308,7 +311,8 @@ ggplot(histdf) +
     position = "identity", colour = "black", binwidth = 0.5) +
   scale_fill_manual(values = c("lightblue", NA)) +
   scale_linetype(c(1, 2), guide = "none") +
-  scale_y_continuous(labels = percent) + 
+  scale_y_continuous() + 
+  # scale_y_continuous(labels = percent) + 
   xlab("Route distance (km)") + 
   ylab("Proportion of trips in each band (under 10 km)") + 
   xlim(c(0,13)) + 
