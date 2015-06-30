@@ -5,7 +5,8 @@ library(downloader)
 # download("http://census.edina.ac.uk/ukborders/easy_download/prebuilt/shape/England_lad_2011_gen_clipped.tar.gz", "private-data/England_lad_2011_gen_clipped.tar.gz")
 # untar(tarfile = "private-data/England_lad_2011_gen_clipped.tar.gz", exdir = "private-data/")
 # gMapshape(dsn = "private-data/England_lad_2011_gen_clipped.shp", 4)
-las <- shapefile("private-data/England_lad_2011_gen_clippedmapshaped_4%.shp")
+# las <- shapefile("private-data/England_lad_2011_gen_clippedmapshaped_4%.shp")
+las <- shapefile("private-data/4perc-clean.shp")
 plot(las)
 las@data <- rename(las@data, GeographyCode = CODE)
 
@@ -54,6 +55,22 @@ las$log_pcycle <- log(las$pcycle)
 
 tm_shape(las) +
   tm_fill(c("log_pcycle", "pmale"))
+
+tm_shape(las) +
+  tm_fill(c("pcycle", "pmale"), n = 4,
+    title = c("% cycling", "% male"), style = "quantile", palette = list("Greens", "Reds"))
+
+par(mfrow = c(2, 1))
+
+
+
+library(gridExtra)
+grid.arrange(p1, p2)
+
+lasf <- fortify(las)
+geom_polygon(data = lasf, )
+head(lasf)
+lasf <-
 
 qplot(las$pcycle, las$pmale) +
   geom_smooth() +

@@ -1,10 +1,6 @@
 ---
-title: 'The National Propensity to Cycle Tool: A generalisable flow-level model of
-  cycling uptake for sustainable transport planning'
-author: "Robin Lovelace"
-date: "April 12, 2015"
+title: 'The National Propensity to Cycle Tool: A generalisable flow-level model of cycling uptake for sustainable transport planning'
 output:
-  word_document: default
   pdf_document:
     fig_caption: yes
     keep_tex: yes
@@ -12,6 +8,8 @@ output:
     toc: yes
   html_document:
     toc: yes
+  word_document: 
+    fig_caption: yes
 header-includes: \usepackage{amsmath}
 bibliography: Transport.bib
 ---
@@ -48,7 +46,7 @@ statistical computing. All of the code has been made available
 under the MIT license on the GitHub platform.^[See [github.com/npct/pct](https://github.com/npct/pct).]
 
 The research was funded by the UK's Department for Transport and this paper
-focusses on Phase I of the work. In 'Phase II' we will extend to the model
+focuses on Phase I of the work. In 'Phase II' we will extend to the model
 to the entirety of England. Key lessons were learned during Phase I and,
 where applicable, these are discussed in relation to future plans.
 Although the original model was developed for England, the NPCT methodology
@@ -106,7 +104,7 @@ cycling is simulated at a high level of geographical resolution: per flow line
 and per small administrative zone. The model can answer the question:
 if cycling increases overall by this amount nationally,
 how could this plausibly come about at the local level?
-More specifically: along which routes would the new cycle trips occur?
+More specifically: along which routes would the new cycle trips plausibly occur?
  
 The model operates 'under the hood' in the NPCT online interface.
 This means that the
@@ -131,8 +129,9 @@ The basic model requires only two sets of input data
 (although more refined versions benefit from many additional datasets):
 
 - *Flow data* estimating the rate of movement between different places.
-Datasets on mode of travel enable regression models to estimate local
-distance decay curves. We use this approach for the NPCT although
+Ideally these datasets should include a breakdown of trips by mode of
+travel, as this enables regression models.
+We used flow data disagregated by mode for England, although
 it would also be possible to estimate cycling potential in cases where
 no break-down by mode is possible.
 Flow data are available from various sources, including:
@@ -141,7 +140,7 @@ flows derived from mobile telephone service providers
 public transport data [@Kitchin2013]; household
 travel surveys [@TransportforNSW2014];
 and census data on home and work locations [@Rae2009].
-We used census data in the first instance due to their
+We used Census 2011 data in the first instance due to their
 comprehensive coverage of the population,
 high geographic resolution and assurances surrounding
 data quality. In cases where no census data are available
@@ -156,12 +155,13 @@ and columns destinations) or a longer table of origin-destination pairs.
 origins and destinations present in the flow data.
 At a bare minimum, this means the centroids of each zone in the study area, preferably weighted by population and/or work location-weighted.  In addition to this, geographic variables could also include additional
 features of the urban environment that affect cyclists, such as
-hilliness and nodes on the public transport network.
+hilliness or number of nodes on the public transport network.
 
 The flow model described in this paper can work for
 anywhere that has access to such data. To link
 the two datasets together, *zone ids* are needed in both
-datasets. To ease the process of combining *flow* and *point* data,
+datasets. To ease the process of combining *flow* data and geographical
+*point* data,
 an R function called `gFlow2Lines()` was
 created.^[The source code of `gFlow2Lines()` has been made available
 online, as part of an R package for sustainable transport planning,
@@ -192,12 +192,12 @@ categories used to disaggregate flow
 by vehicle mode, trip type and socio-demographic group will vary depending on
 the data source. Flow data from some sources (e.g. anonymised mobile phone records)
 will not have any categories and simply report total flow.] the basic structure
-of flow data are likely to be applicable in many settings.
+of flow data is likely to be applicable in many settings.
 The model for England described in this paper uses the following open datasets:
 
 - `wu03ew_v2.csv`, a 104 MB (12 MB compressed) comma-delimited
 text file
-of flows between unique origin destination pairs, disaggregated by mode (see Table \ref{tbl:flow}). Note that this is a square table, which was loaded as a `data.frame`
+of flows between unique origin destination pairs, disaggregated by mode (see Table 2). Note that this is a square table, which was loaded as a `data.frame`
 in R. Note the origin and destination codes in some rows
 are the same, indicating *intra-zone* flow, meaning trips which begin and
 end in the same zone, as is the case in the top row of Table \ref{tbl:flow}.
@@ -299,7 +299,7 @@ We will also explore the possibility of
 running the model at the national level. This would involve setting
 appropriate selection criteria to filter-out the majority of
 origin-destination pairs to avoid exceeding computational resources.
-The demarcation of regional boundaries is deemed useful for focussing
+The demarcation of regional boundaries is deemed useful for focusing
 on one region at a time.
 
 Phase I of the NPCT project focused instead on smaller administrative units:
@@ -332,7 +332,8 @@ grid.raster(readPNG("~/Dropbox/DfT bid/figures/cuas-las.png"))
 Flow-lines are the unit of analysis for the model, but processing multiple
 flows within the model can require considerable time and computational resources.
 For our NPCT Phase I model, the route allocation algorithm, implemented 'in the
-cloud' by CycleStreets.net (an online routing service for cyclists, by cyclists),
+cloud' by CycleStreets.net (an online routing service for
+planning cycle trips),
 is the major bottle-neck at present in terms of
 computational time.  In order to make the model scalable and flexible,
 it may be desirable that only a sub-sample of flow-lines should be processed
@@ -366,6 +367,9 @@ We therefore created buffers around each LAD from which we sampled additional
 zones if the total number sampled without a buffer fell below some threshold.
 We set this threshold to 60 for Manchester (which contains 57 MSOAs) so that
 zones would be selected outside the long and thin LAD shape. 
+This protocol increases the sample size by including all
+zones whose population-weighted centroid lies inside the
+buffer.  
 This led to the selection of additional zones
 outside the long and thin Manchester LAD.
 Implementing this procedure involved creating a
@@ -378,7 +382,7 @@ between different regions in the model.
 
 Users can view a summary of the model, including the subsetting
 criteria mentioned above, without going through all the
-underlying code. This is thanks to the 'Model Output' tab (Fig. 3).
+underlying code. This is can be done via the 'Model Output' tab (Fig. 3).
 This feature of the user interface serves three purposes: 
 to avoid 'hiding' the underlying model from users; to encourage modifications
 and enhancements to the code; and to ensure transparency.
@@ -480,6 +484,7 @@ becomes far less accurate for longer journeys spanning many intermediate zones
 and is also less accurate for origin or destination zones with considerable
 internal variation in hilliness. We therefore plan to refine this method in
 Phase II by implementing a more complex route-specific methodology.
+
 For Phase II we will explore using additional explanatory variables to predict
 cycling more accurately and to differentiate more finely between different types
 of area. We have data on the following variables and the impact of each on model
@@ -558,7 +563,7 @@ Model (NTM) or elsewhere.]
 achieving the Cycling Delivery Plan will result in a doubling in the
 proportion of trips made by cycling nationwide.
 @DepartmentforTransport2014 provide no discussion or breakdown in the geographic
-distribution of potential cycling uptake in the scenario, and so we made our own
+distribution of potential cycling uptake in their publication of the scenario, and so we made our own
 assumptions about this (see next paragraph). The *cpd* scenario should help
 transport planners identify where new demand for cycling is likely to be greatest.
 
@@ -649,7 +654,7 @@ $$
 An example of this scenario for illustrative purposes is as follows.
 Based on a representative sample of flows in the UK,
 among those making trips with a 'fastest route' distance of between 4 and 5 km,
-the proportion who used a cycle as their main mode was 5.0%.
+the proportion who used a cycle as their main mode is 5.0%.
 Under the 'national doubling' assumption of the *cdp* scenario, this
 implies that the total increase in the proportion of cyclists in this distance band is 5.0% --- i.e. $pcycle(natmod) = 0.05$.
 In the case study city of Manchester, the proportion of commuters
