@@ -1,6 +1,10 @@
 ---
-title: 'The National Propensity to Cycle Tool: A generalisable flow-level model of cycling uptake for sustainable transport planning'
+title: 'The National Propensity to Cycle Tool: A generalisable flow-level model of
+  cycling uptake for sustainable transport planning'
+header-includes: \usepackage{amsmath}
 output:
+  word_document:
+    fig_caption: yes
   pdf_document:
     fig_caption: yes
     keep_tex: yes
@@ -8,9 +12,6 @@ output:
     toc: yes
   html_document:
     toc: yes
-  word_document: 
-    fig_caption: yes
-header-includes: \usepackage{amsmath}
 bibliography: Transport.bib
 ---
 
@@ -363,6 +364,7 @@ zones would be selected outside the long and thin LAD shape.
 This protocol increases the sample size by including all
 zones whose population-weighted centroid lies inside the
 buffer.  
+
 This led to the selection of additional zones
 outside the long and thin Manchester LAD.
 Implementing this procedure involved creating a
@@ -657,7 +659,7 @@ who used a cycle as their main mode, was 4.6% ($pcycle = 4.6$).
 All else being equal (specifically, assuming average hilliness in
 Manchester is equal to the national average), the number percent of
 commuters cycling to work in this case under the Cycling Delivery Plan 
-scenario (*SLC(cpd)*) would be 4.6% + 5.0% = 9.6%.
+scenario ($SLC(cpd)$) would be 4.6% + 5.0% = 9.6%.
 The total number of commuters cycling to work in Manchester
 ($SLC(cpd)$) would thus be 9.6% multiplied by $tflow$,
 i.e. the proportion cycling multiplied by the total number of commuters.
@@ -736,8 +738,8 @@ $tflow_m$ and $tflow_f$ are the total numbers of males
 and females in the flow respectively.
 
 $tflow_m$ and $tflow_f$  are both available at the flow level in the 2011 Census,
-as is the total number of cyclists ($OLC$).  The number of cyclists who are male
-in each flow is not, however, available in the published 2011 datasets
+as is the total number of cyclists ($OLC$).  The proportion of cyclists who are male
+in each flow ($pmale_(cyclist)$) is not, however, available in the published 2011 datasets
 (although we intend to commission such tables for Phase II).
 The smallest level at which the gender breakdown of cyclists is currently available
 is the zone level ('$pmale_{cyclist}(zone)$'), and we assume that all flows have
@@ -828,28 +830,34 @@ distance, with relatively few utility trips being made beyond around 15 km.
 Based on these insights, the essence of the 'Go Dutch' scenario
 (henceforth simply *dutch*) is the application of distance decay parameters
 found in the Netherlands to each flow in the study area.
+In Phase II we plan to refine this by also factoring in average differences in hilliness levels between England and the Netherlands, drawing on the work presented in Appendix XXpropensity.
 
 ## Electric bicycles
 
 The purpose of this scenario is to demonstrate the increased rate of cycling
 that is possible due the electric bicycles (hence the scenario name, *ebike*).
 This is the most ambitious of the scenarios presented in this paper and it
-builds on 'Go Dutch', but starting with Dutch model parameters. 
+builds on 'Go Dutch', with Dutch model parameters. 
 
-To ensure that the scenario represents the impact on longer trips,
-it is the first (linear) $\beta$ parameter that is increased by a small amount.
-In Phase I we increased this value by 0.025 a value sufficiently small to avoid
-generating an implausibly high rate of cycling but sufficiently large to create
-a noticeable effect.
-In Phase II we will base the changes to the distance decay parameters on
-real data from the Dutch National Travel Survey.
+In Phase I this scenario is not fully implemented, and the
+results are merely illustrative.  At present, the results are
+based on the decision to increase by a small amount the $\beta_1$ distance decay parameter,
+that corresponds to distance as a linear term.
+Specifically, we increased this value by 0.025, as we found
+this to be sufficiently small to avoid generating an
+implausibly high rate of cycling but sufficiently large to create a noticeable effect. 
+This allows us to illustrate the type of output that will
+be possible in this model. In Phase II we will implement the
+model fully by basing the changes to the distance decay
+parameters on real data from the Dutch National Travel Survey.
 
 # Results
 
 To demonstrate
 how the scenarios work in practice and to provide an overview of the results,
-Fig. 6 illustrates the observed ($OLC$, from the
-2011 Census) and scenario-based levels of cycling
+Fig. 6 illustrates the observed level of cycling
+($OLC$, from the
+2011 Census) and the scenario-based level of cycling
 in two Local Authorities (Manchester and Norwich). Note that while Manchester
 has a much higher total number of trips than Norwich, the proportion of those
 trips that are made by bicycle is lower. There is noticeable distance decay
@@ -934,29 +942,33 @@ countries. This would depend on having appropriate flow data. As indicated
 above, the datasets required for the NPCT are increasingly available, from
 a range of sources.
 
-- International and inter-regional comparisons of model results. This could
+- Inter-regional and international comparisons of model results. This could
 help answer long-standing questions such as: "do areas with the highest
 cycling potential receive the greatest amount of cycling investment?" and
 "is there a strong link between a country's propensity to cycle and actual
 rates of cycling?"
 
-- The extension of the model to cover different trip-types and demographic
+- The extension of the model to cover different trip types and demographic
 groups to enable more targetted cycling policies. This could include the
 addition of an 'education layer', based on the location of schools and data
 on travel to school patterns, informing the construction of a network of an
-off-road 'cycle to school' network to enable children healthy, economic and
-independent means for undertaking the daily 'school commute'. This would
-also have a large financial saving by eliminating thousands of adult hours
-stuck in traffic.
+off-road 'cycle to school' network.
 
 Because the model is open source, others are free to take the tool and
-modify it for their own needs. We actively encourage practitioners to modify
-the scenarios, input data and display of the results to suit their local needs,
-which will vary considerably from place to place. It is hoped that an active
-user community is built-up around the tool, enabling transport planners to
-decide the precise contents of the software that are most useful for them.
-It is likely that many of the new features added by the community have not
-been considered in this paper. After all, the people who best understand the
+modify it for their own needs. We will actively encourage practitioners
+to modify the scenarios, input data and display of the results to suit
+local contexts. This could help to visualise city-level targets for
+the proportion cycling by a certain year, for example,
+which will vary considerably from place to place.
+It is hoped that an active user community will build up around the tool.
+This could enable transport planners to decide on and create
+the precise set of online tools that are
+that are most useful for their work.
+
+It is likely that future work will focus on enabling
+practitioners to add
+new features that have not been considered in this paper.
+After all, the people who best understand the
 requirements of transport planners (and other users of the tool), are the
 'end users' themselves. By reducing the barriers to entry into the
 creation and visualisation of evidence-based scenarios about change in travel
@@ -973,7 +985,6 @@ critical for a transition away from the private car and towards active travel.
 # This Appendix summarises the work from the perspective of practitioners
 # by describing how the NPCT may be used to inform the decision-making process.
 ```
-
 
 # References
 
