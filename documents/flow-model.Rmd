@@ -180,7 +180,7 @@ t2 <- xtable(as.data.frame(cents[1:3,-c(3,4)]), caption = "Sample of the 'cents'
 print(t1, type = "latex", comment = FALSE, caption.placement = "top")
 ```
 
-```{r, echo=FALSE, fig.cap="Illustration of 'flow data' converted into geographical lines between origin and destination pairs for Coventry. Width represents the total number of trips. Note the use of population-weighted (as opposed to geographic) centroids used for the point of departure."}
+```{r, echo=FALSE, fig.cap="Illustration of 'flow data' converted into geographical lines between origin and destination pairs for Coventry. Width represents the total number of trips. Note the use of population-weighted (as opposed to geographic) centroids used for the point of departure and destination."}
 # data("flowlines")
 # plot(flowlines, lwd = flowlines$All / 10)
 grid.raster(readPNG("../figures/coventry-centroids.png"))
@@ -207,11 +207,18 @@ hundreds of geographically dispersed origins and destinations.
 
 - `cents.geojson`, representing population-weighted centroids of local
 administrative zones. For Phase I of the NPCT we used Medium Super
-Output Areas (MSOAs). MSOAs are a geographic unit used for the release of
+Output Areas (MSOAs) as both origins and destinations.
+MSOAs are a geographic unit used for the release of
 statistical data (average population around 7,800 people).
-Other geographic levels can be used. In Phase II of the project we plan to
+Other geographic levels can be used.
+
+In Phase II of the project we plan to
 explore using Lower
-Super Output Areas (LSOAs, average population of around 1,600).
+Super Output Areas (LSOAs, average population of around 1,600) as the
+origins and Workplace Zones (WZ) as the destinations. Using different
+geographic units for the origins and destinations, as planned for
+Phase II, has two advantages: the centroids will is better-matched
+to actual workplace destinations and the direction of travel is clearer.
 The centroid data can either be extracted from
 boundary data (which finds the geographic centroid) or, if available,
 a population-weighted centroid dataset can be used.
@@ -258,9 +265,11 @@ detrimental reduction of emphasis on 'edge zones' that straddle two
 or more regions.  To overcome this issue it is worth considering
 using more than one regional geography, as well as considering
 running at least one version of the model at the national level.
-We plan to implement these recommendations in Phase II.
 Another solution to the problem of 'edge zones'
 is to create buffers around the the regions.
+We plan to test these recommendations in Phase II, and ask
+practitioners for feedback on the advantages and disadvantages of each
+option.
 
 ```{r, echo=FALSE}
 # The wider national policy context should be considered when selecting
@@ -346,7 +355,10 @@ comprehensive coverage on the one hand and being fast to save and load on the ot
 Setting the maximum Euclidean distance is another way to reduce the number of
 flow lines, and this can be done in conjunction with setting a maximum number of commuters. We used a maximum value of 15 km Euclidean distance,
 based on the knowledge that this typically translates to a road distance
-of over 20km. This distance is not feasible for most people to cycle on a daily basis.
+of over 20km. This distance is not feasible for most people to cycle on a daily basis. A related issue is the selection of flow lines to illustrate.
+At present the tool select all lines completely encapsulated in the current
+zoom extent. Future work could explore allowing alternative ways of
+selecting lines, such as via polygons of origins, destinations, or both.
 
 Although flow-lines are the unit of analysis for running the model,
 zones are the basic unit of visualisation of the results over geographic space.
@@ -354,11 +366,15 @@ This is largely because the number of flow-lines processed in the model is
 such that they cannot all be effectively visualised on a single map.
 It is very hard to interpret a map showing more than around 50 flow-lines
 simultaneously.  Zones solve this problem, by averaging results across a surface.
-However, zones may in fact go too far in the opposite direction.
-In our model testing, we found that there often seemed to be too few zones
-at the LAD level to gain a comprehensive understanding of the travel system.
-We therefore created buffers around each LAD from which we sampled additional
-zones if the total number sampled without a buffer fell below some threshold.
+
+In our model testing, we found that there often seemed to be too few 'MSOA'
+zones per Local Authority 'LAD' region to gain a comprehensive understanding
+of the travel system. This would be solved by using larger regional units to
+split the MSOAs into groups for visualisation, as planned for Phase II.
+An alternative is to create buffers around each region,
+from which additional sampled additional
+zones are sampled. This sampling of additional zones within a buffer
+could be triggered if the number of zones falls below some threshold.
 We set this threshold to 60 for Manchester (which contains 57 MSOAs) so that
 zones would be selected outside the long and thin LAD shape. 
 This protocol increases the sample size by including all
@@ -366,7 +382,7 @@ zones whose population-weighted centroid lies inside the
 buffer.  
 
 This led to the selection of additional zones
-outside the long and thin Manchester LAD.
+outside Manchester's long and thin LAD shape.
 Implementing this procedure involved creating a
 parameter, `buff_dist`, which represents the distance buffer around the LAD in
 question from which the additional zones are sampled.  This approach has the
@@ -401,20 +417,45 @@ grid.raster(readPNG("../figures/model-outpute.png"))
 
 ## Modelling distance decay
 
-To estimate the number of cyclists at the flow level, a regression model
-was used. The optimisation seeks to modify a number of model parameters that
-link the *explanatory variables* described above to the *dependent variable*:
-the proportion of trips made by bicycle per flow ($pcycle$). Central to this
+So far we have described the input data and ways of processing, selecting and
+subsetting different geographical objects (primarily lines, representing
+flows and polygons, representing administrative zones) for the NPCT. Yet the
+greatest value of the NPCT lies in its ability to represent different
+scenarios of the future. Illustrations of how the number of cyclists using
+different 'desire lines' along each flow could shift in the future were
+described as 'very useful' for transport planning during user testing.
+In addition, the visualisation of different scenarios of the future enables
+'visioning', an activity that has great potential in transport planning
+[@Tight2011].
+
+For all scenarios (except *gender equality*) a regression model was used
+to estimate the potential rate of cycling at the flow level. Place of
+home and work are geographical variables with a high degree of inertia,
+so we assumed these would remain constant under all scenarios.
+An exciting future direction of this research would involve
+shift work and home locations, for example to reflect a more localised
+economy. This could provide insight into the impact of changing
+travel demand patterns on the potential rate of active travel in
+different areas. This section describes the regression model
+and how it was used to generate geographically-specific scenarios
+of transport futures.
+
+The regression model operates at the *flow* level and
+seeks to explain the current level of cycling.
+It does so using Ordinary Least Squares (OLS) to 
+optimize a number of model parameters
+linking the *explanatory variables* described above to the *dependent variable*:
+the proportion of trips made by bicycle per flow ($pcycle$). Central to the
 model is *distance decay*, which describes the (non-linear) relationship
 between the distance of a trip and the probability of it being made by bicycle.
-After trying various functional forms, we found that the distance decay
-curve displayed in Fig. 4, and variations thereof, involving changing
-the parameters. 
+After trying various functional forms on various flow datasets,
+we found that the distance decay
+curve displayed in Fig. 4, and variations thereof,
+seemed to fit the data well. 
 
-```{r, echo=FALSE, fig.cap="The distance decay curve resulting from the log-square-root function. The green lines represent increases of 0.25 times the the original values and the red lines represent -0.1 times the original value."}
+```{r, echo=FALSE, fig.cap="The distance decay curve resulting from the log-square-root function. The green lines represent increases of 0.25 times original parameter values (obtained by running the model on data from the 2011 Census for Manchester) and the red lines represent -0.1 times the original value."}
 grid.raster(readPNG("../figures/log-sqrt-params.png"))
 ```
-
 
 The gradual decline of
 $pcycle$ with increasing distance results in a 'long tail' distribution,
@@ -425,11 +466,12 @@ to the model to improve model fit. Including hilliness as a
 dependent variable, the final model formula was as follows:
 
 $$
-log(pcycle) \approx \frac{exp(\alpha + \beta_1 X1 + \beta_2 X1 + \beta3 X2)}{exp(1 + \alpha + \beta_1 X1 + \beta_2 X1 + \beta3 X2)}
+pcycle \approx \frac{exp(\alpha + \beta_1 X1 + \beta_2 X1 + \beta3_ X2)}{exp(\alpha + \beta_1 X1 + \beta_2 X1 + \beta_3 X2) + 1}
 $$
 
-where $X1$ is distance (km, route distance), $X2$ is the hilliness per flow and
-$\alpha$ and $\beta$ are parameters to be estimated.
+where $X1$ is distance (km, route distance), $X2$ is the hilliness
+(described below) per flow and
+$\alpha$ and $\beta$ symbols represent parameters to be estimated.
 
 
 # Model scenarios
@@ -478,7 +520,7 @@ hilliness of origin and destination. This method has the disadvantage that it
 becomes far less accurate for longer journeys spanning many intermediate zones
 and is also less accurate for origin or destination zones with considerable
 internal variation in hilliness. We therefore plan to refine this method in
-Phase II by implementing a more complex route-specific methodology.
+Phase II.
 
 For Phase II we will explore using additional explanatory variables to predict
 cycling more accurately and to differentiate more finely between different types
@@ -559,7 +601,7 @@ achieving the Cycling Delivery Plan will result in a doubling in the
 proportion of trips made by cycling nationwide.
 @DepartmentforTransport2014 provide no discussion or breakdown in the geographic
 distribution of potential cycling uptake in their publication of the scenario, and so we made our own
-assumptions about this (see next paragraph). The *cpd* scenario should help
+assumptions about this (see next paragraph). The *cdp* scenario should help
 transport planners identify where new demand for cycling is likely to be greatest.
 
 In line with the target set out in the Cycling Delivery Plan, the *cdp* scenario
@@ -571,10 +613,10 @@ average will see cycling increase less than two-fold; areas with a below average
 current rate of cycling but high potential based on the number of short commute
 trips will see cycling increase more than two-fold. The same logic applies to
 flows: origin-destination pairs that are close together but with a currently low
-rate of cycling tend to see the greatest increase in cycling under the *cpd* scenario.
+rate of cycling tend to see the greatest increase in cycling under the *cdp* scenario.
 
 ```{r, echo=FALSE}
-# Old description of cpd
+# Old description of cdp
 # The *cdp* scenario also relates to the *distribution* of trips
 # in the study area compared with the data used for the model.
 # If the distribution of
@@ -585,12 +627,12 @@ rate of cycling tend to see the greatest increase in cycling under the *cpd* sce
 # the distribution of cycling trips in the study area mirrors high
 # volume flows for which cycling is currently rare,  a doubling in propensity
 # will more-than-double the rate of cycling. If the study flows are the same
-# as the data used to train the model, *cpd* always results in a doubling in
+# as the data used to train the model, *cdp* always results in a doubling in
 # cycling. These concepts are illustrated in
 # Fig. x below.
 
 
-# ```{r, echo=FALSE, warning=FALSE, fig.cap="The rate of cycling under the cpd scenario for a case study Local Authority (Coventry). OLC is represented in blue, SLC(cdp) is represented by the white lines."}
+# ```{r, echo=FALSE, warning=FALSE, fig.cap="The rate of cycling under the cdp scenario for a case study Local Authority (Coventry). OLC is represented in blue, SLC(cdp) is represented by the white lines."}
 # l <- readRDS("../pct-data/coventry/l.Rds")
 # flow <- l@data
 # mod_logsqr <- glm(clc ~ dist + I(dist^0.5), data = flow, weights = All, family = "quasipoisson")
@@ -618,7 +660,7 @@ rate of cycling tend to see the greatest increase in cycling under the *cpd* sce
 # ```
 ```
 
-At the heart of the *cpd* scenario is a regression model at
+At the heart of the *cdp* scenario is a regression model at
 the national level (labelled $natmod$) estimating 
 the current proportion of trips by bicycle by (*pcycle*).
 Route distance and hilliness at the national level were the explanatory variables
@@ -627,7 +669,7 @@ The resulting national
 distance decay curve is then applied locally. The additional number of cyclists
 for each flow is calculated by multiplying the proportion expected for the
 distance of the flow nationally. 
-The new rate of cycling (pcycle(cpd) is the current rate of
+The new rate of cycling ($pcycle(cdp)$) is the current rate of
 cycling plus this model-based estimate:
 
 $$
@@ -659,9 +701,9 @@ who used a cycle as their main mode, was 4.6% ($pcycle = 4.6$).
 All else being equal (specifically, assuming average hilliness in
 Manchester is equal to the national average), the number percent of
 commuters cycling to work in this case under the Cycling Delivery Plan 
-scenario ($SLC(cpd)$) would be 4.6% + 5.0% = 9.6%.
+scenario ($SLC(cdp)$) would be 4.6% + 5.0% = 9.6%.
 The total number of commuters cycling to work in Manchester
-($SLC(cpd)$) would thus be 9.6% multiplied by $tflow$,
+($SLC(cdp)$) would thus be 9.6% multiplied by $tflow$,
 i.e. the proportion cycling multiplied by the total number of commuters.
 
 Note that this does not mean
@@ -868,7 +910,7 @@ comparatively rare.
 Note that although Manchester and Norwich have very
 different initial levels of cycling, the final level estimated from the
 *dutch* and *ebike* scenarios are similar, reflecting local trip distributions
-and overriding the initial rate of cycling. Note also that the *cpd* scenario
+and overriding the initial rate of cycling. Note also that the *cdp* scenario
 in Manchester has a considerably higher rate of cycling than the *gendereq*
 scenario, whereas in Norwich these scenarios are very similar. This is because
 Manchester is starting from a lower baseline, so a doubling nationwide
