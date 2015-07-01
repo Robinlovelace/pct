@@ -3,8 +3,6 @@ title: 'The National Propensity to Cycle Tool: A generalisable flow-level model 
   cycling uptake for sustainable transport planning'
 header-includes: \usepackage{amsmath}
 output:
-  word_document:
-    fig_caption: yes
   pdf_document:
     fig_caption: yes
     keep_tex: yes
@@ -12,6 +10,8 @@ output:
     toc: yes
   html_document:
     toc: yes
+  word_document:
+    fig_caption: yes
 bibliography: Transport.bib
 ---
 
@@ -33,7 +33,7 @@ developing transport policies, funded by the UK's Department
 for Transport (DfT). The NPCT will have data covering England
 and be used by Local Authority transport planners
 to prioritise investment in cycling. The tool's main purpose
-is to help prioritise where to build new strategic cycle paths
+is to help prioritise where to build new strategic cycle routes
 and related infrastructure at the city level.
 
 This paper describes the model underlying the
@@ -97,14 +97,20 @@ such as a particular piece of new infrastructure (although further work could ex
 capability). However, the models do allow for the estimation of where new
 cycling trips would be generated given specific outcomes, such as a target
 level of cycling (typically measured as a proportion of all trips) being met.
-The Cycling Delivery Plan scenario, for example, assumes a doubling in the
-level of cycling. The Cycling Delivery Plan scenario translates this doubling into a change
-in cycling at an individual flow level. Specifically, the future rate of
+The 'Cycling Delivery Plan' scenario, for example, assumes a doubling in the
+level of cycling,
+this being the proposed target of the Government’s draft
+Cycling Delivery Plan (DfT 2014).
+The Cycling Delivery Plan scenario translates this doubling into a change
+in cycling at the flow level. Specifically, the future rate of
 cycling is simulated at a high level of geographical resolution: per flow line
 and per small administrative zone. The model can answer the question:
 if cycling increases overall by this amount nationally,
 how could this plausibly come about at the local level?
-More specifically: along which routes would the new cycle trips plausibly occur?
+More specifically: along which routes would the new 
+cycle^[We
+use the term 'cycle' instead of 'bicycle' to include trips made by
+tricycles, quadricycles and hand cycles.] trips plausibly occur?
  
 The model operates 'under the hood' in the NPCT online interface.
 This means that the
@@ -277,7 +283,7 @@ option.
 # In Phase I of the work to implement the NPCT for the UK we used LADs, then switched to CUAs after user testing.  TTWs also possible, and in the long term perhaps LEPS.  Our recommendation is to build it at the CUA level
 ```
 
-In the UK, transport decisions (such as where to build new cycle paths)
+In Britain, transport decisions (such as where to build new cycle routes)
 are often made at the local level [@Gaffron2003]. At present, this
 primarily means at the level of local Highway Authorities, which
 generally have the same boundaries as County and Unitary Authorities (CUAs).
@@ -445,9 +451,9 @@ seeks to explain the current level of cycling.
 It does so using Ordinary Least Squares (OLS) to 
 optimize a number of model parameters
 linking the *explanatory variables* described above to the *dependent variable*:
-the proportion of trips made by bicycle per flow ($pcycle$). Central to the
+the proportion of trips made by cycling per flow ($pcycle$). Central to the
 model is *distance decay*, which describes the (non-linear) relationship
-between the distance of a trip and the probability of it being made by bicycle.
+between the distance of a trip and the probability of it being made by cycling.
 After trying various functional forms on various flow datasets,
 we found that the distance decay
 curve displayed in Fig. 4, and variations thereof,
@@ -466,25 +472,27 @@ to the model to improve model fit. Including hilliness as a
 dependent variable, the final model formula was as follows:
 
 $$
-pcycle \approx \frac{exp(\alpha + \beta_1 X1 + \beta_2 X1 + \beta3_ X2)}{exp(\alpha + \beta_1 X1 + \beta_2 X1 + \beta_3 X2) + 1}
+log(pcycle) \approx \alpha + \beta_1 X1 + \beta_2 X1 + \theta X2
 $$
 
-where $X1$ is distance (km, route distance), $X2$ is the hilliness
-(described below) per flow and
-$\alpha$ and $\beta$ symbols represent parameters to be estimated.
+where $X1$ is distance (km, route distance) and
+$X2$ is the hilliness (described below) per flow.
+$\alpha$ represents the intercept (the rate of cycling very short
+trips), $beta_1$ and $\beta_3$ represent the rate of distance decay
+and $\theta$ represents the impact of hilliness on cycling.
 
 
 # Model scenarios
 
 Once the input data has been processed and sub-setted to the area of interest,
 it is passed to a regression model. The dependent variable is the 
-percentage of trips currently made by bicycle (*pcycle*).
+percentage of trips currently made by cycling (*pcycle*).
 This is calculated as the
 number of cycle commutes from the flow data (*OLC*) divided by the
 total flow by all modes per flow ($tflow$).
 In the model output, this is visualised as number of cyclists.
 
-The explanatory variables predicting the percentage of trips made by bicycle
+The explanatory variables predicting the percentage of trips made by cycling
 included the route distance of each flow and hilliness. By aggregating the
 origins of all flows, the model
 also estimates the proportion of commuters cycling to work among inhabitants in
@@ -563,15 +571,27 @@ when they move away from home. This could represented in the model as
 
 - Infrastructure quality. Preliminary tests with the commuting data suggest that
 having a direct off-road path along the flow line is a strong predictor of the
-rate of cycling. This can be quantified in various ways, for example the ratio
-between the 'quietest' and the 'fastest' route calculated by CycleStreets.net.
-Adding this variable to the model has the potential to estimate the
-short-term response, in term of number of additional cyclists, of building
-specific dedicated bicycle paths along major roads.
+rate of cycling. This can be quantified in various ways, for example
+via the 'quietness diversion factor' ($qdf$), the ratio
+between the 'quietest' and the 'fastest' route calculated by CycleStreets.net ($qdf = d_{fast} / d_{quiet}$).
+The inclusion of this variable per flow creates an opportunity
+to estimate the short-term impacts of new or improved cycle provision.
+By setting $qdf$ to 1 (i.e. setting $d_{quiet} = d_{fast}$), the
+increase in the number of cyclists using upgraded routes can be estimated.
+An example in which the length of a quiet route is much further than
+the fastest route (i.e. $qdf > 1.2$) is provided at the end of this
+paper, in Fig. 9. Note that $qdf$ is different than
+cirquity ($q$), the diversion
+from straightline (Euclidean) distance as it approximates
+represents *how much further* one must travel to use a quiet path.
+Where $qdf$ is low, this means that the quiet routes are also the
+most direct, which will likely encourage new cyclists.
 
-Note that *total number of trips* is not an explanatory variable. This is because
-the dependent variable is not the absolute number of cyclists,
-but the proportion of commuters who travel made by bike.
+Note that *total number of cycle trips* is not an explanatory variable on
+its own. This is because
+the dependent variable includes cycling by using
+the *proportion* of those who cycle. This measure, labelled $pcycle$,
+is robust to large variations in the absolute flow by all modes.
 
 ```{r, echo=FALSE}
 # ## Baseline
@@ -582,12 +602,12 @@ but the proportion of commuters who travel made by bike.
 ## Cycling Delivery Plan
 
 The Cycling Delivery Plan scenario (*cdp*) is based on the government's
-target to double cycling in England, from 0.8 billion stages currently to
+proposed target to double cycling in England, from 0.8 billion stages currently to
 1.6 billion stages by 2025 [@DepartmentforTransport2014].
 Assuming increases in population offset
 the national trend towards lower trip
 rates,^[Increases
-in population would mean the *proportion* of trips by bicycle
+in population would mean the *proportion* of trips by cycle
 would not need to double for the *absolute number* of trips to double.
 However, the rate of trips overall (measured in the number of trips
 per person per year by any mode for any purpose) is on a long-term
@@ -597,14 +617,15 @@ growth. See
 The authors could not find evidence about how this trend was
 accounted for by the DfT in scenarios from the National Transport
 Model (NTM) or elsewhere.]
-achieving the Cycling Delivery Plan will result in a doubling in the
+achieving the draft Cycling Delivery Plan's proposed target would
+result in a doubling in the
 proportion of trips made by cycling nationwide.
 @DepartmentforTransport2014 provide no discussion or breakdown in the geographic
 distribution of potential cycling uptake in their publication of the scenario, and so we made our own
 assumptions about this (see next paragraph). The *cdp* scenario should help
 transport planners identify where new demand for cycling is likely to be greatest.
 
-In line with the target set out in the Cycling Delivery Plan, the *cdp* scenario
+In line with the target set out in the draft Cycling Delivery Plan, the *cdp* scenario
 seeks to approximate the geographic distribution of growth in cycling
 under a scenario of doubling in cycling. In our implementation of this
 scenario, cycling does not double in all areas. Places that have high average
@@ -662,7 +683,7 @@ rate of cycling tend to see the greatest increase in cycling under the *cdp* sce
 
 At the heart of the *cdp* scenario is a regression model at
 the national level (labelled $natmod$) estimating 
-the current proportion of trips by bicycle by (*pcycle*).
+the current proportion of trips by cycle by (*pcycle*).
 Route distance and hilliness at the national level were the explanatory variables
 in Phase I, although as explained above additional variables could easily added.
 The resulting national
@@ -752,7 +773,7 @@ find the value of $SLC_f$ such that the proportion of
 females cycling under the gender equity scenario ('$pcycle(gendereq)_f$')
 becomes equal to the observed proportion of males cycling ($pmale_{cyclist}$).
 Note that this is not as simple as $SLC_f = SLC_m$,
-as the absolute number of female and male cyclists will also depend on the overall gender split of commuters within each flow.^[To
+as the absolute number of female and male cyclists will also depend on the gender split of the total commuting population within each flow.^[To
 illustrate this point, consider a flow in which the total number of female
 commuters is larger than the total number of male commuters.
 In this case, the number of female cyclists would exceed the
@@ -807,7 +828,7 @@ grid.raster(readPNG("../figures/las-gender-pcycle.png"))
 ```
 
 To illustrate how this method works in practice, imagine a flow in which
-5 from a total of 50 people commute by bicycle ($tflow = 50; OLC = 5$).
+5 from a total of 50 people commute by cycle ($tflow = 50; OLC = 5$).
 30 of the total trips in the flow are made by males
 ($tflow_m = 30$) and 20 by females ($tflow_f = 20$).
 In addition, 70% of commuter cycling in the wider zone is by
@@ -848,7 +869,7 @@ in total numbers of cyclists.  All of these extra 0.83
 cyclists are female, giving a new total of 1.5 + 0.83 = 2.33 female cyclists 
 (and still 3.5 male cyclists).
 Gender equality in cycling has been reached, such that an estimated 11.7
-% of commute trips are made by bicycle among both men (3.5/30)
+% of commute trips are made by cycling among both men (3.5/30)
 and women (2.33 / 20).
 Note that that $SLC(gendereq)$ can be calculated based on any scenario.
 In our model, instead of using the conservative *baseline* scenario,
@@ -874,10 +895,10 @@ Based on these insights, the essence of the 'Go Dutch' scenario
 found in the Netherlands to each flow in the study area.
 In Phase II we plan to refine this by also factoring in average differences in hilliness levels between England and the Netherlands, drawing on the work presented in Appendix XXpropensity.
 
-## Electric bicycles
+## Electric cycles
 
 The purpose of this scenario is to demonstrate the increased rate of cycling
-that is possible due the electric bicycles (hence the scenario name, *ebike*).
+that is possible due the electric cycles (hence the scenario name, *ebike*).
 This is the most ambitious of the scenarios presented in this paper and it
 builds on 'Go Dutch', with Dutch model parameters. 
 
@@ -902,9 +923,9 @@ Fig. 6 illustrates the observed level of cycling
 2011 Census) and the scenario-based level of cycling
 in two Local Authorities (Manchester and Norwich). Note that while Manchester
 has a much higher total number of trips than Norwich, the proportion of those
-trips that are made by bicycle is lower. There is noticeable distance decay
-of for all modes of transport, especially for bicycle trips in Norwich,
-where bicycle trips above 7.5 km observed from 2011 census data are
+trips that are made by cycling is lower. There is noticeable distance decay
+of for all modes of transport, especially for cycle trips in Norwich,
+where cycle trips above 7.5 km observed from 2011 census data are
 comparatively rare.
 
 Note that although Manchester and Norwich have very
@@ -931,15 +952,15 @@ whereas under *dutch* assumptions, the distribution shifts to flows that
 are more representative of short-distance flows in across the city overall.
 In both cases the flows are focused around Norwich city centre: the region
 has a mono-centric regional economy, making trips beyond around 5 km from the
-centre much less likely to be made by bicycle.
+centre much less likely to be made by cycling.
 
 ```{r, echo=FALSE, fig.cap="Model output illustrating the top 20 most cycled flows in Norwich under Cycling Delivery Plan and Go Dutch scenarios."}
 grid.raster(readPNG("../figures/nor-cdp-dutch.png"))
 ```
 
 The equivalent results are shown for Manchester in Fig. 8. This shows that
-Manchester has a poly-centric structure, favouring the construction of bicycle
-paths between the various sub-centres, not just in radial routes to a single
+Manchester has a poly-centric structure, favouring the construction of cycle
+routes between the various sub-centres, not just in radial routes to a single
 centre. Note in both scenarios the large increase in the level of cycling in
 between *cdp* (which represents only a doubling nationwide) and *dutch*
 scenarios (which represents a more ambitious plan for cycling uptake).
@@ -954,9 +975,14 @@ illustrates the route with the highest cycling potential under the
 *cdp* scenario. The 'quietest' route is substantially further, with a
 distance of 2.8 km (as shown by clicking on the line). The 'fastest'
 route is more direct (with a route distance of 2.3 km) but it passes
-along Trinity Way (the A6042), a busy dual carriage way. This suggests
-that new cycle infrastructure along this route would be well-used by
-commuters.
+along Trinity Way (the A6042), a busy dual carriage way.
+Dutch evidence suggests that cyclists will not divert to a route which
+is more than about 1.4 to 1.5 times the length of the
+'crow-flies' Euclidean distance (defined as $q$ above),
+and that the target "for cycle provision should be 1.2".^[Reference: 'Design manual for bicycle traffic', CROW, 2007.]
+This suggests that new cycle infrastructure along the Trinity Way route
+would be much better used by commuters than an
+alternative quiet route that diverges greatly from the shortest path.
 
 ```{r, echo=FALSE, fig.cap="Close-up of the 'fastest' and 'quietest' routes from CycleStreets.net of the flow with highest cycling potential under the *cdp* scenario in Manchester."}
 grid.raster(readPNG("../figures/fast-quiet-man.png"))
@@ -995,6 +1021,10 @@ groups to enable more targetted cycling policies. This could include the
 addition of an 'education layer', based on the location of schools and data
 on travel to school patterns, informing the construction of a network of an
 off-road 'cycle to school' network.
+
+- The extension of the tool to enable the estimation of cycling demand
+following new developments, such as high-density housing or a new
+school.
 
 Because the model is open source, others are free to take the tool and
 modify it for their own needs. We will actively encourage practitioners
@@ -1036,6 +1066,7 @@ file.copy("~/Documents/Transport.bib", "documents/Transport.bib", overwrite = T)
 # system("bibtool -x documents/flow-model.aux -o ~/Documents/Transport.bib")
 
 file.copy("documents/flow-model.docx", "~/Dropbox/DfT bid/Draft Writeups/Robin/flow-model.docx", overwrite = T)
+file.copy("documents/flow-model.pdf", "~/Dropbox/DfT bid/Draft Writeups/Robin/flow-model.pdf", overwrite = T)
 
 ```
 
