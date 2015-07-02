@@ -1,6 +1,5 @@
 ---
-title: 'The National Propensity to Cycle Tool: A generalisable flow-level model of
-  cycling uptake for sustainable transport planning'
+title: 'The National Propensity to Cycle Tool: A generalisable flow-level model of cycling uptake for sustainable transport planning'
 header-includes: \usepackage{amsmath}
 output:
   pdf_document:

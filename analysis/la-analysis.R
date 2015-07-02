@@ -7,12 +7,14 @@ source("set-up.R")
 # unzip("private-data/Eng")
 
 las <- geojson_read("pct-bigdata/national/las-pcycle.geojson", what = "sp")
-# gMapshape("pct-bigdata/national/infuse_dist_lyr_2011_clipped.shp", percent = 0.1)
-# las <- shapefile("pct-bigdata/national/infuse_dist_lyr_2011_clippedmapshaped_0.1%.shp")
+#
+gMapshape("pct-bigdata/national/inf", percent = 5)
+las <- shapefile("private-data/England_lad_2011_gen_clipped.dbf")
 
 cuas <- shapefile("pct-bigdata/national/cuas.shp")
 qtm(cuas)
 plot(las)
+qtm(las)
 nrow(las)
 names(las)
 
@@ -57,9 +59,9 @@ allnames[1:50]
 names(ldf)[4:53]
 names(ldf)[(1:99) + 3] <- allnames
 
-lasen <- shapefile("private-data/England_lad_2011_gen_clippedmapshaped_4%.shp")
+lasen <- las
 lasen@data <- rename(lasen@data, geo_code = CODE)
-head(lasen)
+qtm(lasen)
 names(las)
 head(las)
 
@@ -87,7 +89,6 @@ ldf2$geo_label[grepl(pattern = "E", las$geo_code) & is.na(las$All_All)]
 ldf$geography[grepl(pattern = "Corn", ldf$geography)]
 ldf$geo_code[grepl(pattern = "Corn", ldf$geography)]
 ccode <- las$geo_code[grepl(pattern = "Corn", las$geo_label)]
-plot(las[grepl(pattern = "Corn", las$geo_label),])
 ldf$geo_code[ldf$ONS == ccode]
 las$geo_code[grepl(pattern = "Corn", las$geo_label)] <- ldf$geo_code[ldf$ONS == ccode]
 ldf2 <- left_join(las@data, ldf)
@@ -96,6 +97,8 @@ las@data <- ldf2
 
 names(las)
 las <- las[!is.na(las@data$All_All),]
+
+
 qtm(las, "Foot_[5,10)")
 qtm(las, "Car_[40,60)", fill.palette = "Reds")
 las$shortcar <- las@data$`Car_[0,2)` / las@data$`All_[0,2)`
@@ -105,35 +108,124 @@ las$shortcar <- las@data$`Car_[0,2)` / las@data$`All_[0,2)`
 las@data$NAME[is.na(las$`Foot_[5,10)`)]
 
 qtm(las, "All_All", fill.palette = "Reds")
+las$pcycle <- las@data$Bicycle_All / las$All_All * 100
+tm_shape(las) +
+  tm_fill("pcycle", style = "kmeans")
 
-bbox(las)
-las <- spTransform(las, CRSobj = CRS("+init=epsg:4326"))
+# All trips of a certain distance
+names(las)
+select(las@data, contains("[0"))
 
-qtm(las, "shortcar", fill.palette = "YlOrRd", scale = 0.7)
-nrow(las)
+luk <- readRDS("pct-bigdata/national/l_sam8.Rds")
+luk <- luk@data
+head(luk)
+luk$dband <- cut(luk$dist, breaks = c(0, 2, 5, 10, 20, 30, 40, 60, 200))
+plot(luk$dband)
 
-# las <- las[!is.na(las$All_All),]
-las2 <- las[!is.na(las$All_All),]
-qtm(las2) # error: the selection breaks continuity...
+# select national flows representative of area 1
+las$`All_[0,2)`[1]
+las$All_sub10 <- las$`All_[0,2)` +
+  las$`All_[2,5)` +
+  las$`All_[5,10)`
+
+luk0 <- luk[luk$dband == "(0,2]",]
+luk2 <- luk[luk$dband == "(2,5]",]
+luk5 <- luk[luk$dband == "(5,10]",]
+
+i = 1 # for testing outside for loop
+las$expected <- NA
+
+for(i in 1:nrow(las)){
+# for(i in 1:5){
+
+lz0 <- luk0[sample(nrow(luk0), 10),] # start with a random sample
+lz2 <- luk2[sample(nrow(luk2), 10),]
+lz5 <- luk5[sample(nrow(luk5), 10),]
+
+while(
+  # Are any flows not enough?
+  sum(lz0$All) < las$`All_[0,2)`[i] |
+  sum(lz2$All) < las$`All_[2,5)`[i] |
+  sum(lz5$All) < las$`All_[5,10)`[i]
+    ) {
+
+  # short distances
+  sel0 <- luk0[sample(nrow(luk0), 1),]
+  if(sum(lz0$All) < las$`All_[0,2)`[i]){
+    lz0 <- rbind(lz0, sel0)
+  }
+
+  # mid distances
+  sel2 <- luk2[sample(nrow(luk2), 1),]
+  if(sum(lz2$All) < las$`All_[2,5)`[i]){
+    lz2 <- rbind(lz2, sel2)
+  }
+
+  # long distances
+  sel5 <- luk5[sample(nrow(luk5), 1),]
+  if(sum(lz5$All) < las$`All_[5,10)`[i]){
+    lz5 <- rbind(lz5, sel5)
+  }
+}
+
+lz <- rbind(lz0, lz2, lz5)
+
+# estimated rate of cycling in our model
+
+mod_nat <- readRDS("pct-bigdata/national/mod_logsqr_national_8.Rds")
+lz$npred <- exp(predict(mod_nat, lz))
+lz$expected <- lz$All * lz$npred
+
+las@data$All_sub10_sim[i] <- sum(lz$All)
+las@data$Bicycle_All[i]
+las$expected[i] <- sum(lz$expected)
+print(i)
+}
+
+cor(las@data$All_sub10, las@data$All_sub10_sim)
+
+summary(las@data$expected)
+
+las$cdp <- las$Bicycle_All + las$expected
+las@data$pcycle_exp <- las$expected / las$All_All * 100
+
+plot(las$Bicycle_All, las$expected)
+cor(las$Bicycle_All, las$expected)
+plot(las$pcycle, las$pcycle_exp)
+cor(las$pcycle, las$pcycle_exp)
+cor(las$Bicycle_All, las$cdp)
+sum(las$Bicycle_All) / sum(las$cdp)
+
+las$difference <- las$expected - las$Bicycle_All
+las$pcycle_dif <- las$pcycle_exp - las$pcycle
+
+las$expected <- round(las$expected)
 las$shortcar <- las$shortcar * 100
 
-library(leaflet)
+t0 <- tail(las@data[order(las$pcycle),], 10)
+t0 <- t0[10:1,]
+t0$NAME
+t0$expected
 
-# Leaflet map
-qpal <- colorQuantile(palette = "YlOrRd", las$shortcar, n = 5)
-qpal <- colorBin(palette = "YlOrRd", las$shortcar, bins = 5)
-leaflet(las) %>%
-  addTiles(urlTemplate = "http://{s}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png") %>%
-  addPolygons(color = ~qpal(shortcar), fillOpacity = 0.7, smoothFactor = 0.2, weight = 1) %>%
-  addLegend(pal = qpal, values = ~shortcar, opacity = 1)
+t0 <- select(t0, Name = NAME, `Current %` = pcycle, `Expected %` = pcycle_exp, `Current (n)` = Bicycle_All, `Expected (n)` = expected, `% short car` = shortcar)
+kable(t0, digits = 1)
 
+t1 <- tail(las@data[order(las$expected),], 10)
+t1$NAME
+t1$expected
 
-object.size(las) / 1000000
+t1 <- select(t1, Name = NAME, `Current %` = pcycle, `Expected %` = pcycle_exp, `Current (n)` = Bicycle_All, `Expected (n)` = expected, `% short car` = shortcar)
+kable(t1, digits = 2)
 
-lasen <- las[grepl(pattern = "E", las@data$geo_code),]
-bbox(cuas)
-bbox(las)
-las_outline <- gBuffer(cuas, width = 0.001)
-plot(las_outline)
-plot(lasen)
-qtm(lasen)
+t2 <- tail(las@data[order(las$pcycle_exp),], 10)
+t2$NAME
+t2$pcycle_exp
+
+t3 <- tail(las@data[order(las$difference),], 10)
+t3$NAME
+t3$pcycle_exp
+
+t4 <- tail(las@data[order(las$pcycle_dif),], 10)
+t4$NAME
+t4$pcycle_exp
+

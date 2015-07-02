@@ -314,7 +314,7 @@ ggplot(histdf) +
   scale_y_continuous() + 
   # scale_y_continuous(labels = percent) + 
   xlab("Route distance (km)") + 
-  ylab("Proportion of trips in each band (under 10 km)") + 
+  ylab("Proportion of trips in each band") + 
   xlim(c(0,13)) + 
   theme_bw()
 
@@ -442,6 +442,8 @@ ggplot(dfsp) +
   geom_freqpoly(aes(dist_fast, weight = slc,
     color = scenario), binwidth = 1) + 
   ylab("Total number of trips") +
+  xlab("Route distance (km)") +
+  scale_color_discrete(name = "Mode and\nscenario\n(cycling)") +
   xlim(c(0,12)) +
   theme_bw()
 

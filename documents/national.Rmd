@@ -1,0 +1,100 @@
+---
+title: "National-level analysis of cycling potential"
+output: pdf_document
+---
+
+```{r, echo=FALSE}
+pkgs <- c("grid", "png", "knitr", "tmap")
+lapply(pkgs, library, character.only = T)
+opts_knit$set(root.dir = "../")
+# source("analysis/la-analysis.R", print.eval = T)
+```
+
+```{r}
+las <- readRDS("pct-bigdata/national/las.Rds")
+```
+
+
+
+# Introduction
+
+
+
+Cycling potential operates at many levels. At the lowest level,
+the decision of whether or not to cycle depends on personal
+and highly localised factors. Is my cycle in good working order?
+Is my body in good working order? Is the weather nice outside?
+
+On the other hand, larger-scale process are at play to determine the
+proportion of trips that are cycled. The terrain, roads, traffic and
+local culture will all conspire to make more or fewer trips cycled
+in an area compared with national and international averages.
+
+Critical hear is the distribution of trip lengths associated with
+a particular area. In some 'commuter belts' almost all trips are
+long-distance, precluding a strong utility cycling culture.
+In vibrant urban centres, by contrast, a large proportion of
+travel is within cycling distance. This helps explain why the rate
+of cycling to work (and likely cycling overall too)
+has grown in large cities such as London and Manchester, but remained
+largely stagnant at the national level.
+
+In this paper we explore the geographical variability of
+*cycling potential* at the national level.
+To do so, we must first describe briefly the current rate of cycling
+nationwide. The region of analysis is the entirety of England and,
+although now slightly out of date, it focussed on travel
+to work. Commuting data from the 2011 Census
+has the greatest coverage (90% + of the working population) and
+geographical resolution and coverage (with a high response rate from
+every authority) of any travel dataset of England. Commuting data
+also reflect utility cycling, as opposed to leisure cycling, which is
+the focus of the National Propensity to Cycle Tool project, of which
+this analysis is a part.
+
+The unit of analysis is the Local
+
+The structure of the paper is as follows. First we will describe the
+current rate of cycling. The subsequent section will explore the potential
+for additional cycle trips at the national level, both in terms of
+the proportion of all commuter trips cycled and in terms of the
+absolute number of commuter cyclists. (The former can provide an
+evidence base, amongst others, to inform the setting of suitable local
+cycling targets; the latter can assist with the relative allocation of
+funding for cycling investment between different local authorities.)
+Finally we explain the methodology that was used and the impact that this
+has on the policy implications of the work.
+
+# The current level of cycling
+
+The current rate of cycling in England is depicted in Fig. 1.
+This shows that the spatial distribution of commuter cycling is
+highly uneven. In 135 LADs (42% of the total number and population)
+less than 2% of workers report cycling as their main means of travel
+to work. Nearly half (160) of the 324 LADs have an intermediate level
+of cycling, between 2 and 5%. 
+The remaining 29 LADs have what can be considered a high rate of
+cycling by English standards of over 5% of commuters using a cycle.
+This means that only around 10% of the population can be considered
+as living in areas where cycling is a 'normal' mode of travel to work.
+
+```{r, echo=FALSE, fig.cap="The current level of cycling to work in England from the 2011 Census."}
+fixedBreaks = c(0,2,5,30)
+qtm(las, "pcycle", fill.style = "fixed", fill.breaks = fixedBreaks)
+```
+
+The top 10 LADs by cycling share in commuting is presented in Table 1.
+
+
+|    |Name                        | Current %| Expected %| Current (n)| Expected (n)| % short car|
+|:---|:---------------------------|---------:|----------:|-----------:|------------:|-----------:|
+|58  |Cambridge                   |      28.9|        3.7|       17313|         2232|        16.1|
+|36  |Oxford                      |      17.0|        3.4|       11962|         2395|        18.0|
+|155 |Hackney                     |      13.8|        3.2|       16411|         3809|        10.7|
+|249 |York                        |      11.2|        3.6|       11143|         3522|        24.3|
+|273 |Gosport                     |      10.7|        3.3|        4296|         1347|        40.7|
+|186 |Islington                   |       9.1|        3.7|        9775|         3960|         6.4|
+|5   |Norwich                     |       8.7|        4.0|        5480|         2523|        24.0|
+|226 |Kingston upon Hull, City of |       8.1|        4.0|        8974|         4405|        35.6|
+|306 |Lambeth                     |       7.7|        3.0|       12945|         4966|        13.0|
+|140 |South Cambridgeshire        |       7.6|        1.9|        6041|         1537|        35.4|
