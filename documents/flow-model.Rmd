@@ -1,7 +1,10 @@
 ---
-title: 'The National Propensity to Cycle Tool: A generalisable flow-level model of cycling uptake for sustainable transport planning'
+title: 'The National Propensity to Cycle Tool: A generalisable flow-level model of
+  cycling uptake for sustainable transport planning'
 header-includes: \usepackage{amsmath}
 output:
+  word_document:
+    fig_caption: yes
   pdf_document:
     fig_caption: yes
     keep_tex: yes
@@ -9,8 +12,6 @@ output:
     toc: yes
   html_document:
     toc: yes
-  word_document:
-    fig_caption: yes
 bibliography: Transport.bib
 ---
 
@@ -471,15 +472,17 @@ to the model to improve model fit. Including hilliness as a
 dependent variable, the final model formula was as follows:
 
 $$
-log(pcycle) \approx \alpha + \beta_1 X1 + \beta_2 X1 + \theta X2
+pcycle \approx \alpha + \beta_1 X1 + \beta_2 X1^{0.5} + \theta X2
 $$
 
 where $X1$ is distance (km, route distance) and
 $X2$ is the hilliness (described below) per flow.
 $\alpha$ represents the intercept (the rate of cycling very short
-trips), $beta_1$ and $\beta_3$ represent the rate of distance decay
+trips), $\beta_1$ and $\beta_2$ represent the rate of distance decay
 and $\theta$ represents the impact of hilliness on cycling.
-
+A 'quasipoisson' general linear model was used to implement this formula
+using the base R function `glm`, which predicts $log(pcycle)$
+to account for the afforementioned exponential decay.^[See [github.com/npct/pct/blob/master/models/aggregate-model.R.](https://github.com/npct/pct/blob/master/models/aggregate-model.R).]
 
 # Model scenarios
 
