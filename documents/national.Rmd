@@ -1,37 +1,36 @@
 ---
 title: "National-level analysis of cycling potential"
-output: pdf_document
+output: word_document
 ---
 
-```{r, echo=FALSE}
-pkgs <- c("grid", "png", "knitr", "tmap")
+```{r, include=FALSE}
+pkgs <- c("grid", "png", "knitr", "tmap", "dplyr")
 lapply(pkgs, library, character.only = T)
 opts_knit$set(root.dir = "../")
 # source("analysis/la-analysis.R", print.eval = T)
 ```
 
-```{r}
+```{r, echo=FALSE}
 las <- readRDS("pct-bigdata/national/las.Rds")
+# source("analysis/las-tables.R")
 ```
 
 
 
 # Introduction
 
-
-
 Cycling potential operates at many levels. At the lowest level,
 the decision of whether or not to cycle depends on personal
 and highly localised factors. Is my cycle in good working order?
 Is my body in good working order? Is the weather nice outside?
-
-On the other hand, larger-scale process are at play to determine the
+On the other hand, larger-scale phenomena are at play to determine the
 proportion of trips that are cycled. The terrain, roads, traffic and
 local culture will all conspire to make more or fewer trips cycled
 in an area compared with national and international averages.
 
-Critical hear is the distribution of trip lengths associated with
-a particular area. In some 'commuter belts' almost all trips are
+In this context, the distribution of trip lengths associated with
+a particular area is critical to its cycling potential.
+In some 'commuter belts' almost all trips are
 long-distance, precluding a strong utility cycling culture.
 In vibrant urban centres, by contrast, a large proportion of
 travel is within cycling distance. This helps explain why the rate
@@ -51,8 +50,8 @@ every authority) of any travel dataset of England. Commuting data
 also reflect utility cycling, as opposed to leisure cycling, which is
 the focus of the National Propensity to Cycle Tool project, of which
 this analysis is a part.
-
-The unit of analysis is the Local
+The unit of analysis is the 324 Local Authority Districts in England,
+the highest resolution data that provides a breakdown of mode by distance.
 
 The structure of the paper is as follows. First we will describe the
 current rate of cycling. The subsequent section will explore the potential
@@ -67,34 +66,172 @@ has on the policy implications of the work.
 
 # The current level of cycling
 
-The current rate of cycling in England is depicted in Fig. 1.
-This shows that the spatial distribution of commuter cycling is
-highly uneven. In 135 LADs (42% of the total number and population)
+The spatial distribution of of commuter cycling across England
+is depicted in Fig. 1. The dataset shows that there is wide variation
+in the level of cycling, which can be split roughly into
+3 categories. In 135 LADs (42% of the total number and population)
 less than 2% of workers report cycling as their main means of travel
 to work. Nearly half (160) of the 324 LADs have an intermediate level
 of cycling, between 2 and 5%. 
 The remaining 29 LADs have what can be considered a high rate of
-cycling by English standards of over 5% of commuters using a cycle.
+cycling by English standards, of 5% of more. 
 This means that only around 10% of the population can be considered
 as living in areas where cycling is a 'normal' mode of travel to work.
+8 of the 'high cycling' LADs are
+based in London.^[These are: Hammersmith and Fulham,
+Wandsworth,             Hackney, Tower Hamlets,
+Islington,              Richmond upon Thames,
+Southwark and              Lambeth.]
+
 
 ```{r, echo=FALSE, fig.cap="The current level of cycling to work in England from the 2011 Census."}
 fixedBreaks = c(0,2,5,30)
-qtm(las, "pcycle", fill.style = "fixed", fill.breaks = fixedBreaks)
+qtm(las, "pcycle", fill.style = "fixed",
+  fill.breaks = fixedBreaks, fill.title = "Percent cycling")
 ```
 
-The top 10 LADs by cycling share in commuting is presented in Table 1.
+Outside London, 'high cycling' LADs tend to be high density urban
+areas focussed on a large mono-centric centre. Cambridge (with 29% cycling),
+Oxford (17%) and York (11%) are well known high-cycling Local Authorities
+that fit this category but the list also contains lesser-known
+areas. Norwich (9%), Bristol (7%), Lincoln (6%) and Portsmouth and
+Gosport (with 7 and 10% cycling to work, respectively) also have
+a relatively high rate of cycling. 
+Further details on the top 10 LADs by cycling share in commuting
+are provided Table 1.
+
+Table: The top 10 'high cycling' Local Authorities, in terms of the
+proportion of commutes made by bicycle, from the 2011 Census.
+
+```{r, echo=FALSE}
+t0 <- tail(las@data[order(las$pcycle),], 10)
+t0 <- t0[10:1,]
+
+t0 <- select(t0, Name = NAME, `Current %` = pcycle, `Expected %` = pcycle_exp, `Current (n)` = Bicycle_All, `Expected (n)` = expected, `% short car` = shortcar)
+kable(t0, digits = 1, row.names = F)
+```
+
+It is equally interesting to consider areas with the lowest
+rates of cycling; these are presented in Table 2. It is interesting
+to note that these are not exclusively rural areas, where low cycling could
+be explained by the lack of jobs near to houses.
+Five of the 10 Local Authorities with the lowest level of cycling to work
+are largely rural: Rossendale, Harrow, Tandridge,
+Bolsover and North East Derbyshire.
+These are by no means the *most* rural areas in
+England and, furthermore, it is interesting to note that each
+lies in close proximity to Motorways and other
+large roads.
+Bradford seems like an outlier in this group as it is
+known primarily for its well-defined city centre. However,
+the Local Authority also contains large expanses of rural areas,
+so can to some extent be grouped with the aforementioned areas.
+
+Two of the areas in the 'bottom 10' for commuter cycling are
+commuter belts: Sevenoaks and Epping Forest are wealthy areas which lie
+on the outskirts of London. 
+The remaining three areas are
+relatively deprived urban areas that are part of a
+wider conurbation. Some of these areas
+(Barnesley, ) have centres that are
+car-dominated.
+
+Table: The bottom 10 'high cycling' Local Authorities, in terms of the
+proportion of commutes made by bicycle, from the 2011 Census.
+
+```{r, echo=FALSE}
+t0.1 <- head(las@data[order(las$pcycle),], 10)
+
+t0.1 <- select(t0.1, Name = NAME, `Current %` = pcycle, `Expected %` = pcycle_exp, `Current (n)` = Bicycle_All, `Expected (n)` = expected, `% short car` = shortcar)
+
+kable(t0.1, digits = 2, row.names = F)
+```
+
+This clear pattern
+The relationship between the average *length* of trips and the current ...
+
+# The national distribution of cycling potential
+
+Cycling potential can be quantified as an absolute number of
+trips/cyclists or as a proportion. Each metric has advantages.
+The former is advantageous when allocating funding based on estimated
+economic values of extra cycling activity. The latter is advantageous
+when designing local targets or assessing whether local areas should
+meet or exceed national-level targets. 
+
+Of course, the absolute number of potential new cyclists is influenced by
+the population of the local area: a large LAD will have a
+greater cycling potential in absolute terms than a small LAD with the
+same potential level (expressed as a %) of cycling.
+
+Because the majority of new cycling trips are short, the
+number/proportion of trips in an area that are short can be used as
+a proxy for the potential level of cycling.
+In line with the 8census distance bands used by the data distribution
+portal *nomis* (with breaks at 2, 5 and 10 km) we defined 'short' trips
+as those below 2 km in Euclidean distance. (Trips below 2 km were deemed
+as 'very short'.)
+Fig. xx represents the
+geographical distribution of these short trips for commuting in
+absolute and proportional terms.
+
+```{r, echo=FALSE, fig.cap="The geographical distribution of short (sub 5 km in Euclidean distance) trips in England."}
+las$`Short trips (n)` <- las@data$All_.0.2. + las@data$All_.2.5.
+las$`Short trips (%)` <- las$`Short trips (n)` / las@data$All_All * 100
+qtm(las, fill = c("Short trips (n)", "Short trips (%)"), fill.n = 3, fill.palette = "Blues", fill.style = "jenks")
+```
+
+There is a correlation between the proportion of commutes in
+an area that are short and the proportion of commutes that are
+made by cycle (Fig. xx). Although the relationship is not
+particularly strong ($R^2 = 0.17$), the plot is useful for
+identifying the areas with a lower than expected rate of cycling
+based on current trip distributions. Points below the line in
+Fig. xx have disproportionately low level of cycling based on
+commuting behaviour, indicating high future potential update.
+
+```{r, echo=FALSE, fig.cap="Scatterplot illustrating the link between the proportion of commutes that are short and the proportion of commutes that are cycled."}
+lmod1 <- lm(pcycle ~ `Short trips (%)`, data = las@data)
+# summary(lmod1)
+library(cowplot)
+ggplot(las@data, aes(`Short trips (%)`, pcycle)) + geom_point() +
+  geom_abline(intercept = -0.922, slope = 0.1092, col = "red") +
+  ylab("Level of cycling (%)")
+  # geom_line(aes(lmod1$fitted.values, `Short trips (%)`), col = "red")
+las$short_trip_residual <- lmod1$residuals
+# write.csv(las@data, "pct-bigdata/national/la-ttw-distance.csv")
+```
 
 
-|    |Name                        | Current %| Expected %| Current (n)| Expected (n)| % short car|
-|:---|:---------------------------|---------:|----------:|-----------:|------------:|-----------:|
-|58  |Cambridge                   |      28.9|        3.7|       17313|         2232|        16.1|
-|36  |Oxford                      |      17.0|        3.4|       11962|         2395|        18.0|
-|155 |Hackney                     |      13.8|        3.2|       16411|         3809|        10.7|
-|249 |York                        |      11.2|        3.6|       11143|         3522|        24.3|
-|273 |Gosport                     |      10.7|        3.3|        4296|         1347|        40.7|
-|186 |Islington                   |       9.1|        3.7|        9775|         3960|         6.4|
-|5   |Norwich                     |       8.7|        4.0|        5480|         2523|        24.0|
-|226 |Kingston upon Hull, City of |       8.1|        4.0|        8974|         4405|        35.6|
-|306 |Lambeth                     |       7.7|        3.0|       12945|         4966|        13.0|
-|140 |South Cambridgeshire        |       7.6|        1.9|        6041|         1537|        35.4|
+
+
+
+# Method and discussion
+
+The results presented in this paper are designed to provide a first
+approximation of the level of cycling that is attainable in different
+LADs across England. We care confident that the fundamentals of the
+analysis are robust, based on census data on the distances that
+people travel to work. It is clearly not feasible for a commuter
+belt such as Sevenoaks, where only 19% of commuter trips are below
+5 km, to ever have a high level of cycling. This is captured in the
+analysis. That is not to say that cycling investment is
+never justified in areas such as Sevenoaks: there may,
+for example, be a higher
+latent demand for leisure trips. However, the analysis
+clearly suggests that areas with a high proportion of short trips,
+based 2011 commuting behaviour,
+which is relatively resistent to change, would benefit from
+new investment in cycling. Identifying where such 'quick win'
+areas are is an important step towards creating a nationally
+'joined-up' cycling strategy and allocating funding based on
+evidence.
+
+There are a number of ways that the analysis could be extended,
+including:
+
+```{r, echo=FALSE}
+file.copy("documents/national.docx", "~/Dropbox/DfT bid/Draft Writeups/Robin/national.docx", overwrite = T)
+file.copy("documents/national.pdf", "~/Dropbox/DfT bid/Draft Writeups/Robin/national.pdf", overwrite = T)
+```
+
