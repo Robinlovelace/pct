@@ -55,11 +55,10 @@ has the potential to
 assist with the design of transport policy in many settings.
 The present paper reports results from 3 case study or 'pilot' cities which
 acted as a 'proof of concept' for the Department of Transport: Coventry,
-Manchester and Norwich. The method is described in a generalisable way,
-however, so it is applicable to any city or region where appropriate datasets
-are available.
-The 'generalisability' of the method is important due to the
-momentum behind active travel in cities across the world.
+Manchester and Norwich. The method is described in a generalisable way
+so it is applicable to any city or region where the appropriate datasets
+are available. The 'generalisability' of the method is important due to
+the momentum behind cycling in cities across the world. 
 Planning support tools such as the NPCT can help the
 associated investment to be spent effectively, yielding more efficient
 targeting of resources.
@@ -92,11 +91,13 @@ educational or other destinations.
 The model takes the current rate of cycling and other variables per flow and uses
 this to simulate what the rate of cycling per flow could be
 under various future scenarios.
-It is important to note that the models do not take into account specific policies,
-such as a particular piece of new infrastructure (although further work could explore adding such
-capability). However, the models do allow for the estimation of where new
-cycling trips would be generated given specific outcomes, such as a target
-level of cycling (typically measured as a proportion of all trips) being met.
+It is important to note that the models do not include the effects on
+cycling rates of specific policies, such as a particular piece of new
+infrastructure (although further work could explore adding such
+capability). Instead, the models allow  estimation of where new cycling
+trips are most likely to be generated given specific overall increases in
+cycling, such as a target level of cycling (typically measured as a
+proportion of all trips) being met.
 The 'Cycling Delivery Plan' scenario, for example, assumes a doubling in the
 level of cycling,
 this being the proposed target of the Government’s draft
@@ -105,7 +106,7 @@ The Cycling Delivery Plan scenario translates this doubling into a change
 in cycling at the flow level. Specifically, the future rate of
 cycling is simulated at a high level of geographical resolution: per flow line
 and per small administrative zone. The model can answer the question:
-if cycling increases overall by this amount nationally,
+if cycling increases overall by this amount nationally or regionally,
 how could this plausibly come about at the local level?
 More specifically: along which routes would the new 
 cycle^[We
@@ -137,9 +138,10 @@ The basic model requires only two sets of input data
 - *Flow data* estimating the rate of movement between different places.
 Ideally these datasets should include a breakdown of trips by mode of
 travel, as this enables regression models.
-We used flow data disagregated by mode for England, although
-it would also be possible to estimate cycling potential in cases where
-no break-down by mode is possible.
+We used flow data disaggregated by mode for England although,
+by estimating parameters from other data,
+it would also be possible to estimate cycling potential in
+cases where no break-down by mode is possible.
 Flow data are available from various sources, including:
 flows derived from mobile telephone service providers
 [@smoreda2013spatiotemporal];
@@ -149,7 +151,8 @@ and census data on home and work locations [@Rae2009].
 We used Census 2011 data in the first instance due to their
 comprehensive coverage of the population,
 high geographic resolution and assurances surrounding
-data quality. In cases where no census data are available
+data quality. Official datasets are available for commuting trips and in some cases education trips.
+In cases where no census data are available
 (e.g. in relation to shopping trips), some combination of the aforementioned
 alternative sources such as those derived from mobile telephones
 may be able to provide a reasonable approximation of real world travel  . 
@@ -159,7 +162,8 @@ and columns destinations) or a longer table of origin-destination pairs.
 
 - *Geographical data* that provide the coordinates corresponding to the trip
 origins and destinations present in the flow data.
-At a bare minimum, this means the centroids of each zone in the study area, preferably weighted by population and/or work location-weighted.  In addition to this, geographic variables could also include additional
+At a bare minimum, this means the centroids of each zone in the study area, preferably weighted by population and/or work location.
+In addition to this, geographic variables could also include additional
 features of the urban environment that affect cyclists, such as
 hilliness or number of nodes on the public transport network.
 
@@ -260,7 +264,8 @@ datasets that were created this way were   saved in a separate folder:
 
 It is possible to run the model for the whole England at once but as the end user is
 interacting via a map this could mean overloading the user and the computer.
-Therefore for pragmatic reasons we decided to divide-up England into regions at which
+Therefore for pragmatic reasons we decided to divide-up England into
+the regions at which
 funding is allocated and at which planners work,
 to ensure the results are compatible with previous transport plans.
 
@@ -272,10 +277,10 @@ or more regions.  To overcome this issue it is worth considering
 using more than one regional geography, as well as considering
 running at least one version of the model at the national level.
 Another solution to the problem of 'edge zones'
-is to create buffers around the the regions.
-We plan to test these recommendations in Phase II, and ask
-practitioners for feedback on the advantages and disadvantages of each
-option.
+is to create buffers around the the regions, which we have already
+implemented in the prototype for Phase I (as discussed below).
+We plan to test each of these options in Phase II, and ask
+practitioners for feedback on the advantages and disadvantages of each.
 
 ```{r, echo=FALSE}
 # The wider national policy context should be considered when selecting
@@ -298,7 +303,7 @@ and Combined Authorities (CAs) which are larger than, and often overlapping with
 Based on these insights, and feedback from practitioners, our
 recommendation for Phase II is to build the NPCT for every CUA in
 the nation and for selected LEPs and CAs where strategic
-cycling plans are being planned. These plans could change based on
+cycling plans are being planned. These suggestions may change based on
 feedback from the Department for Transport.
 
 We will also explore the possibility of
@@ -355,13 +360,16 @@ skewed by high numbers of commuters using a few major 'commuter corridors',
 a high proportion of commuters can be represented by
 a relatively small proportion of flow lines. In Manchester,
 for example, 15% of flow lines (those used by 30+ commuters)
-account for almost 70% of commuters. The number 30 is a parameter that
+account for almost 70% of commuters. This is a parameter that
 can be adjusted to reach a reasonable balance between
 comprehensive coverage on the one hand and being fast to save and load on the other.
 Setting the maximum Euclidean distance is another way to reduce the number of
 flow lines, and this can be done in conjunction with setting a maximum number of commuters. We used a maximum value of 15 km Euclidean distance,
 based on the knowledge that this typically translates to a road distance
-of over 20km. This distance is not feasible for most people to cycle on a daily basis. A related issue is the selection of flow lines to illustrate.
+of over 20km. This distance is not feasible for most people to cycle on a daily basis.
+This is evidenced by our analysis of National Travel Survey data
+(see Appendix xxx). 
+A related issue is the selection of flow lines to illustrate.
 At present the tool select all lines completely encapsulated in the current
 zoom extent. Future work could explore allowing alternative ways of
 selecting lines, such as via polygons of origins, destinations, or both.
@@ -371,14 +379,19 @@ zones are the basic unit of visualisation of the results over geographic space.
 This is largely because the number of flow-lines processed in the model is
 such that they cannot all be effectively visualised on a single map.
 It is very hard to interpret a map showing more than around 50 flow-lines
-simultaneously.  Zones solve this problem, by averaging results across a surface.
+simultaneously.
+Our use of simultaneously displayed zonal data helps
+solve this problem, by averaging results across a surface. The
+aggregation of bi-directional lines
+into overall flow both was (a novel feature of our methodology)
+also simplifies the visualisation of lines for users.
 
 In our model testing, we found that there often seemed to be too few 'MSOA'
 zones per Local Authority 'LAD' region to gain a comprehensive understanding
 of the travel system. This would be solved by using larger regional units to
 split the MSOAs into groups for visualisation, as planned for Phase II.
 An alternative is to create buffers around each region,
-from which additional sampled additional
+from which additional
 zones are sampled. This sampling of additional zones within a buffer
 could be triggered if the number of zones falls below some threshold.
 We set this threshold to 60 for Manchester (which contains 57 MSOAs) so that
@@ -405,11 +418,12 @@ to avoid 'hiding' the underlying model from users; to encourage modifications
 and enhancements to the code; and to ensure transparency.
 The tab was added in response to feedback during the user
 testing sessions, during which a number of transport
-planners had requested further information about the model.
+planners requested further information about the model.
 The output tab also communicates the results of the model, including through key statistics, diagnostic plots and model-results on a per-region
 basis. This means that a different summary document is provided depending on
 which local authority the user is currently exploring. 
-The complete model output document for Manchester is provided in Appendix X.
+The complete model output document for Manchester is provided
+in Appendix X.
 
 ```{r, echo=FALSE, fig.cap="The Output Tab of the National Propensity to Cycle Tool"}
 grid.raster(readPNG("../figures/model-outpute.png"))
@@ -427,12 +441,12 @@ So far we have described the input data and ways of processing, selecting and
 subsetting different geographical objects (primarily lines, representing
 flows and polygons, representing administrative zones) for the NPCT. Yet the
 greatest value of the NPCT lies in its ability to represent different
-scenarios of the future. Illustrations of how the number of cyclists using
+scenarios of change. Illustrations of how the number of cyclists using
 different 'desire lines' along each flow could shift in the future were
 described as 'very useful' for transport planning during user testing.
-In addition, the visualisation of different scenarios of the future enables
-'visioning', an activity that has great potential in transport planning
-[@Tight2011].
+In addition, the visualisation of different scenarios
+enables 'visioning', an activity that has great potential
+to improve transport planning for sustainability [@Tight2011].
 
 For all scenarios (except *gender equality*) a regression model was used
 to estimate the potential rate of cycling at the flow level. Place of
@@ -482,7 +496,7 @@ trips), $\beta_1$ and $\beta_2$ represent the rate of distance decay
 and $\theta$ represents the impact of hilliness on cycling.
 A 'quasipoisson' general linear model was used to implement this formula
 using the base R function `glm`, which predicts $log(pcycle)$
-to account for the afforementioned exponential decay.^[See [github.com/npct/pct/blob/master/models/aggregate-model.R.](https://github.com/npct/pct/blob/master/models/aggregate-model.R).]
+to account for the aforementioned exponential decay.^[See [github.com/npct/pct/blob/master/models/aggregate-model.R.](https://github.com/npct/pct/blob/master/models/aggregate-model.R).]
 
 # Model scenarios
 
@@ -498,9 +512,9 @@ The explanatory variables predicting the percentage of trips made by cycling
 included the route distance of each flow and hilliness. By aggregating the
 origins of all flows, the model
 also estimates the proportion of commuters cycling to work among inhabitants in
-each area. (Aggregating by destination would also allow an estimate of the
+each area. Aggregating by destination would also allow an estimate of the
 number incoming cyclists per work destination, which would be useful for
-assessing features such as new cycling parking.) In descending order of
+assessing features such as new cycling parking. In descending order of
 importance (in the UK context), the factors implemented in NPCT in Phase I were:
 
 - Distance between origins and destinations. This was calculated in the first
@@ -568,23 +582,34 @@ reference to interpolated rasters of estimated rainfall.
 - Age/occupational status. There is evidence that much of the uptake
 in cycling in some
 areas has been due to students and other mobile groups taking up cycling
-when they move away from home. This could represented in the model as
+when they move away from home. This could be represented in the model as
 % of students or % of people between 16 and 30 in each area.
 
-- Infrastructure quality. Preliminary tests with the commuting data suggest that
-having a direct off-road path along the flow line is a strong predictor of the
-rate of cycling. This can be quantified in various ways, for example
+- Infrastructure quality.
+Preliminary tests with the commuting data suggest that the difference
+in distance between the quieter and fast route along the flow line
+is a strong predictor of the rate of cycling.
+Directness of the route would increase cycling due to the distance
+decay function. Interestingly the effects seems to be stronger than
+would be expected from the increase in distance alone.
+One possibility to explain this is that people are put off cycling
+if they feel they unduly have to go out of their way to access
+a quieter routes. 
+
+This can be quantified in various ways, for example
 via the 'quietness diversion factor' ($qdf$), the ratio
 between the 'quietest' and the 'fastest' route calculated by CycleStreets.net ($qdf = d_{fast} / d_{quiet}$).
 The inclusion of this variable per flow creates an opportunity
-to estimate the short-term impacts of new or improved cycle provision.
+to estimate the short-term impacts of new or improved cycle provision,
+up to the standard of a current average quieter route but along
+a more direct route.
 By setting $qdf$ to 1 (i.e. setting $d_{quiet} = d_{fast}$), the
 increase in the number of cyclists using upgraded routes can be estimated.
 An example in which the length of a quiet route is much further than
 the fastest route (i.e. $qdf > 1.2$) is provided at the end of this
 paper, in Fig. 9. Note that $qdf$ is different than
-cirquity ($q$), the diversion
-from straightline (Euclidean) distance as it approximates
+circuity ($q$), the diversion
+from straight-line (Euclidean) distance as it approximates
 represents *how much further* one must travel to use a quiet path.
 Where $qdf$ is low, this means that the quiet routes are also the
 most direct, which will likely encourage new cyclists.
@@ -622,9 +647,10 @@ Model (NTM) or elsewhere.]
 achieving the draft Cycling Delivery Plan's proposed target would
 result in a doubling in the
 proportion of trips made by cycling nationwide.
-@DepartmentforTransport2014 provide no discussion or breakdown in the geographic
+@DepartmentforTransport2014 does not investigate the geographic
 distribution of potential cycling uptake in their publication of the scenario, and so we made our own
-assumptions about this (see next paragraph). The *cdp* scenario should help
+assumptions about this (see next paragraph) and investigated their implications.
+The *cdp* scenario should help
 transport planners identify where new demand for cycling is likely to be greatest.
 
 In line with the target set out in the draft Cycling Delivery Plan, the *cdp* scenario
@@ -738,6 +764,52 @@ of cycling, for example $pcycle$ = 30%, would end up with a projected
 rate of cycling of 35% ($pcycle(cdp)$ = 35%). Likewise, a flow of
 4.5 km that has no cycling currently would be projected to reach 5%.
 
+The approach here assumes that cycling potential against a given national
+increase is always a positive number.
+This applies even in the
+areas in which cycling is currently substantially above what would be
+expected given trip distances and hilliness we model an increase in
+cycling. The larger the increase in cycling the less the baseline matters
+compared with the potential.
+By contrast, the larger the current rate of cycling, the less important
+is the scenario in influencing the projected total flow.
+
+This implementation of the *cdp* is in line with findings from
+@Sloman2014 that suggest building in areas with a high current rate
+of cycling will further increase the rate of cycling. The method
+also links to the discussion of 'propensity' vs 'potential' to cycle:
+the former relates to short-term responses, based on
+demographic, social and cultural likelihood of cycling. Some groups
+are tempted to cycle, whereas others are averse to cycling
+(this latter group was found in the baseline data for the
+CityConnect project in deprived areas between Leeds and Bradford).
+Under our implementation of the *cdp* scenario, these 'low propensity'
+areas would still have a lower than expected rate of cycling based
+on national trends. In the longer-term 'Go Dutch' scenario,
+it is simply the potential rate of cycling that determines the
+rate of flow, meaning that the current rate of cycling has
+no bearing on the estimates.
+
+The next scenario to be discussed is *Gender Equality*. In this
+scenario cycling tends to grow much more in areas that already
+have a high rate of cycling. Thus this scenario is more about
+propensity than the long-term potential levels of cycling
+described in *Go Dutch* and *Ebike* scenarios. In the long-run,
+inter-group differences in the rate of cycling tend to zero
+as the rate of cycling increases. In Holland, for example,
+cycling is almost equally common among males, females, and
+people of different socio-economic status. Thus for
+strategic planning purposes demographics should play less of a
+roll in influencing the decision-making process than it should
+in implementing short-term 'quick-win' policies.
+
+```{r, echo=FALSE}
+# Although the *cdp* and gender equality (described below)
+# scenarios take the current rate of cycling
+# into account, the method currently does not accoun
+```
+
+
 ## Gender equality
 
 The Gender Equality scenario (*gendereq*) is a relatively simple modification of
@@ -749,15 +821,16 @@ any scenario, as described towards the end of this section.
 
 The Cycling Delivery Plan scenario
 (*cdp*) makes no assumption about the future
-gender split in cycling
-(typically, around 3/4 of cycle commuters
-are male, although this varies over geographic space).
+gender split in cycling.
+On average in England around  3/4 of cycle commuters
+are male, although this varies geographically [@Aldred2015].
 *gendereq*, by contrast, is based on the assumption that
 gender equality is reached in cycling. 
 Specifically, the scenario assumes that in each flow the proportion
 of females cycling is the same as the proportion of males. 
 A prerequisite is a model-based estimate of the number of male
-and female cyclists between origin and destinations for the baseline scenario.
+and female cyclists between origin and destinations for
+the observed data.
 This involves splitting the number of cyclists project by the model,
 the *Scenario-based Level of Cycling*, into
 male ($SLC_m$) and female ($SLC_f$) components:
@@ -873,16 +946,12 @@ cyclists are female, giving a new total of 1.5 + 0.83 = 2.33 female cyclists
 Gender equality in cycling has been reached, such that an estimated 11.7
 % of commute trips are made by cycling among both men (3.5/30)
 and women (2.33 / 20).
-Note that that $SLC(gendereq)$ can be calculated based on any scenario.
-In our model, instead of using the conservative *baseline* scenario,
-we estimate $SLC(gendereq)$ based on the Cycling Delivery Plan
-($cdp$) scenario because we are trying to represent an increase in 
-cycling with a concurrent increase in gender equity.
 
 ## Go Dutch
 
-The 'Go Dutch' scenario represents the rate of cycling that would occur if
-people cycled as much as the Dutch do, for trips of the same length. It is
+The 'Go Dutch' scenario represents the rate of cycling that would occur
+if people had the same propensity to cycle as the Dutch do, for trips of
+the same length. It is
 important to note that this is not a 'top down' scenario in which the national
 level of cycling is set to levels found in The Netherlands. The scenario is
 'bottom up' because the proportion of trips being cycled is set per flow
@@ -915,6 +984,10 @@ This allows us to illustrate the type of output that will
 be possible in this model. In Phase II we will implement the
 model fully by basing the changes to the distance decay
 parameters on real data from the Dutch National Travel Survey.
+Analysis of the influence of Ebikes on propensity to cycle
+(of people using both using
+ebikes and conventional bicycles) bikes in the Netherlands has
+was conducted as part of the Co-benefits model. See Appendix.xxx.
 
 # Results
 
@@ -982,9 +1055,14 @@ Dutch evidence suggests that cyclists will not divert to a route which
 is more than about 1.4 to 1.5 times the length of the
 'crow-flies' Euclidean distance (defined as $q$ above),
 and that the target "for cycle provision should be 1.2".^[Reference: 'Design manual for bicycle traffic', CROW, 2007.]
-This suggests that new cycle infrastructure along the Trinity Way route
+This suggests that high quality cycle infrastructure along the Trinity Way route
 would be much better used by commuters than an
 alternative quiet route that diverges greatly from the shortest path.
+The decline in cycling propensity with distance supports this approach.
+The faster decline for women and older people combined with their greater
+preference for protected infrastructure indicates the importance of
+providing direct and safe routes to encourage cycling amongst
+groups who currently cycle the least.
 
 ```{r, echo=FALSE, fig.cap="Close-up of the 'fastest' and 'quietest' routes from CycleStreets.net of the flow with highest cycling potential under the *cdp* scenario in Manchester."}
 grid.raster(readPNG("../figures/fast-quiet-man.png"))
@@ -1012,17 +1090,24 @@ countries. This would depend on having appropriate flow data. As indicated
 above, the datasets required for the NPCT are increasingly available, from
 a range of sources.
 
-- Inter-regional and international comparisons of model results. This could
+- Inter-regional and international comparisons of model results
+(see Appendix xx). This could
 help answer long-standing questions such as: "do areas with the highest
 cycling potential receive the greatest amount of cycling investment?" and
 "is there a strong link between a country's propensity to cycle and actual
 rates of cycling?"
 
-- The extension of the model to cover different trip types and demographic
-groups to enable more targetted cycling policies. This could include the
-addition of an 'education layer', based on the location of schools and data
-on travel to school patterns, informing the construction of a network of an
-off-road 'cycle to school' network.
+- The extension of the model to cover different demographic
+groups and breakdown by currently dominant mode
+to enable more targeted cycling policies.
+
+- The addition of additional purposes of trips in the model.
+An 'education layer' would be our recommendation to prioritise
+in this area, based on the location of schools, and data
+on travel to school patterns from the Department of Education.
+(Note we would need to formally request data for this.)
+This could inform the construction of
+off-road 'cycle to school' networks.
 
 - The extension of the tool to enable the estimation of cycling demand
 following new developments, such as high-density housing or a new
@@ -1049,9 +1134,19 @@ creation and visualisation of evidence-based scenarios about change in travel
 behaviour, the NPCT methodology can empower transport decision-makers across
 England and beyond to
 supplement their own understandings of where need for new infrastructure is
-greatest. The increased cost-effectiveness of policies that the NPCT enables
-will also help to build business cases for further investment and policy change,
-critical for a transition away from the private car and towards active travel.
+greatest. By indicating where investment could be most cost-effective,
+the NPCT methodology and interactive planning tool will also help to
+build business cases for further investment and policy change.
+Careful allocation of resources is critical for creating
+highly cost-effective interventions, with benefit-cost ratios
+in double figures. Such targetted interventions are
+critical to ensure a long-term transition away from the private car and
+towards a more sustainable and healthy transport system.
+
+# Acknowledgements: 
+
+We would like to thank the following people for comments on earlier versions of the report and the direction of the flow-level model:
+Roger Geffen, Ian Philips and John Parkin.
 
 ```{r, echo=FALSE}
 # # Using the tool
