@@ -1,19 +1,24 @@
 ---
 title: "Server Requirements"
-output: html_document
+output: word_document
 ---
 ```{r, echo=FALSE, include=FALSE}
 lapply(c("grid", "png"), library, character.only = TRUE)
 ```
 
 ## Overview
-The internet tool uses Shiny Server (http://shiny.rstudio.com/) which is a web application designed to work with the statistical software R (http://www.r-project.org/).  R is used heavily in the statistical and academic community and is fast becoming a tool for analysing big data in industry.  Shiny is an exciting new way mapping tool using a variety of different JavaScript libraries to build interactive maps.
-Licensing
+
+The internet tool uses Shiny Server (see http://shiny.rstudio.com/), a is a web application designed to work with the statistical software R (http://www.r-project.org/). R is used heavily in the statistical and academic community and is fast becoming a tool for analysing Big Data in industry.  Shiny is a library for creating interactive web applications using R. In addition we use the leaflet R library, which provides an interface to the Leaflet JavaScript library to build interactive maps.
+
+## Licensing
 R released on the GNU General Public License, we are not modifying the source code and so this has no bearing on the project.  Shiny Server Open Source Edition is released under the Open Source AGPL v3 which requires any work based on this to be publicly available, which we already comply with.
 
-## Scaling Considerations
-Shiny Server provides a simple server set-up with minimal configuration.  In Phase one of the project we were able to create a working server environment in under 10 hours and have had very little downtime.  The site has been had multiple concurrent users and has not experienced any issues.  In scaling up for Phase two we would like the tool to be available to as many people as possible.  The current server slows down with ~20 users and so assuming we have a peak load of ~160 users then ~8 servers should be sufficient.
-We have approached two companies for technical expertise in creating robust repeatable deployment structure so that if we need to scale up to more machines or add new features then the deployment process creates an identical stable environment.  Both companies estimated this would take 2-3 days.  This would involve the NPCT team working on-site so that if future problems developed then there were multiple people who understand the infrastructure.  The both companies also offer a managed server package where security updates and general support.
+## Scalability
+Shiny Server provides a simple server set-up with minimal configuration.  In Phase one of the project we were able to create a working server environment in under 10 hours and have had very little downtime.  The site has been had multiple concurrent users and has not experienced any issues.
+
+In scaling up for Phase two we would like the tool to be available to as many people as possible.  Our tests suggest the current server only slows down when more than ~20 users are intensively using the application simultaneously. Assuming we have a peak load of ~160 users then ~8 servers would be sufficient.
+
+We have approached two companies for technical expertise in creating robust repeatable deployment structure. This structure will mean that if we need to scale up to more machines or add new features then the deployment process creates an identical stable environment.  Both companies estimated this would take 2-3 days.  This would involve the NPCT team working on-site so that if future problems developed then there were multiple people who understand the infrastructure.  The both companies also offer a managed server package where security updates and general support.
 
 The end system will consist of n identical machines behind a load balancer.  When a user navigates to the tool URL the request will be sent to the load balancer which will then transparently send the request on to one of the available machines.  The load balancer only runs a very simple process consisting of passing on requests and so is highly unlikely to fail.  As there are multiple identical machines if any one does fail then it would not bring down the whole system.  We are looking at managed solutions where the hosting company would apply basic security upgrades and oversight.
 
@@ -23,11 +28,13 @@ grid.raster(readPNG("../figures/data-dog.png"))
 
 ## Security and Privacy Implications
 Some of the models are based on safeguarded 2011 census flow data which has the terms of use stating:
-“Appropriate protection in this case has been deemed by the Data Owners to be the protection of any cell count lower than three.”
-which we have done with the model and so there is no sensitive data on the server.
+"Appropriate protection in this case has been deemed by the Data Owners to be the protection of any cell count lower than three."
+Our model meets this criterion; there will be no sensitive data on the server.
 With the micro-simulation model the synthetic populations that are built may be very accurate and so for flows with less than five individuals details will not be available.
 
 ## Costing Estimate
+
+The cost estimates by company are presented below.
 
 | **Company**  | Mythic Beasts | BrightBox | Google |
 | - | - | - | - |
