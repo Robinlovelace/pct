@@ -1,11 +1,11 @@
 ---
 title: "National-level analysis of cycling potential"
 output:
-  word_document:
-    fig_caption: yes
   pdf_document:
     fig_caption: yes
     number_sections: yes
+  word_document:
+    fig_caption: yes
 bibliography: Transport.bib
 ---
 
@@ -337,13 +337,12 @@ of cycling presented in the previous.
 
 ```{r, echo=FALSE, fig.cap="Geographical variability in cycling potential accross England in percentage (left) and absolute (right) terms."}
 las$pcycle_cdp <- las$pcycle + las$pcycle_exp
-las$Bicycle_exp <- las$All_All * las$pcycle_exp / 1000
+las$Bicycle_exp <- las$All_All * las$pcycle_exp / 100000
 fixedBreaks2 <- c(0,2,3,5)
-fixedBreaks3 <- c(0,2,3,5)
+fixedBreaks3 <- c(0,2,4,16)
 qtm(las, c("pcycle_exp", "Bicycle_exp"),
-  fill.style = c("fixed", "quantile"),
-  fill.n = 3,
-  fill.breaks = fixedBreaks2, fill.title = c("Growth in cycling (%)",
+  fill.style = c("fixed", "fixed"),
+  fill.breaks = list(fixedBreaks2, fixedBreaks3), fill.title = c("Growth in cycling (%)",
     "Growth in cycling\n(1000 commuters)"))
 ```
 
@@ -356,6 +355,7 @@ number of commuter cyclists under our Cycling Delivery Plan is
 presented in Table xx.
 
 ```{r, echo=FALSE}
+las$Bicycle_exp <- round(las$Bicycle_exp * 1000)
 t0.1 <- tail(las@data[order(las$Bicycle_exp),], 10)
 
 t0.1 <- select(t0.1, Name = NAME, `Current %` = pcycle, `Growth %` = pcycle_exp, `Current (n)` = Bicycle_All, `Growth (n)` = Bicycle_exp, `% short car` = shortcar)
@@ -385,20 +385,20 @@ library(rgdal)
 cuas <- raster::shapefile("pct-bigdata/national/cuas.shp")
 lasp <- rgeos::gCentroid(las, byid = T)
 ldf <- las@data
-output_data <- select(ldf, Bicycle_exp)
+output_data <- select(ldf, Bicycle_exp, All_All)
 lasp <- SpatialPointsDataFrame(lasp, output_data)
 library(sp)
 cuasp <- aggregate(lasp, cuas, FUN = sum)
 # head(cuasp)
-cuas$Bicycle_exp <- cuasp@data$Bicycle_exp
-qtm(cuas, "Bicycle_exp", fill.title = "Growth in commuter cyclists (n)")
+cuas$Bicycle_exp <- cuasp@data$Bicycle_exp / 1000
+qtm(cuas, "Bicycle_exp", fill.title = "Growth in commuter\ncyclists (1000)")
 # cuas@data$CTYUA12NM[order(cuas@data$Bicycle_exp, decreasing = T)]
 output_data <- select(ldf, All_All)
 lasp <- SpatialPointsDataFrame(lasp, output_data)
 library(sp)
 cuasp <- aggregate(lasp, cuas, FUN = sum)
 # head(cuasp)
-cuas$All <- cuasp@data$All_All
+cuas$All <- cuasp@data$All_All / 1000
 # summary(cuas$All)
 # summary(head(cuas@data$All[order(cuas@data$Bicycle_exp, decreasing = T)], 10))
 ```
