@@ -174,7 +174,8 @@ refers to the % of commutes below 2 km or less that are made by car,
 reflecting the extent to which cars dominate local travel in the area.
 
 Table: The top 10 'high cycling' Local Authorities in terms of the
-proportion of commutes made by bicycle from the 2011 Census.
+proportion of commutes made by bicycle from the 2011 Census. See
+https://github.com/npct/pct-data/blob/master/las_data.csv for the full table.
 
 ```{r, echo=FALSE}
 t0 <- tail(las@data[order(las$pcycle),], 10)
@@ -208,6 +209,8 @@ relatively deprived urban areas and which are part of a
 wider conurbation: Barnesley and Rotherham. These areas
 have car-dominated and linear urban centres as opposed to York and
 Cambridge which have partially pedestrianised city centres.
+The complete dataset, containing information for all LADs,
+can be found online at [github.com/npct/pct-data/blob/master/las_data.csv](https://github.com/npct/pct-data/blob/master/las_data.csv).
 
 Table: The bottom 10 Local Authorities in terms of the
 proportion of commutes made by bicycle from the 2011 Census.
@@ -378,7 +381,7 @@ of cycling presented above.
 las$pcycle_cdp <- las$pcycle + las$pcycle_exp
 las$Bicycle_exp <- las$All_All * las$pcycle_exp / 100000
 fixedBreaks2 <- c(0,2,3,5)
-fixedBreaks3 <- c(0,2,4,16)
+fixedBreaks3 <- c(0,1,2,20)
 qtm(las, c("pcycle_exp", "Bicycle_exp"),
   fill.style = c("fixed", "fixed"),
   fill.breaks = list(fixedBreaks2, fixedBreaks3), fill.title = c("Growth in cycling (%)",
@@ -391,7 +394,11 @@ way is that it estimates growth in cycling in absolute terms.
 This could be useful for allocating funding between different Local
 Authorities. The top 10 Local Authorities in terms of increased
 number of commuter cyclists under our Cycling Delivery Plan is
-presented in Table xx.
+presented in Table xx. See [github.com/npct/pct-data/blob/master/las_data.csv](https://github.com/npct/pct-data/blob/master/las_data.csv) for the complete .csv dataset.
+
+Table: Top 10 Local Authority Districts (LADs) in terms of potential growth in
+cycling under the Cycling Delivery Plan (CDP) scenario. Note the raw data
+for all LADs can be found online at github.com/npct/pct-data/blob/master/las_data.csv
 
 ```{r, echo=FALSE}
 las$Bicycle_exp <- round(las$Bicycle_exp * 1000)
@@ -400,6 +407,10 @@ t0.1 <- tail(las@data[order(las$Bicycle_exp),], 10)
 t0.1 <- select(t0.1, Name = NAME, `Current %` = pcycle, `Growth %` = pcycle_exp, `Current (n)` = Bicycle_All, `Growth (n)` = Bicycle_exp, `% v. short car` = shortcar)
 t0.1 <- t0.1[10:1,]
 kable(t0.1, digits = 2, row.names = F)
+
+# save las data
+lasdat_df <- select(las@data, Name = NAME, `N. commuters (all modes)` = All_All, `Current %` = pcycle, `Expected %` = pcycle_exp, `Current (n)` = Bicycle_All, `Expected (n)` = expected, `% v. short car` = shortcar, `Short trips (%)`)
+# write.csv(lasdat_df, "pct-data/las_data.csv")
 ```
 
 Aggregated to the level of County and Unitary Authorities (CUAs), the level
@@ -416,9 +427,10 @@ of more than 500,000. The average number of working people in all
 CUAs, by contrast, is 170,000.
 (For comparison, the average per LAD is just under 80,000). These numbers underline the importance
 of measuring expenditure in pounds per person for areas, rather than
-simply estimating the overall total.
+simply estimating the overall total. To see a summary of the results at the CUA level,
+please navigate to [github.com/npct/pct-data/blob/master/cuas_dat.csv](https://github.com/npct/pct-data/blob/master/cuas_dat.csv).
 
-```{r, echo=FALSE, fig.cap="Potential growth in cycling at the level of highway authorities in England", message=FALSE}
+```{r, echo=FALSE, fig.cap="Top 10 areas in terms of potential growth in cycling at the level of highway authorities in England. The full dataset can be viewed online: github.com/npct/pct-data/blob/master/cuas_dat.csv", message=FALSE}
 # Do for cuas too?
 library(rgdal)
 cuas <- raster::shapefile("pct-bigdata/national/cuas.shp")
@@ -438,8 +450,14 @@ library(sp)
 cuasp <- aggregate(lasp, cuas, FUN = sum)
 # head(cuasp)
 cuas$All <- cuasp@data$All_All / 1000
-# summary(cuas$All)
+cuas$All_All <- cuasp@data$All_All
+cuas$Bicycle_exp <- cuas$Bicycle_exp * 1000
+cuasdat <- select(cuas@data, Name = CTYUA12NM, `All commutes (n)` = All_All, `Growth in cycling (n)` = Bicycle_exp)
+summary(cuasdat)
 # summary(head(cuas@data$All[order(cuas@data$Bicycle_exp, decreasing = T)], 10))
+# head(cuas@data)
+# sum(cuas@data$Bicycle_exp, na.rm = T) / sum(las@data$Bicycle_All, na.rm = T) * 1000
+write.csv(cuasdat, "pct-data/cuas_dat.csv")
 ```
 
 

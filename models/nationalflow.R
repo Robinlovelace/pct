@@ -109,6 +109,4 @@ summary(mod_logsqr)
 # saveRDS(mod_logsqr, "pct-bigdata/national/mod_logsqr_national_8.Rds")
 # now do analytics, then incorporate into load.Rmd
 
-
-
 l$slc <- flow$plc
