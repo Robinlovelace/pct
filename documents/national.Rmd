@@ -10,7 +10,7 @@ bibliography: Transport.bib
 ---
 
 ```{r, include=FALSE}
-pkgs <- c("grid", "png", "knitr", "tmap", "dplyr", "ggmap")
+pkgs <- c("grid", "png", "knitr", "tmap", "dplyr", "ggmap", "pander")
 lapply(pkgs, library, character.only = T)
 opts_knit$set(root.dir = "../")
 # source("analysis/la-analysis.R", print.eval = T)
@@ -33,6 +33,8 @@ las <- readRDS("pct-bigdata/national/las.Rds")
 # These are the kind of question that people, consciously or sub-consciously, ask themselves in relation to whether or not to make
 # a decision that, evidence shows, could enhance their mental and
 # physical well-being: to walk or cycle any particular trip. 
+
+# at the ward level (average population of around 6,500 people)
 ```
 
 
@@ -42,28 +44,49 @@ The decision of whether to cycle a particular trip is influenced
 by processes operating at many levels. 
 Over long time-scales, the terrain, roads, traffic and
 local culture will influence the number trips cycled
-in a city or region.
-Regression analysis of 2001 census travel to work data
-at the ward level (average population of around 6,500 people)
-has demonstrated that the rate of cycling to work
-can be explained by some of these variables [@Parkin2008]. 
-The subsequent analysis investigates the current rate and future potential
-of cycling in England based on 2011 census data on mode of travel
-to work by distance bands (Parkin's work only considered modal split).
+in a city or region. A growing body of evidence exploring the
+relative importance of different factors indicates that
+transport policies can influence the rate of cycling at many levels
+(see appendix xx).
+At the national level, for example,
+analysis of 2001 census travel to work data
+demonstrated that the proportion of people cycling as their main
+mode of commuting
+can be explained by hilliness, demographics and the quality of the
+local road network, for example [@Parkin2008]. 
 
-It is worth considering at the outset the strengths and limitations of this
-data source. The main advantage is that census data is very comprehensive (with
+The subsequent analysis investigates the current rate and future potential
+of cycling in England based on 2011 census data on main mode of travel
+to work by distance bands (Parkin's work only considered modal split).
+The aim is to provide evidence to decision makers tasked with allocating
+funding for strategic funding in cycling across England. Based on the best
+available evidence of cycling potential, cost effective interventions
+can be made at every level. At the local level this can involve the
+decision of whether to construct a cycle path along a rural leisure route or
+next to a major A Road. This paper focusses on cycling potential at a much
+higher level: the potential for growth in commuter cycling per local authority.
+As indicacated in the final section, this analysis could be extended to
+estimate cycling potential of increased cycling for all trip purposes, including
+education, shopping and leisure.
+
+It is worth considering at the outset the strengths and limitations of the
+census commute
+data source used in this study. The main advantage is that census data is very comprehensive (with
 a very high response rate) and has a high degree of geographical resolution.
 Commuting is a trip type that has a high degree of inertia due to the
 relatively slow rate at which people move house and place of work.
 Commuter trips account for 16% trips made and 19% of distance travelled
-nationally and make up a much higher proportion of rush hour traffic, where
+nationally and make up a much higher proportion of congested rush hour traffic, where
 large benefits can accrue from lower car use. 
 
 Overall commuter cycling is strongly correlated with the rate of cycling
 for all trip types [@Goodman2013]. However, in some areas (e.g. with a
 high unemployment rate or a high rate of cycling for leisure or shopping
 trips) the proportion of people cycling to work may not be representative.
+This may also be true of commuting trips in 'commuter belt' areas,
+where few people may cycle all the way to work but a higher proportion
+cycle for leisure, shopping to or from a local train station
+(census commute data only reports the *main mode* of travel).  
 In addition, census commuting data are biased towards certain groups
 who are fit and able to work and therefore do not represent well many of the young,
 the old and the marginalised in society. The use of additional 'data layers'
@@ -71,65 +94,71 @@ such as data on the 'school commute' [@Singleton2014a] and estimation of
 desire lines for key services such as shops and medical centres will help
 overcome these issues in future work.
 
-In this context, the distribution of trip lengths associated with
-a particular area is a critical, yet under-explored, factor related to
-cycling potential.
-In some 'commuter belts' (such as Sevenoaks, described below),
-for example, the majority of commuting trips are
-long-distance. This precludes a strong utility cycling culture without
-substantial changes in travel demand.
+In this context, the distribution of trip lengths associated with a particular
+area is a critical, yet under-explored, factor related to cycling potential. 
+To illustrate the point, consider that in some 'commuter belts'
+(such as Sevenoaks, described below), the majority of commuting trips are
+long-distance and by car.  In such areas, it would not be feasible for most
+commuters to cycle all the way to work (although a higher proportion may
+incorporate some cycling into their commute trips). In some (primarily rural)
+areas, distances to other key services such as schools and shops may also be
+high, driving 'car dependency'[@Kay2011].
+
 In high-density urban centres, by contrast, a large proportion of
-travel is within a distance that is easily cycled.
+workplaces and other
+destinations are likely to be within distances that are easily cycled.
 In the UK context, this helps explain the geographical distribution
 in growth/declines in the rate
-of cycling. At the national level cycling has grown in recent years
+of cycle commuting. At the national level cycling has grown in recent years
 (between the 2001 and 2011 census) in
 cosmopolitan cities such as Sheffield, Manchester, Bristol,
 Leeds and, most famously, London
 whilst stagnating at the national level [@Goodman2013].
 
-In this paper we explore the geographical variability of
-*cycling potential* at the national level.
-Estimates of plausible future rates^[By
+In this paper we explore the geographical variability of cycling potential
+at the national level with respect to commuting trips, and taking into account
+commute distances. Estimates of plausible future rates^[By
 'rate' we are referring
 to the proportion of trips that
 are cycled or the proportion of people who regularly cycle to work.]
-or numbers cycling can be critical for strategic decision-making
+or numbers cycling can help inform the decision making process, for example
+informing the setting of suitable local targets or the relative allocation of
+cycling funding between different local authorities.
 
-The former can provide an
-evidence base to inform the setting of suitable local
-cycling targets; the latter can assist with the relative allocation of
-funding for cycling investment between different local authorities.
-Both can help inform the decision making process,
-alongside other considerations and sources of information
-such as road safety statistics and an understanding of the benefits of
-building on the momentum behind cycling in 'early adopter' areas.
+All else being equal, it is recommended that the bulk of long-term investment
+in cycling is made in areas and along travel corridors where many trips
+(or stages) are of an easily cyclable distance. In such areas cycling has the
+greatest potential to become "the first and natural choice" for urban transport
+[@WelshGovernment2014]. As such, our estimates of cycling potential can
+complement other considerations and sources of information such as road safety
+statistics and an understanding of the benefits of building momentum
+'early adopter' areas where the rate of cycling is already growing.
+
 It has been suggested that "towns with a pre-existing culture of cycling
-find it easier to get more people  cycling because they do not have to overcome conflicting social norms" [@Sloman2014]. On the other hand, the greatest benefits may be in
+find it easier to get more people  cycling because they do not have to
+overcome conflicting social norms" [@Sloman2014]. On the other hand,
+the greatest benefits may be in the long-term accrue to
 areas where there is currently a low rate of cycling but high potential
 based on the number of short-distance trips taking place.
 In any case, cycling potential is clearly related to both the current
 rate of cycling and the distance distribution of trips in the area.
 These variables are the focus of this paper.
 
-The region of analysis is the entirety of England and is based on
-2011 commuting data. As mentioned,
-this dataset has the greatest coverage (90% + of the working population),
-geographical resolution and coverage (with a high response rate from
-every authority) of any travel dataset of England. Cycle commuting is
-an important component of utility cycling, which has the great benefits in
-terms of health (for it is integrated into everyday life) and
-congestion (for it can reduce rush hour car traffic).
-The analysis does not seek to estimate the current or potential level of
-leisure cycling.
-The potential of utility cycling is also central
-the National Propensity to Cycle Tool project, of which
-this analysis is a part.
-The main unit of analysis is the 324 Local Authority Districts in England,
-the highest resolution data that provides a breakdown of mode by distance.
+The region of analysis is the entirety of England and is based on Census 2011
+commuting data. As mentioned, this dataset has the greatest geographical
+resolution and greatest coverage (90% + of the working population, with
+a high response rate from every authority) of any travel dataset of England.
+The cycle commuting captured in the Census captures over a third of all utility
+cycling (Goodman 2013), and may have particularly large benefits for congestion
+(by reducing reduce rush hour traffic). The analysis does not seek to estimate
+the current or potential level of leisure cycling.
+The potential of cycling commuting is also central to the wider National Propensity
+to Cycle Tool project, of which this analysis is a part.
+The units of analysis are the 324 Local Authority Districts in England (LADs),
+the smallest zones that provides a breakdown of mode by distance.
 
 The structure of the paper is as follows. First we describe the
-current rate of cycling. Next we explore the potential
+current rate of cycle commuting. Next we explore the potential
 for additional cycle trips at the national level, both in terms of
 the proportion of all commuter trips cycled and in terms of the
 absolute number of commuter cyclists.
@@ -161,7 +190,7 @@ qtm(las, "pcycle", fill.style = "fixed",
   fill.breaks = fixedBreaks, fill.title = "Percent cycling")
 ```
 
-Outside London, 'high cycling' LADs tend to be high density urban
+Outside London, 'high cycling' LADs tend to be mid-sized high-density urban
 areas focussed on a large mono-centric centre. Cambridge (with 29% cycling),
 Oxford (17%) and York (11%) are well known high-cycling Local Authorities
 that fit this category but the list also contains lesser-known
@@ -169,28 +198,41 @@ areas. Norwich (9%), Bristol (7%), Lincoln (6%) and Portsmouth and
 Gosport (with 7 and 10% cycling to work, respectively) also have
 a relatively high rate of commuter cycling. 
 Further details on the top 10 LADs by cycling share in commuting
-are provided Table 1. Note that the variable '% v. short car'
-refers to the % of commutes below 2 km or less that are made by car,
-reflecting the extent to which cars dominate local travel in the area.
+are provided Table 1. Alongside the observed % cyclists, we have put the
+'expected %', as calculated from national average cycling levels
+plus the distribution of commute distances in each city.
+This shows that the observed proportion of cyclists in the areas shown in Table 1
+is around two-to eight-times larger than the background national average.
+The final column of Table 1 shows the proportion of commuters who travel
+very short distances to work (less than 2km) who drive to work, representing the
+extent to which cars dominate the local transport system.
+This final column is revealing because it shows firstly that high cycling areas
+are less car-dependent than low cycling areas (compare with Table 2) but also that
+cars continue to dominate local travel to a
+considerable extent even in some relatively high-cycling areas.
 
 Table: The top 10 'high cycling' Local Authorities in terms of the
-proportion of commutes made by bicycle from the 2011 Census. See
+proportion of commuters who report cycling as their usual main mode
+in the 2011 Census ('Observed n cycling').
+The 'expected commuter cyclist' figures are calculated based on the
+distribution of commute distances in each local authority
+and the average national cycle mode share. See
 https://github.com/npct/pct-data/blob/master/las_data.csv for the full table.
 
 ```{r, echo=FALSE}
 t0 <- tail(las@data[order(las$pcycle),], 10)
 t0 <- t0[10:1,]
 
-t0 <- select(t0, Name = NAME, `Current %` = pcycle, `Expected %` = pcycle_exp, `Current (n)` = Bicycle_All, `Expected (n)` = expected, `% v. short car` = shortcar)
+t0 <- select(t0, Name = NAME, `Observed n cycling` = Bicycle_All, `Observed % cycling` = pcycle, `Expected n` = expected, `Expected %` = pcycle_exp, `Car mode share for v. short commutes` = shortcar)
 kable(t0, digits = 1, row.names = F)
+# pander::pander()
 ```
 
-Areas with the lowest cycling rate are presented in Table 2.
-It is interesting
-to note that these are not exclusively rural areas, where low cycling could
-be explained by the lack of jobs near to houses.
-Five of the 10 Local Authorities with the lowest level of cycling to work
-are largely rural: Rossendale, Harrow, Tandridge,
+Areas with the lowest rate of using cycling as the 'usual main mode' for
+commuting are presented in Table 2. It is interesting to note that these are not
+exclusively rural areas, where low cycling could be explained by the lack of
+jobs near to houses. Five of the 10 Local Authorities with the lowest level
+of cycling all the way to work are largely rural: Rossendale, Harrow, Tandridge,
 Bolsover and North East Derbyshire.
 These are by no means the *most* rural areas in
 England and, furthermore, each 
@@ -201,26 +243,27 @@ a city with well-defined commercial centre. However,
 the Local Authority also contains large expanses of rural areas,
 so can to some extent be grouped with the aforementioned areas.
 
-Two of the areas in the 'bottom 10' for commuter cycling are
-commuter belts: Sevenoaks and Epping Forest are wealthy areas
-on the outskirts of London. 
-The remaining two 'low cycling' LADs presented in Table 2 are
-relatively deprived urban areas and which are part of a
-wider conurbation: Barnesley and Rotherham. These areas
-have car-dominated and linear urban centres as opposed to York and
+Two of the areas in the 'bottom 10' for using cycling as the usual main mode
+are classic commuter belts: Sevenoaks and Epping Forest are wealthy areas on
+the outskirts of London. The remaining two 'low cycling' LADs presented in
+Table 2 are relatively deprived urban areas that are part of a wider conurbation:
+Barnesley and Rotherham. These areas
+have car-dominated and linear urban centres, as opposed to York and
 Cambridge which have partially pedestrianised city centres.
 The complete dataset, containing information for all LADs,
 can be found online at [github.com/npct/pct-data/blob/master/las_data.csv](https://github.com/npct/pct-data/blob/master/las_data.csv).
 
-Table: The bottom 10 Local Authorities in terms of the
-proportion of commutes made by bicycle from the 2011 Census.
+Table: The bottom 10 Local Authorities in terms of the proportion of
+commuters who report cycling as their usual main mode in the 2011 Census
+('Observed n cycling').  The 'expected %' figures are calculated based on the
+commute distances and the average national cycle mode share.
 
 ```{r, echo=FALSE}
 t0.1 <- head(las@data[order(las$pcycle),], 10)
 
-t0.1 <- select(t0.1, Name = NAME, `Current %` = pcycle, `Expected %` = pcycle_exp, `Current (n)` = Bicycle_All, `Expected (n)` = expected, `% v. short car` = shortcar)
+t0.1 <- select(t0.1, Name = NAME, `Observed n cycling` = Bicycle_All, `Observed % cycling` = pcycle, `Expected n` = expected, `Expected %` = pcycle_exp, `Car mode share for v. short commutes` = shortcar)
 
-kable(t0.1, digits = 2, row.names = F)
+kable(t0.1, digits = 1, row.names = F)
 ```
 
 Given the wide range of current levels of cycling across England,
@@ -234,35 +277,21 @@ Areas with lower current levels of cycling may require greater
 emphasis on complementary behavioural interventions in order to maximise the
 value of infrastructure investment [@Sloman2014].
 
-Across these categories, the current trip distance
-distribution provides insight into the long-term potential rate of
-cycling that could be expected. It is recommended that long-term
-investment focusses on areas where many trips (or stages)
-are of an easily cyclable distance.
-
 ## Short commutes and cycling
 
-The proportion and absolute number of commutes that are less than
-5 km in each LAD is illustrated in Fig. xx2.
+We defined ‘short’ commute trips as those below 5km in Euclidian distance.
+Based on circuity (or diversion factor) values of 1.3, this corresponds
+to a maximum road distance of around 6.5 km.  Trips below 2km Euclidean distance
+were defines as ‘very short’. Fig xx2 illustrates the proportion and absolute
+number of short commute trips (<5 km euclidean distance) in each LAD.
+
 Because the majority of new cycling trips are short, this data
-can be used as a proxy for the potential level of cycling:
-cycling is unlikely to become the dominant mode of transport in the short term
-in areas where relatively few short-distance trips take place.
-(In the longer term, however, increased levels of local economic activity and
-community cohesion could lead cycling to become the dominant mode even in
-current 'commuter belts'.)
-In areas where most trips are of a cyclable distance, by contrast,
-cycling could in theory become "the first and natural choice"
-for urban transport [@WelshGovernment2014].
+can be used as a proxy for the potential level of cycle commuting
+(although it is recognized that  this proxy is less good in areas where
+multi-stage commuting trips are common, e.g. where many people
+cycle to bus or train stations before using the public transport as their main mode).
 
-In line with the 8 census distance bands used by the data distribution
-portal *nomis* (with breaks at 2, 5 and 10 km) we defined 'short' trips
-as those below 5 km in Euclidean distance. (Trips below 2 km were deemed
-as 'very short'.) Fig. xx represents the
-geographical distribution of these short trips for commuting in
-absolute and proportional terms.
-
-```{r, echo=FALSE, fig.cap="The geographical distribution of short (sub 5 km in Euclidean distance) trips in England."}
+```{r, echo=FALSE, fig.cap="The geographical distribution of short trips in England (< 5 km in Euclidean distance)."}
 las$`Short trips (n)` <- las@data$All_.0.2. + las@data$All_.2.5.
 las$`Short trips (%)` <- las$`Short trips (n)` / las@data$All_All * 100
 qtm(las, fill = c("Short trips (n)", "Short trips (%)"), fill.n = 3, fill.palette = "Blues", fill.style = "jenks")
@@ -278,11 +307,13 @@ Fig. xx have disproportionately low level of cycling based on
 commuting behaviour, indicating high future potential update.
 The LADs with the largest negative residual have a much lower
 rate of commuter cycling than would be expected from the proportion of
-short trips in the area. This is Hastings. The area with the
+short trips in the area. The area with the single largest negative
+residual is Hastings. The area with the largest positive residual is Cambridge.
+These are illustrated in Fig. xx with red dots and accompanying text. The area with the
 largest positive residual is Cambridge. These are illustrated
 in Fig. xx with text.
 
-The top 10 areas with the greatest unmet potential for cycling by
+The top 10 areas with the greatest unrealised potential for cycling by
 this measure are, in descending order,
 Hastings, Blackburn with Darwen,
 Burnley,                      Chesterfield,
@@ -316,28 +347,15 @@ The analysis suggests that cycling interventions in
 such areas (with more than around 40% of trips being less than 5 km
 yet a low rate of commuter cycling) could, if effective, yield a high return on investment.
 However, we note that the *cycling culture* of these areas is likely
-to be weak and this may take time and 'soft' policy interventions,
-in addition to high quality cycle infrastructure, to change.
-Also, the example of South Cambridgeshire, in which only 21%
-of commuting trips are 'short' yet the rate of commuter cycling is high at
-7.7%, demonstrates that
-zones above the red line if Fig. x may also have
-a high potential for cycling to
-grow further. One potential
-advantage of promoting cycling (e.g. via new high quality cycle paths,
-cycle parking and disincentives to drive) in an area that already
-has a strong cycling community is that full use of
-new infrastructure could be made more quickly than in other areas
-[@Sloman2014].
+to be weak at present.  As such, it may take time and 'soft' policy interventions (e.g. complementary behavioural interventions), in addition to high quality cycle infrastructure,
+to realized the potential for cycling. 
 
-The question of whether it is more effective to invest for cycling in
-areas that are already 'cycling success stories' (as exemplified by the
-Cycling Demonstration Towns project) or whether higher benefit-cost ratios
-accrue in low cycling areas with a high potential (as exemplified by the
-Leeds-Bradford 'CityConnect' investment) is an open question.
-If anything, the analysis suggests that a wide range of area types
-could benefit from cycling investment, especially those in which many
-short distance which could switch to cycling take place.
+Fig xx3 also illustrates the fact that even those areas furthest above the red
+line still consistently have a level of cycling that is far lower than the
+proportion of short trips.  For example, the cycle commute mode share of 28.9%
+in Cambridge is still under half the proportion of commute trips that are ‘short’ in that local authority (58%).  Similarly, the cycle commute share of 7.7% in South Cambridge is only a third of the 21% of commuting trips that are ‘short’.
+
+Thus even these higher-cycling areas may still have a considerable potential for cycling to grow further. One potential advantage of promoting cycling (e.g. via new high quality cycle paths, cycle parking and disincentives to drive) in an area that already has a strong cycling community is that full use of new infrastructure could be made more quickly than in other areas (Sloman et al. 2014). Thus, new infrastructure along key 'cycling desire lines' (e.g. as identified locally by the NPCT model) would likely attract the 'near market' for cycling in these areas.
 
 # The national distribution of cycling potential
 
@@ -349,35 +367,23 @@ representative of each authority allows for the scenarios described
 in section xx to be applied nationwide. The results are presented
 in Fig. 3 at the level of County and Unitary Authorities, the level
 at which most transport investment is currently made.
+
 Note that 'cycling potential' can be measured in
 absolute or proportional terms and that authorities with a higher
 population tend to have a higher absolute potential increase in cycling.
-The distinction is important when allocating funding.
-
-Cycling potential can be quantified as an absolute number of
-trips/cyclists or as a proportion. Each metric has advantages.
-The former is advantageous when allocating funding based on estimated
-economic values of extra cycling activity. The latter is advantageous
-when designing local targets or assessing whether local areas should
-meet or exceed national-level targets. 
-
-As with the number of short trips taking place in an area,
-the absolute number of potential new cyclists is influenced by
-the population of the local area: a large LAD will have a
-greater cycling potential in absolute terms than a small LAD with the
-same potential level (expressed as a %) of cycling.
+The distinction may be important when allocating funding, as the different metrics may be useful for different types of decision making.  Absolute numbers may be advantageous when allocating funding based on estimated economic values of extra cycling activity. Relative measures may be advantageous when designing local targets or assessing whether local areas should meet or exceed national-level targets.
 
 Fig. x illustrates the geographical variability in the potential
 increase in the rate of commuter cycling under the Cycling Delivery Plan
-Scenario. It is important to not that this is based *only* on the
+Scenario. It is important to note that this is based *only* on the
 trip distribution of commuter trips in each local authority;
 hilliness is not taken into account. The values generated
 correlate well with the observed level of cycling in the 2011
-Census: $R^2 = 0.17$. Note that this is the same level of correlation
+Census: $R^2 = 0.17$. Note that this is roughly the same level of correlation
 that was found between the percentage of short trips and the level
 of cycling presented above. 
 
-```{r, echo=FALSE, fig.cap="Geographical variability in cycling potential accross England in percentage (left) and absolute (right) terms."}
+```{r, echo=FALSE, fig.cap="Geographical variability in the potential of cycling to grow across England based on commuter trip distance distributions under the Cycling Delivery Plan scenario, in percentage (left) and absolute (right) terms."}
 las$pcycle_cdp <- las$pcycle + las$pcycle_exp
 las$Bicycle_exp <- las$All_All * las$pcycle_exp / 100000
 fixedBreaks2 <- c(0,2,3,5)
@@ -389,14 +395,10 @@ qtm(las, c("pcycle_exp", "Bicycle_exp"),
 ```
 
 
-The advantage of estimating the expected rate of commuter cycling in this
-way is that it estimates growth in cycling in absolute terms.
-This could be useful for allocating funding between different Local
-Authorities. The top 10 Local Authorities in terms of increased
-number of commuter cyclists under our Cycling Delivery Plan is
-presented in Table xx. See [github.com/npct/pct-data/blob/master/las_data.csv](https://github.com/npct/pct-data/blob/master/las_data.csv) for the complete .csv dataset.
+Table xx presents the top 10 Local Authorities in terms of increased number of commuter cyclists under our Cycling Delivery Plan.  Aggregated to the level of County and Unitary Authorities (CUAs), the level at which many transport decisions are made, the results are also are presented in Fig. x.  Under our implementation of the Cycling Delivery Plan, the top 10 CUAs in terms of estimated potential growth in absolute numbers of cycle commuters are: Lancashire, Hampshire, Kent, Essex, Birmingham, Hertfordshire, Surrey, Leeds, Staffordshire and Nottinghamshire.
+See [github.com/npct/pct-data/blob/master/las_data.csv](https://github.com/npct/pct-data/blob/master/las_data.csv) for the complete dataset.
 
-Table: Top 10 Local Authority Districts (LADs) in terms of potential growth in
+Table: Top 10 Local Authority Districts (LADs) in terms of potential level of commuter
 cycling under the Cycling Delivery Plan (CDP) scenario. Note the raw data
 for all LADs can be found online at github.com/npct/pct-data/blob/master/las_data.csv
 
@@ -404,21 +406,14 @@ for all LADs can be found online at github.com/npct/pct-data/blob/master/las_dat
 las$Bicycle_exp <- round(las$Bicycle_exp * 1000)
 t0.1 <- tail(las@data[order(las$Bicycle_exp),], 10)
 
-t0.1 <- select(t0.1, Name = NAME, `Current %` = pcycle, `Growth %` = pcycle_exp, `Current (n)` = Bicycle_All, `Growth (n)` = Bicycle_exp, `% v. short car` = shortcar)
+t0.1 <- select(t0.1, Name = NAME, `Observed n cycling` = Bicycle_All, `Observed % cycling` = pcycle, `Expected n` = expected, `Expected %` = pcycle_exp, `Car mode share for v. short commutes` = shortcar)
 t0.1 <- t0.1[10:1,]
-kable(t0.1, digits = 2, row.names = F)
+kable(t0.1, digits = 1, row.names = F)
 
 # save las data
-lasdat_df <- select(las@data, Name = NAME, `N. commuters (all modes)` = All_All, `Current %` = pcycle, `Expected %` = pcycle_exp, `Current (n)` = Bicycle_All, `Expected (n)` = expected, `% v. short car` = shortcar, `Short trips (%)`)
+lasdat_df <- select(las@data, Name = NAME, `N. commuters (all modes)` = All_All, `Current %` = pcycle, `Expected %` = pcycle_exp, `Current (n)` = Bicycle_All, `Expected (n)` = expected, `Car mode share for v. short commutes` = shortcar, `Short trips (%)`)
 # write.csv(lasdat_df, "pct-data/las_data.csv")
 ```
-
-Aggregated to the level of County and Unitary Authorities (CUAs), the level
-at which many transport decisions are made, the top ten areas are
-presented in Fig. x. The top 10 CUAs in terms of estimated potential
-growth in cycling under our implementation of the Cycling Delivery Plan
-are: Lancashire, Hampshire, Kent, Essex, Birmingham, Hertfordshire, Surrey,
-Leeds, Staffordshire and Nottinghamshire.
  
 Note that the size of these CUAs plays a strong role in
 their potential for increased cyclists in absolute terms.
@@ -428,9 +423,15 @@ CUAs, by contrast, is 170,000.
 (For comparison, the average per LAD is just under 80,000). These numbers underline the importance
 of measuring expenditure in pounds per person for areas, rather than
 simply estimating the overall total. To see a summary of the results at the CUA level,
-please navigate to [github.com/npct/pct-data/blob/master/cuas_dat.csv](https://github.com/npct/pct-data/blob/master/cuas_dat.csv).
+please navigate to [github.com/npct/pct-data/blob/master/cuas_dat.csv](https://github.com/npct/pct-data/blob/master/cuas_dat.csv). 
 
-```{r, echo=FALSE, fig.cap="Top 10 areas in terms of potential growth in cycling at the level of highway authorities in England. The full dataset can be viewed online: github.com/npct/pct-data/blob/master/cuas_dat.csv", message=FALSE}
+Figure xx illustrates the same information but in percentage terms and is therefore unaffected by the size of the CUA. At the CUA level the the greatest percentage point increases in cycling according to our method (exluding London boroughs) are Hull, Leicester, Plymouth, North East Lincolnshire, Bristol, Nottingham, Derby, Stoke-on-Trent and Newcastle upon Tyne.
+These LADs are closely followed by
+Middlesbrough, Hartlepool, Portsmouth, Southampton, Blackpool, Liverpool, Poole,
+Torbay, Swindon, Manchester and many other towns in terms of estimated cycling
+growth potential. See [github.com/npct/pct-data/blob/master/cuas_dat.csv](https://github.com/npct/pct-data/blob/master/cuas_dat.csv) for the complete dataset.
+
+```{r, echo=FALSE, fig.cap="Potential growth in cycle commuters in absolute terms at the level of highway authorities in England. The full dataset can be viewed online: github.com/npct/pct-data/blob/master/cuas_dat.csv", message=FALSE}
 # Do for cuas too?
 library(rgdal)
 cuas <- raster::shapefile("pct-bigdata/national/cuas.shp")
@@ -452,12 +453,18 @@ cuasp <- aggregate(lasp, cuas, FUN = sum)
 cuas$All <- cuasp@data$All_All / 1000
 cuas$All_All <- cuasp@data$All_All
 cuas$Bicycle_exp <- cuas$Bicycle_exp * 1000
-cuasdat <- select(cuas@data, Name = CTYUA12NM, `All commutes (n)` = All_All, `Growth in cycling (n)` = Bicycle_exp)
-summary(cuasdat)
+```
+
+```{r, echo=FALSE, fig.cap="Potential growth in cycle commuters in percentage points across highway authorities in England. The full dataset can be viewed online: github.com/npct/pct-data/blob/master/cuas_dat.csv", message=FALSE}
+cuas$`Growth in commuter cycling (%)` <- cuas@data$Bicycle_exp  / cuas@data$All_All * 100
+qtm(cuas, "Growth in commuter cycling (%)", fill.style = "fixed", fill.breaks = c(0,2.5,3,5))
+cuasdat <- select(cuas@data, Name = CTYUA12NM, `All commutes (n)` = All_All, `Growth in cycling (n)` = Bicycle_exp, `Growth in commuter cycling (%)`)
+# summary(cuasdat)
 # summary(head(cuas@data$All[order(cuas@data$Bicycle_exp, decreasing = T)], 10))
 # head(cuas@data)
+# cuasdat[order(cuasdat$`Growth in commuter cycling (%)`, decreasing = T),]
 # sum(cuas@data$Bicycle_exp, na.rm = T) / sum(las@data$Bicycle_All, na.rm = T) * 1000
-write.csv(cuasdat, "pct-data/cuas_dat.csv")
+# write.csv(cuasdat, "pct-data/cuas_dat.csv")
 ```
 
 
@@ -472,9 +479,7 @@ analysis are robust, based on very reliable
 census data on the distances that
 people travel to work at relatively high levels of geographical disaggregation.
 
-The work underlines the fact that it is not feasible for a commuter
-belt such as Sevenoaks, where only 19% of commuter trips are below
-5 km, to have a very high rate of cycling *all the way to work*.^[Integrating cycling with public transport in such areas, e.g. by
+The work underlines the fact that the current distribution of trips means that the cycling potential of some areas is higher than others.  For example, it would be challenging for a commuter belt such as Sevenoaks, where only 19% of commuter trips are below 5 km, to achieve a high rate of cycling *all the way to work*.^[Integrating cycling with public transport in such areas, e.g. by
 encouraging cycling to bus and train stations, may allow a higher
 proportion of trip stages to be made by bicycle in such areas, however.
 In Sevenoaks 52% of commutes are made by car and 20% are made by rail.
@@ -482,23 +487,14 @@ Note that in
 in many other such
 'commuter belts' the current and potential rate of rail use will be lower.
 ]
-These are the fundamentals that should drive strategic
-investments and policies promoting active travel.
-That is not to say that cycling investment is
-never justified in areas such as Sevenoaks: there may,
-for example, be a higher
-latent demand for leisure trips. However, the analysis
-clearly suggests that areas with a high proportion of short trips,
-based 2011 commuting behaviour,
-which is relatively resistant to change, would benefit from
-new investment in cycling. Identifying where such 'quick win'
-areas are is an important step towards creating a nationally
-'joined-up' cycling strategy and allocating funding based on
-evidence.
+Such considerations should inform strategic investments and policies promoting active travel, by highlighting areas where the distribution of current trip distances is most cycle friendly.  Identifying such areas is an important step towards creating a nationally 'joined-up' cycling strategy and allocating funding based on evidence.
 
 There are a number of ways that the analysis could be extended,
 including:
 
+- The extension of the method to all trip purposes, for example based on
+a version of the National Travel Survey that contains LAD-level data or based
+on modelled trip distances.
 - Presenting the rate of cycling per 'short trip' instead of per trip
 of any length - this would highlight areas that have done well despite
 local trip-distance distributions.
@@ -526,20 +522,22 @@ estimates of the future level of cycling under each of the aforementioned
 scenarios. This would minimise duplication in the workflow and integrate
 the analysis of the flow data and the national data presented in this paper.
 
-A question related to funding is the level at which cycling
-investment will be allocated. If cycling policies are to form
-part of an integrated national transport strategy, it is recommended
-that funding for cycling is allocated at the level at which transport
-investment for other modes takes place. Currently this is the level
-of Combined and Unitary Authorities (CUAs) and, increasingly,
-Combined Authorities and Local Enterprise Partnerships (LEPs).
-CUAs with high unmet potential for cycling include
-Lancashire, Hampshire and Kent. Our analysis suggests that
-funding for cycling should move away from
-sporadic and time-limited city-by-city investment to
-a national-level strategy. Long-term funding for every Highway
-Authority dedicated to cycling will enable a joined-up
-and cost-effective cycling network to be created nationwide.
+```{r, echo=FALSE}
+# A question related to funding is the level at which cycling
+# investment will be allocated. If cycling policies are to form
+# part of an integrated national transport strategy, it is recommended
+# that funding for cycling is allocated at the level at which transport
+# investment for other modes takes place. Currently this is the level
+# of Combined and Unitary Authorities (CUAs) and, increasingly,
+# Combined Authorities and Local Enterprise Partnerships (LEPs).
+# CUAs with high unmet potential for cycling include
+# Lancashire, Hampshire and Kent. Our analysis suggests that
+# funding for cycling should move away from
+# sporadic and time-limited city-by-city investment to
+# a national-level strategy. Long-term funding for every Highway
+# Authority dedicated to cycling will enable a joined-up
+# and cost-effective cycling network to be created nationwide.
+```
 
 # References
 
