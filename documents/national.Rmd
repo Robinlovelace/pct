@@ -168,7 +168,7 @@ has on the policy implications of the work.
 # The current level of cycling
 
 The spatial distribution of of commuter cycling across England
-is depicted in Fig. xx1. The dataset shows that there is wide variation
+is depicted in Fig. 1. The dataset shows that there is wide variation
 in the level of cycling, which can be split roughly into
 3 categories. In 135 LADs (42% of the total number and population)
 less than 2% of workers report cycling as their main means of travel
@@ -282,7 +282,7 @@ value of infrastructure investment [@Sloman2014].
 We defined ‘short’ commute trips as those below 5km in Euclidian distance.
 Based on circuity (or diversion factor) values of 1.3, this corresponds
 to a maximum road distance of around 6.5 km.  Trips below 2km Euclidean distance
-were defines as ‘very short’. Fig xx2 illustrates the proportion and absolute
+were defines as ‘very short’. Fig. 2 illustrates the proportion and absolute
 number of short commute trips (<5 km euclidean distance) in each LAD.
 
 Because the majority of new cycling trips are short, this data
@@ -299,19 +299,18 @@ qtm(las, fill = c("Short trips (n)", "Short trips (%)"), fill.n = 3, fill.palett
 
 There is a correlation between the proportion of commutes in
 an area that are short and the proportion of commutes that are
-made by cycle (Fig. xx). Although the relationship is not
+made by cycle (Fig. 3). Although the relationship is not
 particularly strong ($R^2 = 0.17$), the plot is useful for
 identifying the areas with a lower than expected rate of commuter cycling
 based on current trip distributions. Points below the line in
-Fig. xx have disproportionately low level of cycling based on
+Fig. 3 have disproportionately low level of cycling based on
 commuting behaviour, indicating high future potential update.
 The LADs with the largest negative residual have a much lower
 rate of commuter cycling than would be expected from the proportion of
 short trips in the area. The area with the single largest negative
 residual is Hastings. The area with the largest positive residual is Cambridge.
-These are illustrated in Fig. xx with red dots and accompanying text. The area with the
-largest positive residual is Cambridge. These are illustrated
-in Fig. xx with text.
+These are illustrated in Fig. 3 with red dots and accompanying text. The area with the
+largest positive residual is Cambridge. 
 
 The top 10 areas with the greatest unrealised potential for cycling by
 this measure are, in descending order,
@@ -321,7 +320,7 @@ Bradford,                     Oldham,
 Hartlepool,                   Torbay,
 Stoke-on-Trent  and             Calderdale.
 Each of these local authorities are represented by a blue circle in
-Fig. xx3.
+Fig. 3.
 
 ```{r, echo=FALSE, fig.cap="Scatterplot illustrating the link between the proportion of commutes that are short and the proportion of commutes that are cycled."}
 lmod1 <- lm(pcycle ~ `Short trips (%)`, data = las@data)
@@ -350,7 +349,7 @@ However, we note that the *cycling culture* of these areas is likely
 to be weak at present.  As such, it may take time and 'soft' policy interventions (e.g. complementary behavioural interventions), in addition to high quality cycle infrastructure,
 to realized the potential for cycling. 
 
-Fig xx3 also illustrates the fact that even those areas furthest above the red
+Fig. 3 also illustrates the fact that even those areas furthest above the red
 line still consistently have a level of cycling that is far lower than the
 proportion of short trips.  For example, the cycle commute mode share of 28.9%
 in Cambridge is still under half the proportion of commute trips that are ‘short’ in that local authority (58%).  Similarly, the cycle commute share of 7.7% in South Cambridge is only a third of the 21% of commuting trips that are ‘short’.
@@ -373,7 +372,7 @@ absolute or proportional terms and that authorities with a higher
 population tend to have a higher absolute potential increase in cycling.
 The distinction may be important when allocating funding, as the different metrics may be useful for different types of decision making.  Absolute numbers may be advantageous when allocating funding based on estimated economic values of extra cycling activity. Relative measures may be advantageous when designing local targets or assessing whether local areas should meet or exceed national-level targets.
 
-Fig. x illustrates the geographical variability in the potential
+Fig. 4 illustrates the geographical variability in the potential
 increase in the rate of commuter cycling under the Cycling Delivery Plan
 Scenario. It is important to note that this is based *only* on the
 trip distribution of commuter trips in each local authority;
@@ -395,7 +394,7 @@ qtm(las, c("pcycle_exp", "Bicycle_exp"),
 ```
 
 
-Table xx presents the top 10 Local Authorities in terms of increased number of commuter cyclists under our Cycling Delivery Plan.  Aggregated to the level of County and Unitary Authorities (CUAs), the level at which many transport decisions are made, the results are also are presented in Fig. x.  Under our implementation of the Cycling Delivery Plan, the top 10 CUAs in terms of estimated potential growth in absolute numbers of cycle commuters are: Lancashire, Hampshire, Kent, Essex, Birmingham, Hertfordshire, Surrey, Leeds, Staffordshire and Nottinghamshire.
+Table 3 presents the top 10 Local Authority Districts in terms of increased number of commuter cyclists under our Cycling Delivery Plan.  Aggregated to the level of County and Unitary Authorities (CUAs), the level at which many transport decisions are made, the results are also are presented in Fig. 5 and Fig. 6.  Under our implementation of the Cycling Delivery Plan, the top 10 CUAs in terms of estimated potential growth in absolute numbers of cycle commuters are: Lancashire, Hampshire, Kent, Essex, Birmingham, Hertfordshire, Surrey, Leeds, Staffordshire and Nottinghamshire.
 See [github.com/npct/pct-data/blob/master/las_data.csv](https://github.com/npct/pct-data/blob/master/las_data.csv) for the complete dataset.
 
 Table: Top 10 Local Authority Districts (LADs) in terms of potential level of commuter
@@ -425,7 +424,7 @@ of measuring expenditure in pounds per person for areas, rather than
 simply estimating the overall total. To see a summary of the results at the CUA level,
 please navigate to [github.com/npct/pct-data/blob/master/cuas_dat.csv](https://github.com/npct/pct-data/blob/master/cuas_dat.csv). 
 
-Figure xx illustrates the same information but in percentage terms and is therefore unaffected by the size of the CUA. At the CUA level the the greatest percentage point increases in cycling according to our method (exluding London boroughs) are Hull, Leicester, Plymouth, North East Lincolnshire, Bristol, Nottingham, Derby, Stoke-on-Trent and Newcastle upon Tyne.
+Fig. 6 illustrates the same information but in percentage terms and is therefore unaffected by the size of the CUA. At the CUA level the the greatest percentage point increases in cycling according to our method (exluding London boroughs) are Hull, Leicester, Plymouth, North East Lincolnshire, Bristol, Nottingham, Derby, Stoke-on-Trent and Newcastle upon Tyne.
 These LADs are closely followed by
 Middlesbrough, Hartlepool, Portsmouth, Southampton, Blackpool, Liverpool, Poole,
 Torbay, Swindon, Manchester and many other towns in terms of estimated cycling
