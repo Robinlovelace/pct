@@ -3,8 +3,6 @@ title: 'The National Propensity to Cycle Tool: A generalisable flow-level model 
   cycling uptake for sustainable transport planning'
 header-includes: \usepackage{amsmath}
 output:
-  word_document:
-    fig_caption: yes
   pdf_document:
     fig_caption: yes
     keep_tex: yes
@@ -12,6 +10,8 @@ output:
     toc: yes
   html_document:
     toc: yes
+  word_document:
+    fig_caption: yes
 bibliography: Transport.bib
 ---
 
@@ -24,19 +24,44 @@ pkgs <- c("stplanr", "knitr", "xtable", "sp", "grid", "png")
 vapply(pkgs, require, character.only = T, FUN.VALUE = logical(1))
 ```
 
+# Abstract
+
+Increased cycling, as part of a wider sustainable mobility strategy, is an
+increasingly common objective in transport planning institutions worldwide.
+Emerging evidence illustrates that good cycling infrastructure
+is an effective way of promoting cycling. The fact that cycling infrastructure
+is highly localised means that
+there are many available options to choose from when planning, for example,
+new cycle paths. If new paths coincide with the areas and 'desire lines'
+of greatest latent demand, they will be highly cost-effective. Some paths,
+however, are constructed along corridors with little latent demand
+and have poor benefit-cost ratios. The National Propensity to Cycle Tool (NPCT)
+tackles this issue at the policy development stage by providing an
+evidence-based support tool for the assessment of current and potential
+future distributions in cycling across cities and regions. This paper
+describes the development of the model underlying the NPCT and
+to explains how its open source code base
+can easily be used in new contexts. It was found that there is high demand
+for the NPCT to assist the decision making process around new transport
+infrastructure. We conclude that the method presented has the potential to
+assist with planning for cycling-dominated cities worldwide, which can help
+assist with the global transition away from fossil fuels.
 
 # Introduction
 
 The National Propensity to Cycle Tool (NPCT) is
-an interactive policy support application for
+an interactive map-based policy support application for
 developing transport policies, funded by the UK's Department
-for Transport (DfT). The NPCT will have data covering England
-and be used by Local Authority transport planners
-to prioritise investment in cycling. The tool's main purpose
+for Transport (DfT). The NPCT will was originally designed for
+use by Local Authority transport planners
+to prioritise investment in cycling in England. However,
+as we shall see, the tool has much wider potential applications.
+Funded by central government to assist local transport planning, the
+tool's main purpose
 is to help prioritise where to build new strategic cycle routes
-and related infrastructure at the city level.
+and related infrastructure at city and regional levels.
 
-This paper describes the model underlying the
+This paper describes the 'flow-level' model underlying the
 NPCT and explains some of the decisions that were made relating to
 the data and methods that it uses.
 The model is open source and transparent,
@@ -44,17 +69,28 @@ based on input datasets that
 are widely available in many countries around the world.
 The model is implemented in R, a mature language for
 statistical computing. All of the code has been made available
-under the GPL 3 license on the GitHub platform.^[See [github.com/npct/pct](https://github.com/npct/pct).]
+under the MIT license on the GitHub platform.^[See [github.com/npct/pct](https://github.com/npct/pct).]
 
-The research was funded by the UK's Department for Transport and this paper
-focuses on Phase I of the work. In 'Phase II' we will extend to the model
-to the entirety of England. Key lessons were learned during Phase I and,
-where applicable, these are discussed in relation to future plans.
-Although the original model was developed for England, the NPCT methodology
-has the potential to
-assist with the design of transport policy in many settings.
-The present paper reports results from 3 case study or 'pilot' cities which
-acted as a 'proof of concept' for the Department of Transport: Coventry,
+Because of the public funding, the focussed on the English context: a
+car-dependent nation with high potential for growth in cycling.
+(Note that many nations fit this description.)
+The methodology could be used to explore scenarios for active travel overall
+(walking and cycling) and the tool is extensible in many directions.
+In some ways it is worth thinking of the NPCT as a framework for developing
+interactive transport planning support tools for policy evaluation, the
+present case study of cycling in England being just one of many potential
+applications.
+Still, a number of the lessons learned throughout the
+development and user testing of the tool are generalisable internationally.
+Where applicable,
+these are discussed in relation to future research priorities. Indeed,
+one of the major motivations for writing this paper is to showcase the method
+for use by others to avoid 'reinventing the wheel' to solve such a ubiquitous
+and embedded problem as the unsustainability of current travel patterns.
+
+The NPCT model presented in this paper was deployed for three
+'pilot' cities which
+acted as a 'proof of concept' for the DfT: Coventry,
 Manchester and Norwich. The method is described in a generalisable way
 so it is applicable to any city or region where the appropriate datasets
 are available. The 'generalisability' of the method is important due to
@@ -91,6 +127,7 @@ educational or other destinations.
 The model takes the current rate of cycling and other variables per flow and uses
 this to simulate what the rate of cycling per flow could be
 under various future scenarios.
+
 It is important to note that the models do not include the effects on
 cycling rates of specific policies, such as a particular piece of new
 infrastructure (although further work could explore adding such
@@ -113,7 +150,8 @@ cycle^[We
 use the term 'cycle' instead of 'bicycle' to include trips made by
 tricycles, quadricycles and hand cycles.] trips plausibly occur?
 
-The model operates 'under the hood' in the NPCT online interface.
+The model described in this paper
+operates 'under the hood' in the NPCT online interface.
 This means that the
 output of the NPCT is simply a visualisation of the model's pre-calculated
 outputs. Rather than interacting with the code that drives the model directly,
