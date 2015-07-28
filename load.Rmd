@@ -588,7 +588,7 @@ justdist <- rbind(justdist, justdist5, justdist6, justdist7)
 ggplot(justdist) +
   geom_line(aes(dist_fast, npred, color = model, linetype = type),
     size = 1.5) +
-  xlab("Route distance (km)") + ylab("Expected number cycling") +
+  xlab("Route distance (km)") + ylab("Expected proportion cycling") +
   theme_bw()
 
 dfcos <- round(rbind(coef(mod_nat), coef(mod_logsqr)), 3)

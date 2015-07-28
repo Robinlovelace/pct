@@ -1,0 +1,186 @@
+---
+title: "National-level analysis of cycling potential"
+author: "Robin Lovelace"
+date: "July 5, 2015"
+output:
+  word_document:
+    fig_caption: yes
+  pdf_document: default
+---
+
+
+```{r, include=FALSE}
+pkgs <- c("grid", "png", "knitr", "tmap", "dplyr", "ggmap")
+lapply(pkgs, library, character.only = T)
+opts_knit$set(root.dir = "../")
+# source("analysis/la-analysis.R", print.eval = T)
+```
+
+```{r, echo=FALSE}
+las <- readRDS("pct-bigdata/national/las.Rds")
+# source("analysis/las-tables.R")
+fixedBreaks = c(0,2,5,30)
+
+t0 <- tail(las@data[order(las$pcycle),], 10)
+t0 <- t0[10:1,]
+
+t0 <- select(t0, Name = NAME, `Current %` = pcycle, `Expected %` = pcycle_exp, `Current (n)` = Bicycle_All, `Expected (n)` = expected, `% short car` = shortcar)
+
+t0.1 <- head(las@data[order(las$pcycle),], 10)
+
+t0.1 <- select(t0.1, Name = NAME, `Current %` = pcycle, `Expected %` = pcycle_exp, `Current (n)` = Bicycle_All, `Expected (n)` = expected, `% short car` = shortcar)
+
+las$`Short trips (n)` <- las@data$All_.0.2. + las@data$All_.2.5.
+las$`Short trips (%)` <- las$`Short trips (n)` / las@data$All_All * 100
+
+```
+
+The unit of analysis for the national-level analysis was the Local Authority District (LAD), of which there are 324 in England. This is
+the highest geographical resolution for data that provides a breakdown
+of mode of travel to work by distance. As with the flow-level model,
+the analysis was undertaken using commuting data. This is the travel
+dataset with the highest geographical resolution and greatest response
+rate. Active travel patterns derived from commuting data at the this level also provides a reasonable
+proxy for personal travel overall. We began the analysis be revisiting
+the current rate of cycling, a vital starting point for understanding
+the future cycling potential.
+
+The spatial distribution of of commuter cycling across England
+is depicted in Fig. 1. The dataset shows that there is wide variation
+in the level of cycling, which can be split roughly into
+3 categories. In 135 LADs (42% of the total number and population)
+less than 2% of workers report cycling as their main means of travel
+to work. Nearly half (160) of the 324 LADs have an intermediate level
+of cycling, between 2 and 5%. 
+The remaining 29 LADs have what can be considered a high rate of
+cycling by English standards, of 5% of more. 
+This means that only around 10% of the population can be considered
+as living in areas where cycling is a normal mode of travel to work.
+8 of the 'high cycling' LADs are
+based in London.
+
+Given the wide range of current levels of cycling across England,
+it makes sense to allocate funding to each of the 3 types of
+Local Authority. Authorities with a high current level of cycling
+generally have a strong level of commitment to and community
+support for cycling. New infrastructure along key 'cycling desire lines'
+(e.g. as identified locally by the NPCT model) would likely
+attract the 'near market' for cycling in these areas.
+Areas with lower current levels of cycling will require greater
+emphasis on complementary behavioural interventions in order to maximise the
+value of infrastructure investement.
+
+
+
+```{r, echo=FALSE, fig.cap="The current level of cycling to work in England from the 2011 Census."}
+fixedBreaks = c(0,2,5,30)
+qtm(las, "pcycle", fill.style = "fixed",
+  fill.breaks = fixedBreaks, fill.title = "Percent cycling")
+```
+
+The next stage was to explore the correlates of cycling at the national
+level. As expected, the proportion of short-distance trips (below 5 km)
+was positively correlated with the rate of cycling (Fig. 2).
+This analysis provides a simple yet effective way to identify
+Local Authorities with a large unmet potential for cycling:
+areas with an unexpectedly low relatively low rate of cycling
+based on the high proportion of short-distance journey
+could see large shifts to cycling with appropriate policy interventions.
+
+The top 10 areas with the greatest unmet potential for cycling by
+this measure are, in descending order,
+Hastings, Blackburn with Darwen,
+Burnley,                      Chesterfield,
+Bradford,                     Oldham,
+Hartlepool,                   Torbay,
+Stoke-on-Trent  and             Calderdale.
+Each of these local authorities are represented by a blue circle in
+Fig. 2.
+
+```{r, echo=FALSE, fig.cap="Scatterplot illustrating the link between the proportion of commutes that are short and the proportion of commutes that are cycled."}
+lmod1 <- lm(pcycle ~ `Short trips (%)`, data = las@data)
+# summary(lmod1)
+sel <- c(which.min(lmod1$residuals), which.max(lmod1$residuals))
+sel2 <- head(order(lmod1$residuals), 10)
+sel3 <- tail(order(lmod1$residuals), 10)
+# las$NAME[sel3]
+# library(cowplot)
+ggplot(las@data, aes(`Short trips (%)`, pcycle)) + geom_point() +
+  geom_abline(intercept = -0.922, slope = 0.1092, col = "red") +
+  geom_text(data = las@data[sel,], aes(`Short trips (%)`, pcycle,  label = NAME)) +
+  geom_point(data = las@data[sel,], aes(`Short trips (%)`, pcycle), color = "red") +
+  geom_point(data = las@data[sel2,], aes(`Short trips (%)`, pcycle), shape = 1, size = 5, col = "blue") +
+  ylab("Level of cycling (%)")
+  # geom_line(aes(lmod1$fitted.values, `Short trips (%)`), col = "red")
+las$short_trip_residual <- lmod1$residuals
+# write.csv(las@data, "pct-bigdata/national/la-ttw-distance.csv")
+# This clear pattern The relationship between the average *length* of trips and the current ...
+```
+
+The analysis suggests that cycling interventions in
+such areas (with more than around 40% of trips being less than 5 km
+yet a low rate of cycling) could, if effective, yield a high return on investment. However, we note that the *cycling culture* of these areas is likely
+to be weak and this may take time and 'soft' policy interventions,
+in addition to high quality cycle infrastructure, to change.
+Also, the example of South Cambridgeshire, in which only 21%
+of commuting trips are 'short' yet the rate of cycling is high at
+7.7%, demonstrates that
+zones above the red line if Fig. 2 also have 
+a high potential for cycling to grow.
+
+```{r, echo=FALSE}
+# Add % of 'cyclable' trips by bike
+```
+
+
+Applying the flow-level model to flows with distance distributions
+representative of each authority allows for the scenarios described
+in section xx to be applied nationwide. The results are presented
+in Fig. 3 at the level of County and Unitary Authorities.
+Note that 'cycling potential' can be measured in
+absolute or proportional terms and that authorities with a higher
+population tend to have a higher absolute potential increase in cycling.
+The distinction is important when allocating funding.
+
+```{r, echo=FALSE, fig.cap="Potential growth in cycling at the level of highway authorities in England", message=FALSE}
+las$pcycle_cdp <- las$pcycle + las$pcycle_exp
+las$Bicycle_exp <- las$All_All * las$pcycle_exp / 1000
+fixedBreaks2 <- c(0,2,3,5)
+fixedBreaks3 <- c(0,2,3,5)
+
+library(rgdal)
+cuas <- raster::shapefile("pct-bigdata/national/cuas.shp")
+lasp <- rgeos::gCentroid(las, byid = T)
+ldf <- las@data
+output_data <- select(ldf, Bicycle_exp)
+lasp <- SpatialPointsDataFrame(lasp, output_data)
+library(sp)
+cuasp <- aggregate(lasp, cuas, FUN = sum)
+# head(cuasp)
+cuas$Bicycle_exp <- cuasp@data$Bicycle_exp
+qtm(cuas, "Bicycle_exp", fill.title = "Growth in commuter cyclists (n)")
+# cuas@data$CTYUA12NM[order(cuas@data$Bicycle_exp, decreasing = T)]
+output_data <- select(ldf, All_All)
+lasp <- SpatialPointsDataFrame(lasp, output_data)
+library(sp)
+cuasp <- aggregate(lasp, cuas, FUN = sum)
+# head(cuasp)
+cuas$All <- cuasp@data$All_All
+# summary(cuas$All)
+# summary(head(cuas@data$All[order(cuas@data$Bicycle_exp, decreasing = T)], 10))
+```
+
+A question related to funding is the level at which cycling
+investment will be allocated. If cycling policies are to form
+part of an integrated national transport strategy, it is recommended
+that funding for cycling is allocated at the level at which transport
+investment for other modes takes place. Currently this is the level
+of Combined and Unitary Authorities (CUAs) and, increasingly,
+Combined Authorities and Local Enterprise Partnerships (LEPs).
+CUAs with high unmet potential for cycling include
+Lancashire, Hampshire and Kent. Our analysis suggests that
+funding for cycling should move away from
+sporadic and time-limited city-by-city investment to
+a national-level strategy. Long-term funding for every Highway
+Authority dedicated to cycling will enable a joined-up
+and cost-effective cycling network to be created nationwide.
