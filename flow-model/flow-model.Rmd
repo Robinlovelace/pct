@@ -1,21 +1,66 @@
 ---
-title: 'The National Propensity to Cycle Tool: A generalisable flow-level model of
-  cycling uptake for sustainable transport planning'
+title:
+  "The National Propensity to Cycle Tool: A generalisable flow-level model of
+  cycling uptake for sustainable transport planning"
 header-includes: \usepackage{amsmath}
-output:
-  pdf_document:
-    fig_caption: yes
-    keep_tex: yes
-    number_sections: yes
-    toc: yes
-  html_document:
-    toc: yes
-  word_document:
-    fig_caption: yes
-bibliography: Transport.bib
+                 \usepackage{longtable}
+                 \usepackage{booktabs}
+author:
+  - name: Robin Lovelace
+  - name: Rachel Aldred
+  - name: Anna Goodman
+  - name: James Woodcock
+    
+affiliation:
+  - id: '1'
+    department: Consumer Data Research Centre, School of Geography
+    institution: University of Leeds
+    city: Leeds
+    state: West Yorkshire
+    country: UK
+output: rticles::els_article
+csl: elsevier-harvard.csl
+bibliography: ../documents/Transport.bib
 ---
 
 ```{r, echo=FALSE, include=FALSE}
+# output: word_document
+# author:
+#   - name: Robin Lovelace
+#     affiliation: '1'
+#   - name: Rachel Aldred
+#     affiliation: '2'
+#   - name: Anna Goodman
+#     affiliation: '3'
+#   - name: James Woodcock
+#     affiliation: '4'
+#     
+# affiliation:
+#   - id: '1'
+#     department: Consumer Data Research Centre, School of Geography
+#     institution: University of Leeds
+#     city: Leeds
+#     state: West Yorkshire
+#     country: UK
+#   - id: '2' 
+#     department: Dept/Program/Center
+#     institution: Institution Name
+#     city: City
+#     state: State
+#     country: Country
+#   - id: '3' 
+#     department: Dept/Program/Center
+#     institution: Institution Name
+#     city: City
+#     state: State
+#     country: Country
+#   - id: '4' 
+#     department: Dept/Program/Center
+#     institution: Institution Name
+#     city: City
+#     state: State
+#     country: Country
+# output: rticles::els_article
 if(grepl(pattern = "pct$", x = getwd())){
   setwd("documents")
 }
