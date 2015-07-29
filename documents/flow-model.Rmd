@@ -3,6 +3,8 @@ title: 'The National Propensity to Cycle Tool: A generalisable flow-level model 
   cycling uptake for sustainable transport planning'
 header-includes: \usepackage{amsmath}
 output:
+  word_document:
+    fig_caption: yes
   pdf_document:
     fig_caption: yes
     keep_tex: yes
@@ -10,8 +12,6 @@ output:
     toc: yes
   html_document:
     toc: yes
-  word_document:
-    fig_caption: yes
 bibliography: Transport.bib
 ---
 
@@ -50,16 +50,32 @@ assist with the global transition away from fossil fuels.
 # Introduction
 
 The National Propensity to Cycle Tool (NPCT) is
-an interactive map-based policy support application for
-developing transport policies, funded by the UK's Department
-for Transport (DfT). The NPCT will was originally designed for
+an interactive map-based 'planning support system' (PSS)
+[@Geertman2009]. As with previously documented online PSS, the NPCT
+provides a range of information to the user to enable evidence-based policy
+[@Pettit2013]. The NPCT differs from previous work, however, in its focus
+on sustainable transport, provision of data at the 'flow' and transport network
+level and provision of open-source code and open-access data to allow the
+model to be reconstructed by others. The NPCT is also, to the authors' knowledge,
+the first PSS to be developed that is focused on cycling.
+Uniquely, the NPCT provides a framework for
+developing various scenarios of cycling update at the local and 
+route level in response to acheiving national, regional or city-wide targets.
+Due to the open approach in model development the NPCT methodology can be
+replicated in many other locations worldwide. We therefore expect this article
+to be useful not only academically, in terms of development of a flow-level
+model for cycling and visualisation of the results, but also practically,
+for practitioners designing sustainable transport plans.
+
+The NPCT was funded by the UK's Department
+for Transport (DfT). As a result, the approach was originally designed for
 use by Local Authority transport planners
-to prioritise investment in cycling in England. However,
+to prioritise where to investment in cycling, down to the route level,
+across England. However,
 as we shall see, the tool has much wider potential applications.
-Funded by central government to assist local transport planning, the
-tool's main purpose
-is to help prioritise where to build new strategic cycle routes
-and related infrastructure at city and regional levels.
+The question of where to construct new strategic cycle routes
+and related infrastructure is a critical problem in transport planning which
+must be solved for cycling levels to soar [@Pucher2010].
 
 This paper describes the 'flow-level' model underlying the
 NPCT and explains some of the decisions that were made relating to
@@ -118,8 +134,9 @@ targeting of resources.
 # forms of transport such as the personal automobile.
 ```
 
-The model operates at the flow-level and, by aggregating
-data from these flows, at the level of geographic zones.
+By aggregating
+data from the flow level to geographic zones the model also enables areal-based
+planning (encouraging users to focus on particular zones rather than flows).
 A 'flow' in this context constitutes an origin-destination pair: the place where
 a trip begins and the destination where it ends. Flows therefore represent
 'desire lines', typically connecting residential origins with workplace,
@@ -164,7 +181,7 @@ Thus practitioners can further develop the model if they have the
 skills and time to do so, for example to add new explanatory variables
 specific to the local area. We plan to encourage a user community to
 build up around the tool and to create new versions for specific applications
-in Phase II of the project.
+in future versions of the NPCT.
 This could involve running training sessions for transport planners with
 programming experience.
 
@@ -186,16 +203,30 @@ flows derived from mobile telephone service providers
 public transport data [@Kitchin2013]; household
 travel surveys [@TransportforNSW2014];
 and census data on home and work locations [@Rae2009].
+
 We used Census 2011 data in the first instance due to their
 comprehensive coverage of the population,
 high geographic resolution and assurances surrounding
-data quality. Official datasets are available for commuting trips and in some cases education trips.
+data quality. Official datasets from which flows can be derived
+are available for commuting trips and in some cases education trips in
+many countries worldwide.
 In cases where no census data are available
 (e.g. in relation to shopping trips), some combination of the aforementioned
-alternative sources such as those derived from mobile telephones
-may be able to provide a reasonable approximation of real world travel  .
-Flow data are
-generally provided as a 'flow matrix' (with rows representing origins
+alternative sources
+may be able to provide a reasonable approximation of real world travel.
+
+With the rapid update of mobile telephones by populations worldwide, flows
+inferred from device-cell communications are particularly promising. Recent
+work has been able to accurately reconstruct travel flow patterns from millions
+of anonymous users, including inference of purpose of travel [@Alexander2015].
+If origin-destination flow estimates resulting from such datasets
+become more widely available to researchers, this could constitute one of the
+most single most valuable data sources for transport planners worldwide.
+Although mobile phone data does not provide information of mode of travel,
+inferring modal splits from smaller local surveys is a feasible alternative
+that would allow tools such as the NPCT to estimate where future demand is greatest.
+In any case, flow data are
+provided as a 'flow matrix' (with rows representing origins
 and columns destinations) or a longer table of origin-destination pairs.
 
 - *Geographical data* that provide the coordinates corresponding to the trip
@@ -264,18 +295,20 @@ in a region (for commuting in this case) in terms of 'desire lines' between
 hundreds of geographically dispersed origins and destinations.
 
 - `cents.geojson`, representing population-weighted centroids of local
-administrative zones. For Phase I of the NPCT we used Medium Super
-Output Areas (MSOAs) as both origins and destinations.
+administrative zones. We used the official 'Medium Super
+Output Areas' (MSOAs) zonal system for both origins and destinations.
 MSOAs are a geographic unit used for the release of
 statistical data (average population around 7,800 people).
 Other geographic levels can be used.
 
-In Phase II of the project we plan to
-explore using Lower
-Super Output Areas (LSOAs, average population of around 1,600) as the
-origins and Workplace Zones (WZ) as the destinations. Using different
-geographic units for the origins and destinations, as planned for
-Phase II, has two advantages: the centroids will is better-matched
+Future work will explore using small geographic units as the basis
+of the model. In England, for example,
+Lower Super Output Areas (LSOAs, average population of around 1,600) could
+be used as origins and Workplace Zones (WZ) could form the
+destinations.[See [ons.gov.uk/ons/guide-method/geography/products/census/lookup/index.html](http://www.ons.gov.uk/ons/guide-method/geography/products/census/lookup/index.html) for further details.]
+Using different
+geographic units for the origins and destinations has two major advantages:
+the centroids will be better-matched
 to actual workplace destinations and the direction of travel is clearer.
 The centroid data can either be extracted from
 boundary data (which finds the geographic centroid) or, if available,
@@ -325,9 +358,8 @@ or more regions.  To overcome this issue it is worth considering
 using more than one regional geography, as well as considering
 running at least one version of the model at the national level.
 Another solution to the problem of 'edge zones'
-is to create buffers around the the regions, which we have already
-implemented in the prototype for Phase I (as discussed below).
-We plan to test each of these options in Phase II, and ask
+is to create buffers around the the regions (as discussed below).
+We plan to test each of these options in future work, and ask
 practitioners for feedback on the advantages and disadvantages of each.
 
 ```{r, echo=FALSE}
@@ -341,46 +373,48 @@ are often made at the local level [@Gaffron2003]. At present, this
 primarily means at the level of local Highway Authorities, which
 generally have the same boundaries as County and Unitary Authorities (CUAs).
 There are 152 CUAs in England (some of which are illustrated in Fig. 2).
-We recommend these CUAs as the regional unit for Phase II of the
-project.^[Some work is required to ensure the compatibility of pre 2011
-and post 2011 codes.]
+We recommend using the geographical regions at which money is spent on
+transport as the regional level of analysis for future versions
+of the NPCT.
 
-As well as CUA level an increasing proportion of transport funding in
-England is also being allocated to Local Enterprise Partnerships (LEPs)
-and Combined Authorities (CAs) which are larger than, and often overlapping with, CUAs.
-Based on these insights, and feedback from practitioners, our
-recommendation for Phase II is to build the NPCT for every CUA in
-the nation and for selected LEPs and CAs where strategic
-cycling plans are being planned. These suggestions may change based on
-feedback from the Department for Transport.
-
-We will also explore the possibility of
-running the model at the national level. This would involve setting
-appropriate selection criteria to filter-out the majority of
-origin-destination pairs to avoid exceeding computational resources.
-The demarcation of regional boundaries is deemed useful for focusing
-on one region at a time.
-
-Phase I of the NPCT project focused instead on smaller administrative units:
-Local Authority Districts (LADs). There are 324 LADs across England.
-For the case study towns of Manchester and Coventry, the choice between
-CUA and LAD levels
-made no difference as LADs and CUAs have the same boundaries for these areas.
-For Norwich, however, the LAD is much smaller than the CUA and is less
-practical for strategic transport planning at the MSOA level (Fig. 2).
-For this reason
-we implemented a buffer selection methodology to expand the scope of the
-selection, as described in the next section. Before describing the
-buffer selection method, it is worth briefly considering some
-of the other regional geographies that could be used: Travel to Work Areas (TTWAs),
-which could be applicable in many contexts and Local Enterprise Partnerships
-(LEPs) which are specific to the UK context.
-
-TTWAs are 'commuting watersheds' that correspond to
-cohesive regions, the centres of which are known employment centres [@Coombes2008].
-Versions of the NPCT model developed for more scientific purposes would benefit
-from using TTWAs as the regional geography for local scenario development and
-visualisation.
+```{r, echo=FALSE}
+# As well as CUA level an increasing proportion of transport funding in
+# England is also being allocated to Local Enterprise Partnerships (LEPs)
+# and Combined Authorities (CAs) which are larger than, and often overlapping with, CUAs.
+# Based on these insights, and feedback from practitioners, our
+# recommendation for Phase II is to build the NPCT for every CUA in
+# the nation and for selected LEPs and CAs where strategic
+# cycling plans are being planned. These suggestions may change based on
+# feedback from the Department for Transport.
+# 
+# We will also explore the possibility of
+# running the model at the national level. This would involve setting
+# appropriate selection criteria to filter-out the majority of
+# origin-destination pairs to avoid exceeding computational resources.
+# The demarcation of regional boundaries is deemed useful for focusing
+# on one region at a time.
+# 
+# Phase I of the NPCT project focused instead on smaller administrative units:
+# Local Authority Districts (LADs). There are 324 LADs across England.
+# For the case study towns of Manchester and Coventry, the choice between
+# CUA and LAD levels
+# made no difference as LADs and CUAs have the same boundaries for these areas.
+# For Norwich, however, the LAD is much smaller than the CUA and is less
+# practical for strategic transport planning at the MSOA level (Fig. 2).
+# For this reason
+# we implemented a buffer selection methodology to expand the scope of the
+# selection, as described in the next section. Before describing the
+# buffer selection method, it is worth briefly considering some
+# of the other regional geographies that could be used: Travel to Work Areas (TTWAs),
+# which could be applicable in many contexts and Local Enterprise Partnerships
+# (LEPs) which are specific to the UK context.
+# 
+# TTWAs are 'commuting watersheds' that correspond to
+# cohesive regions, the centres of which are known employment centres [@Coombes2008].
+# Versions of the NPCT model developed for more scientific purposes would benefit
+# from using TTWAs as the regional geography for local scenario development and
+# visualisation.
+```
 
 ```{r cuas-lads, echo=FALSE, fig.cap="Local Authority District (LAD, above) and County and Unitary Authority (CUA, below) levels of transport planning. These are potential regional units for the National Propensity to Cycle Tool"}
 grid.raster(readPNG("../figures/cuas-las.png"))
@@ -393,11 +427,11 @@ travel network using the fastest cycling route possible.
 Flow-routes are used in the model but calculating them for
 the travel routes possible between all origin-destination pairs
 requires significant computational resources.
-For our NPCT Phase I model, the route allocation algorithm, implemented 'in the
+The route allocation algorithm, implemented 'in the
 cloud' by CycleStreets.net (an online routing service for
 planning cycle trips),
-is the major bottle-neck at present in terms of time required to run the model
-for a given region.  In order to reduce the time to add new regions
+is the bottle-neck at present in terms of time required to run the model
+for a given region at present.  In order to reduce the time to add new regions
 only a sub-sample of flow-lines for each region were used.
 We therefore sought to reduce the number of flows whilst retaining the overall
 travel pattern. The most straightforward way to do this is to only include
@@ -429,8 +463,8 @@ aribitraially ignoring all the MSOAs outside this region. If the region is a
 self-containted hub this does not present a major issue but if the region is part
 of a larger metripolitan district then there may be significat travel between zones
 inside the LAD and ones that have been cliped outside.
-In Phase II this will be solved by using larger regional units.
-For Phase I we created buffers around each region,
+In future work this will be solved by using larger regional units.
+To solve this problem for smaller regions we created buffers around each region,
 from which additional sampled additional
 zones are sampled. This sampling of additional zones within a buffer
 could be triggered if the number of zones falls below some threshold.
@@ -463,8 +497,6 @@ The output tab also communicates the results of the model,
 including key statistics, diagnostic plots and model-results on a per-region
 basis. This means that a different summary document is provided depending on
 which local authority the user is currently exploring.
-The complete model output document for Manchester is provided
-in Appendix X.
 
 ```{r, echo=FALSE, fig.cap="The Output Tab of the National Propensity to Cycle Tool"}
 grid.raster(readPNG("../figures/model-outpute.png"))
@@ -557,7 +589,7 @@ also estimates the proportion of commuters cycling to work among inhabitants in
 each area. Aggregating by destination would also allow an estimate of the
 number incoming cyclists per work destination, which would be useful for
 assessing features such as new cycling parking. In descending order of
-importance (in the UK context), the factors implemented in NPCT in Phase I were:
+importance (in the UK context), the factors implemented in NPCT were:
 
 - Distance between origins and destinations. This was calculated in the first
 instance as Euclidean (straight line) distance for filtering purposes using
@@ -574,7 +606,7 @@ to which vertical gradient along cycled routes is a disincentive to cycling.
 There are various ways to represent this information, ranging from the simple
 (e.g. the vertical displacement between origin and destination) to the
 complex (e.g. total amount of climb along the route network in both directions).
-In Phase I we started with a simple approach to demonstrate the importance of
+We started with a simple approach to demonstrate the importance of
 hilliness. This involved converting open digital elevation model (DEM)
 data from NASA into a measure of gradient and then aggregating this to
 the level of administrative
@@ -586,9 +618,9 @@ hilliness of origin and destination. This method has the disadvantage that it
 becomes far less accurate for longer journeys spanning many intermediate zones
 and is also less accurate for origin or destination zones with considerable
 internal variation in hilliness. We therefore plan to refine this method in
-Phase II.
+future work.
 
-For Phase II we will explore using additional explanatory variables to predict
+Additional explanatory variables can be included to predict
 cycling more accurately and to differentiate more finely between different types
 of area. We have data on the following variables and the impact of each on model
 fit will be explored (we will also explore additional variables for which we do
@@ -745,8 +777,8 @@ rate of cycling tend to see the greatest increase in cycling under the *cdp* sce
 At the heart of the *cdp* scenario is a regression model at
 the national level (labelled $natmod$) estimating
 the current proportion of trips by cycle by (*pcycle*).
-Route distance and hilliness at the national level were the explanatory variables
-in Phase I, although as explained above additional variables could easily added.
+Route distance and hilliness at the national level were the explanatory variables.
+As explained above, additional variables could easily added.
 The resulting national
 distance decay curve is then applied locally. The additional number of cyclists
 for each flow is calculated by multiplying the proportion expected for the
@@ -911,7 +943,7 @@ and females in the flow respectively.
 $tflow_m$ and $tflow_f$  are both available at the flow level in the 2011 Census,
 as is the total number of cyclists ($OLC$).  The proportion of cyclists who are male
 in each flow ($pmale_(cyclist)$) is not, however, available in the published 2011 datasets
-(although we intend to commission such tables for Phase II).
+(although we intend to commission such tables for future work).
 The smallest level at which the gender breakdown of cyclists is currently available
 is the zone level ('$pmale_{cyclist}(zone)$'), and we assume that all flows have
 this same proportion of male cyclists. This allows the estimation
@@ -997,7 +1029,7 @@ distance, with relatively few utility trips being made beyond around 15 km.
 Based on these insights, the essence of the 'Go Dutch' scenario
 (henceforth simply *dutch*) is the application of distance decay parameters
 found in the Netherlands to each flow in the study area.
-In Phase II we plan to refine this by also factoring in average differences in hilliness levels between England and the Netherlands, drawing on the work presented in Appendix XXpropensity.
+In future work we plan to refine this by also factoring in average differences in hilliness levels between England and the Netherlands
 
 ## Electric cycles
 
@@ -1006,22 +1038,20 @@ that is possible due the electric cycles (hence the scenario name, *ebike*).
 This is the most ambitious of the scenarios presented in this paper and it
 builds on 'Go Dutch', with Dutch model parameters.
 
-In Phase I this scenario is not fully implemented, and the
-results are merely illustrative.  At present, the results are
+The results are
 based on the decision to increase by a small amount the $\beta_1$ distance decay parameter,
 that corresponds to distance as a linear term.
 Specifically, we increased this value by 0.025, as we found
 this to be sufficiently small to avoid generating an
 implausibly high rate of cycling but sufficiently large to create a noticeable effect.
 This allows us to illustrate the type of output that will
-be possible in this model. In Phase II we will implement the
+be possible in this model. In future work we will implement the
 model fully by basing the changes to the distance decay
 parameters on real data from the Dutch National Travel Survey.
 Analysis of the influence of Ebikes on propensity to cycle
 (of people using both using
 ebikes and conventional bicycles) bikes in the Netherlands has
-was conducted as part of the Co-benefits model. See Appendix.xxx.
-
+was conducted as part of the Co-benefits model. 
 # Results
 
 To demonstrate
@@ -1123,8 +1153,7 @@ countries. This would depend on having appropriate flow data. As indicated
 above, the datasets required for the NPCT are increasingly available, from
 a range of sources.
 
-- Inter-regional and international comparisons of model results
-(see Appendix xx). This could
+- Inter-regional and international comparisons of model results. This could
 help answer long-standing questions such as: "do areas with the highest
 cycling potential receive the greatest amount of cycling investment?" and
 "is there a strong link between a country's propensity to cycle and actual
