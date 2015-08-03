@@ -1,30 +1,16 @@
 ---
 title:
-  "The National Propensity to Cycle Tool: A generalisable flow-level model of
-  cycling uptake for sustainable transport planning"
-header-includes: \usepackage{amsmath}
-                 \usepackage{longtable}
-                 \usepackage{booktabs}
-author:
-  - name: Robin Lovelace
-  - name: Rachel Aldred
-  - name: Anna Goodman
-  - name: James Woodcock
-    
-affiliation:
-  - id: '1'
-    department: Consumer Data Research Centre, School of Geography
-    institution: University of Leeds
-    city: Leeds
-    state: West Yorkshire
-    country: UK
-output: rticles::els_article
+  "The National Propensity to Cycle Tool: An open source online system for sustainable transport planning"
+output: word_document
 csl: elsevier-harvard.csl
 bibliography: ../documents/Transport.bib
 ---
 
 ```{r, echo=FALSE, include=FALSE}
 # output: word_document
+# header-includes: \usepackage{amsmath}
+#                  \usepackage{longtable}
+#                  \usepackage{booktabs}
 # author:
 #   - name: Robin Lovelace
 #     affiliation: '1'
@@ -105,7 +91,7 @@ model to be reconstructed by others. The NPCT is also, to the authors' knowledge
 the first PSS to be developed that is focused on cycling.
 Uniquely, the NPCT provides a framework for
 developing various scenarios of cycling update at the local and 
-route level in response to acheiving national, regional or city-wide targets.
+route level in response to achieving national, regional or city-wide targets.
 Due to the open approach in model development the NPCT methodology can be
 replicated in many other locations worldwide. We therefore expect this article
 to be useful not only academically, in terms of development of a flow-level
@@ -116,9 +102,8 @@ The NPCT was funded by the UK's Department
 for Transport (DfT). As a result, the approach was originally designed for
 use by Local Authority transport planners
 to prioritise where to investment in cycling, down to the route level,
-across England. However,
-as we shall see, the tool has much wider potential applications.
-The question of where to construct new strategic cycle routes
+across England. However, the tool has much wider potential applications:
+the question of where to construct new strategic cycle routes
 and related infrastructure is a critical problem in transport planning which
 must be solved for cycling levels to soar [@Pucher2010].
 
@@ -131,23 +116,6 @@ are widely available in many countries around the world.
 The model is implemented in R, a mature language for
 statistical computing. All of the code has been made available
 under the MIT license on the GitHub platform.^[See [github.com/npct/pct](https://github.com/npct/pct).]
-
-Because of the public funding, the focussed on the English context: a
-car-dependent nation with high potential for growth in cycling.
-(Note that many nations fit this description.)
-The methodology could be used to explore scenarios for active travel overall
-(walking and cycling) and the tool is extensible in many directions.
-In some ways it is worth thinking of the NPCT as a framework for developing
-interactive transport planning support tools for policy evaluation, the
-present case study of cycling in England being just one of many potential
-applications.
-Still, a number of the lessons learned throughout the
-development and user testing of the tool are generalisable internationally.
-Where applicable,
-these are discussed in relation to future research priorities. Indeed,
-one of the major motivations for writing this paper is to showcase the method
-for use by others to avoid 'reinventing the wheel' to solve such a ubiquitous
-and embedded problem as the unsustainability of current travel patterns.
 
 The NPCT model presented in this paper was deployed for three
 'pilot' cities which
@@ -188,12 +156,21 @@ a trip begins and the destination where it ends. Flows therefore represent
 educational or other destinations.
 The model takes the current rate of cycling and other variables per flow and uses
 this to simulate what the rate of cycling per flow could be
-under various future scenarios.
+under various future scenarios. Thus the model differs from previous approaches
+to modelling cycling potential.  @Parkin2008 used a similar regression-model
+approach at the areal level to predict the current level of cycling.
+In addition, local survey data identifying the origin of
+'potentially cyclable trips' but the travel corridors they are likely to take
+[@TfL2010].
 
-It is important to note that the models do not include the effects on
-cycling rates of specific policies, such as a particular piece of new
+It is important to note that, as with the previously mentioned models,
+the NPCT approach does not include the effects
+of specific policies, such as a particular piece of new
 infrastructure (although further work could explore adding such
-capability). Instead, the models allow  estimation of where new cycling
+capability), on the local level of cycling. The purpose of such 'meso scale'
+transport models in the context of active travel
+is primarily for strategic planning [@Moniruzzaman2012].
+Instead, the models allow  estimation of where new cycling
 trips are most likely to be generated given specific overall increases in
 cycling, such as a target level of cycling (typically measured as a
 proportion of all trips) being met.
@@ -483,10 +460,10 @@ travel pattern. The most straightforward way to do this is to only include
 flows that are used by a minimum number of commuters. The
 distribution of number of commuters per flow is highly
 skewed by high numbers of commuters using a few major 'commuter corridors',
-therfore a high proportion of commuters can be represented by
+therefore a high proportion of commuters can be represented by
 a relatively small proportion of flow-lines. In Manchester,
 for example, disregarding flow-lines with fewer than 30 commuters leaves
-15% of all possible orgin destination pairs but inclues almost 70% of commuters.
+15% of all possible origin destination pairs but includes almost 70% of commuters.
 The number 30 is a parameter that
 can be adjusted to reach a reasonable balance between
 comprehensive coverage on the one hand and being fast to save and load on the other.
@@ -498,16 +475,16 @@ on the route network.
 Although flow-lines are the unit of analysis for running the model,
 zones are the basic unit of visualisation of the results over geographic space.
 This is because we have represented the flows-lines from zone centroid to zone centroid
-due to how the data was strutured.
+due to how the data was structured.
 
 
 ## Zone Buffer
 
 As previously discussed selecting a Local Authority 'LAD' region means
-aribitraially ignoring all the MSOAs outside this region. If the region is a
-self-containted hub this does not present a major issue but if the region is part
-of a larger metripolitan district then there may be significat travel between zones
-inside the LAD and ones that have been cliped outside.
+arbitrarily ignoring all the MSOAs outside this region. If the region is a
+self-contained hub this does not present a major issue but if the region is part
+of a larger metropolitan district then there may be significant travel between zones
+inside the LAD and ones that have been clipped outside.
 In future work this will be solved by using larger regional units.
 To solve this problem for smaller regions we created buffers around each region,
 from which additional sampled additional
@@ -534,7 +511,7 @@ criteria mentioned above, without going through all the
 underlying code. This is can be done via the 'Model Output' tab (Fig. 3).
 This feature of the user interface serves three purposes:
 to show the underlying model to the users; to ensure transparency;
-and to give futher information to users.
+and to give further information to users.
 The tab was added in response to feedback during the user
 testing sessions, during which a number of transport
 planners had requested further information about the model.
@@ -1179,22 +1156,42 @@ grid.raster(readPNG("../figures/fast-quiet-man.png"))
 
 # Discussion
 
-The flexibility of the approach outlined in this paper ensures that it
-can be used in many different contexts. Because the underlying
+The flexibility of the NPCT methodology
+enables it to be used for applications that go far beyond those described
+in this paper. Because the underlying
 methods and computer code are transparent and open source, it is
-possible to use the NPCT as a foundation for further work. This flexibility
-has been demonstrated by the tool's ability to be deployed in any
+possible to use the NPCT as a platform for further research and planning
+applications. This flexibility
+has so far been demonstrated by the tool's ability to be deployed in any
 Local Authority (or other administrative area)
-in England for a range of cycling scenarios, with
-wide-ranging results that can be presented in many ways.
-The results demonstrate the utility of the tool for the cost-effective
-allocation of investment and local targeting of policies within
-a single country or region. Potential applications go far
-beyond re-running the model for different cities in the same country.
-Potential extensions of the model include:
+in England. Extensibility has been demonstrated by the addition of
+new scenarios of the futures and new features such as 'freeze scope'.
 
-- Deployment of the tool and underlying flow model in different
-countries. This would depend on having appropriate flow data. As indicated
+The results demonstrate the utility of online, interactive and open source
+web applications for cost-effective
+allocation of investment. User testing has indicated that the tool
+would be useful for setting local targeting or locally-specific policies within
+a single city, country or region. Minor modifications of the methods
+described in this paper could help determine the suitability of localised
+cycling targets, which have proliferated in recent years.^[For example, an official
+target to reach 10% of trips made by bicycle has been
+made by authorities in Dublin, Leicester and across
+all of Scotland over various time-scales [@Beatley2012]. A mode share of
+"20% by 2020" has been set for several cities including San Francisco and
+Orlando.]
+Moreover, as illustrated by the *cdp* scenario, the method can be used to
+translate national targets into national aspirations. With the NPCT tool,
+local transport planners can answer the question, "can cycling here be expected
+to surpass the national target of x% of trips by bike?"
+
+Potential applications go
+beyond these policy relevant near-tern applications which involved
+re-running slightly modified versions of the model for different localities.
+Wider extensions of the model that could build on the framework presented in this
+paper include:
+
+- Deployment of the NPCT for entire countries.
+This would depend on having appropriate flow data. As indicated
 above, the datasets required for the NPCT are increasingly available, from
 a range of sources.
 
@@ -1208,28 +1205,57 @@ rates of cycling?"
 groups and breakdown by currently dominant mode
 to enable more targeted cycling policies.
 
-- The addition of additional purposes of trips in the model.
-An 'education layer' would be our recommendation to prioritise
-in this area, based on the location of schools, and data
-on travel to school patterns from the Department of Education.
-(Note we would need to formally request data for this.)
-This could inform the construction of
-off-road 'cycle to school' networks.
+- Additional purposes of trips in the model.
+An 'education layer' would enable prioritisation of 'safe routes to school',
+building on methods analysing 'school commute' data [@Singleton2014a].
 
 - The extension of the tool to enable the estimation of cycling demand
 following new developments, such as high-density housing or a new
 school.
 
-Because the model is open source, others are free to take the tool and
-modify it for their own needs. We will actively encourage practitioners
+The NPCT's open source licence allows others to
+modify it for their own needs, for example to implement these extensions and
+others yet to be discovered. We actively encourage practitioners
 to modify the scenarios, input data and display of the results to suit
 local contexts. This could help to visualise city-level targets for
-the proportion cycling by a certain year, for example,
-which will vary considerably from place to place.
-It is hoped that an active user community will build up around the tool.
-This could enable transport planners to decide on and create
-the precise set of online tools that are
+the proportion cycling by a certain year and which
+which will vary considerably from place to place in ways not yet well understood.
+Modifying the code base would also allow transport planners
+to decide on and create the precise set of online tools that are
 that are most useful for their work.
+Building on participatory models at the macro-level [@Macmillan2014], extensions
+to the model could also include using the NPCT methodology to
+enable public engagement in the strategic planning process around active travel.
+
+The wide range of opportunities to extend the tool do not mean that the NPCT
+methodology can solve every urban mobility problem. Transport policy is a
+complex and contested field [@Banister2008].
+Therefore solutions to entrenched problems such as
+car over-dependence cannot be found solely by reliance on numerical models:
+policy, politics, leadership and vision are key ingredients for sustainable
+urban mobility that computer models cannot provide [@Melia2015a].
+
+A more specific limitation of the NPCT method is its lack of inclusion of
+cycle route quality. Recent advances in cycle path network measurement
+[@Joo2013]
+could allow route network data to be fed-into more sophisticated versions
+of the tool. However, we would argue that cycle path quality is not something
+that needs to be modelled at the meso-level in a tool such as the NPCT. The
+tool's niche is strategic planning for cycling uptake: once areas, travel
+corridors and road segments have been prioritised by the NPCT, it is up to
+local transport engineers to ensure that the quality of the new paths is sufficient.
+
+In the realm of geographically specific strategic transport planning
+the NPCT can be seen not only as a tool but as a framework.
+Under this interpretation the case study of cycling in England is
+just one of many potential applications.
+Still, a number of the lessons learned throughout the
+development and user testing of the tool are generalisable internationally.
+Where applicable,
+these are discussed in relation to future research priorities. Indeed,
+one of the major motivations for writing this paper is to showcase the method
+for use by others to avoid 'reinventing the wheel' to solve such a ubiquitous
+and embedded problem as the un-sustainability of current travel patterns.
 
 It is likely that future work will focus on enabling
 practitioners to add
@@ -1270,6 +1296,7 @@ file.copy("~/Documents/Transport.bib", "documents/Transport.bib", overwrite = T)
 # system("bibtool -x documents/flow-model.aux -o ~/Documents/Transport.bib")
 
 file.copy("documents/flow-model.docx", "~/Dropbox/DfT bid/Draft Writeups/Robin/flow-model.docx", overwrite = T)
+file.copy("flow-model/flow-model.docx", "~/Dropbox/DfT bid/Draft Writeups/Robin/flow-model.docx", overwrite = T)
 file.copy("documents/flow-model.pdf", "~/Dropbox/DfT bid/Draft Writeups/Robin/flow-model.pdf", overwrite = T)
 
 ```
