@@ -1,7 +1,9 @@
 ---
 title:
   "The National Propensity to Cycle Tool: An open source online system for sustainable transport planning"
-output: word_document
+output: 
+  word_document: 
+    fig_caption: yes
 csl: elsevier-harvard.csl
 bibliography: ../documents/Transport.bib
 ---
@@ -57,25 +59,33 @@ vapply(pkgs, require, character.only = T, FUN.VALUE = logical(1))
 
 # Abstract
 
-Increased cycling, as part of a wider sustainable mobility strategy, is an
+Encouraging cycling, as part of a wider sustainable mobility strategy, is an
 increasingly common objective in transport planning institutions worldwide.
-Emerging evidence illustrates that good cycling infrastructure
-is an effective way of promoting cycling. The fact that cycling infrastructure
-is highly localised means that
-there are many available options to choose from when planning, for example,
-new cycle paths. If new paths coincide with the areas and 'desire lines'
-of greatest latent demand, they will be highly cost-effective. Some paths,
-however, are constructed along corridors with little latent demand
-and have poor benefit-cost ratios. The National Propensity to Cycle Tool (NPCT)
-tackles this issue at the policy development stage by providing an
+Emerging evidence illustrates that high-quality infrastructure
+is an effective way of promoting cycling. To maximize the benefits of new
+infrastructure, it is important to build in the right places.
+Cycle paths, for example, will have the greatest impact if they built
+along 'desire lines' of greatest latent demand.
+The National Propensity to Cycle Tool (NPCT)
+has been developed to inform such decisions at the policy development stage.
+It does this by providing an 
 evidence-based support tool for the assessment of current and potential
 future distributions in cycling across cities and regions. This paper
 describes the development of the model underlying the NPCT and
-to explains how its open source code base
-can easily be used in new contexts. It was found that there is high demand
-for the NPCT to assist the decision making process around new transport
-infrastructure. We conclude that the method presented has the potential to
-assist with planning for cycling-dominated cities worldwide, which can help
+the application of this model to three cities in England.
+Origin-destination 'flow' data, combined with
+quantitative information about administrative zones,
+form the basis of the model, which estimates cycling potential as a function of
+route distance, hilliness and other factors at the flow and area level.
+Multiple scenarios were generated and interactively displayed, including
+'Government target', to double of cycling and a more ambitious
+‘Go Dutch’ scenario for envisioning a future in which people in England
+are as likely to cycle a given trip as people in the Netherlands.
+The model can be accessed at [geo8.webarch.net/master/](http://geo8.webarch.net/master/).
+This paper also explains how the model's open source code base
+allows the NPCT approach to be deployed in new contexts.
+We conclude that the method presented has the potential to assist
+with planning for cycling-dominated cities worldwide, which can help
 assist with the global transition away from fossil fuels.
 
 # Introduction
@@ -84,14 +94,37 @@ The National Propensity to Cycle Tool (NPCT) is
 an interactive map-based 'planning support system' (PSS)
 [@Geertman2009]. As with previously documented online PSS, the NPCT
 provides a range of information to the user to enable evidence-based policy
-[@Pettit2013]. The NPCT differs from previous work, however, in its focus
+[@Pettit2013]. The NPCT differs from previous work on PSS, however, in its focus
 on sustainable transport, provision of data at the 'flow' and transport network
-level and provision of open-source code and open-access data to allow the
-model to be reconstructed by others. The NPCT is also, to the authors' knowledge,
-the first PSS to be developed that is focused on cycling.
-Uniquely, the NPCT provides a framework for
-developing various scenarios of cycling update at the local and 
-route level in response to achieving national, regional or city-wide targets.
+level and provision of open source code and open-access data to allow the
+model to be reconstructed by others. The model is implemented in R, a mature language for
+statistical computing. All of the code has been made available
+under the MIT license on the GitHub platform.^[See [github.com/npct/pct](https://github.com/npct/pct).] The NPCT is,
+to the authors' knowledge,
+the first online PSS to be developed that is focused on cycling.
+
+An individual-level regression-based model described by @Zhang2014 provided
+a basis for prioritising investment in cycle paths at the city-level in Brazil.
+By allocating the results of this model to the route network via origin-destination
+commuter data, it became possible to identify routes with a
+"higher priority in the construction plan" [@Zhang2014]. Our model performs a
+similar function but provides a greater range of graphical and numerical
+outputs due to the flexible online interface.
+The model underlying the NPCT is based on flow data
+(which is more readily available than
+individual level data). This makes the approach highly scalable.
+Being based on open source software,
+which is gradually gaining traction in transport planning [@Tamminga2012;@novosel2015agent]
+the approach is also highly flexible and relatively easy to modify. The NPCT
+can thus be used basis for creating new cycling planning tools in diverse contexts
+and relying on multiple data inputs.
+
+Key to the NPCT's utility as a PSS for strategic sustainable transport planning
+is its ability to visualise various scenarios of cycling futures. The
+flow-level model described in the Methods section explains how these scenarios
+can be translated into flows at high geographical resolution and allocated to the
+route network. Scenarios can be based on nationa, regional or city-wide targets
+or alternative criteria, such as the outputs of an agent based model.
 Due to the open approach in model development the NPCT methodology can be
 replicated in many other locations worldwide. We therefore expect this article
 to be useful not only academically, in terms of development of a flow-level
@@ -106,16 +139,6 @@ across England. However, the tool has much wider potential applications:
 the question of where to construct new strategic cycle routes
 and related infrastructure is a critical problem in transport planning which
 must be solved for cycling levels to soar [@Pucher2010].
-
-This paper describes the 'flow-level' model underlying the
-NPCT and explains some of the decisions that were made relating to
-the data and methods that it uses.
-The model is open source and transparent,
-based on input datasets that
-are widely available in many countries around the world.
-The model is implemented in R, a mature language for
-statistical computing. All of the code has been made available
-under the MIT license on the GitHub platform.^[See [github.com/npct/pct](https://github.com/npct/pct).]
 
 The NPCT model presented in this paper was deployed for three
 'pilot' cities which
@@ -1107,9 +1130,14 @@ grid.raster(readPNG("../figures/man-nor-output.png"))
 The difference between the spatial distribution in cycling potential between
 the shorter-term Cycling Delivery Plan (*cdp*) and longer-term Go Dutch
 (*dutch*) scenarios is illustrated in Fig. 7. Note that the top 20 flows
-in Norwich under *cdp* assumptions is dominated by the current rate of cycling,
-whereas under *dutch* assumptions, the distribution shifts to flows that
-are more representative of short-distance flows in across the city overall.
+in Norwich under *cdp* assumptions are dominated by the current rate of cycling,
+with the highest flows projected to continue to be found towards the east of
+the city (this can be explained by the location of the Unviversity of
+East Anglia to the east of the city).
+Under *dutch* assumptions, by contrast,
+the pattern of cycling flows shifts substantially to the west.
+The cycling pattern under the *dutch* scenario
+are more representative of short-distance flows across the city overall.
 In both cases the flows are focused around Norwich city centre: the region
 has a mono-centric regional economy, making trips beyond around 5 km from the
 centre much less likely to be made by cycling.
