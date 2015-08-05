@@ -131,7 +131,7 @@ the first planning support system of any kind to focus explicitly on cycling.
 
 The PCT is a *strategic* transport planning tool.
 Its policy-relevance stems from its ability to develop, compare and visualise
-various scenarios of cycling futures at the city to national levels.
+various scenarios for cycling futures at the city to national levels.
 Unlike 'microscopic' transport
 models such as SUMO and PTV VISSIM, which simulate vehicular traffic in
 real time [@Behrisch2014;@Krajzewicz2014], the PCT is scalable
@@ -175,7 +175,7 @@ model also enables areal-based planning (encouraging users to focus on
 particular zones rather than flows). This inclusion of flow-level data is one
 important difference between PCT and previous approaches to modeling cycling
 potential. @Parkin2008, for example, used
-a multiple regression model to simulate cycling at
+a multiple regression model to estimate levels of commuter cycling at
 area level. Similarly local, survey data has been used to identify areas with
 high numbers of 'potentially cyclable trips' in London [@TfL2010].
 Neither analysis identified the travel corridors the simulated cycle trips
@@ -199,7 +199,7 @@ and relying on multiple data inputs.
 
 ```{r, echo=FALSE}
 # Key to the PCT's utility as a PSS for strategic sustainable transport planning
-# is its ability to visualise various scenarios of cycling futures. The
+# is its ability to visualise various scenarios for cycling futures. The
 # flow-level model described in the Methods section explains how these scenarios
 # can be translated into flows at high geographical resolution and allocated to the
 # route network. Scenarios can be based on national, regional or city-wide targets
@@ -262,11 +262,16 @@ and modify the PCT's underlying code base, however,
 through the project's online code repository.
 Thus practitioners can further develop the model if they have the
 skills and time to do so, for example to add new explanatory variables
-specific to the local area. We plan to encourage a user community to
-build up around the tool and to create new versions for specific applications
-in future versions of the PCT.
-This could involve running training sessions for transport planners with
-programming experience.
+specific to the local area. 
+
+```{r, echo=FALSE}
+# We plan to encourage a user community to
+# build up around the tool and to create new versions for specific applications
+# in future versions of the PCT.
+# This could involve running training sessions for transport planners with
+# programming experience.
+```
+
 
 All of the code underlying PCT has been made available open source under the
 MIT license on the GitHub platform.^[See
@@ -327,7 +332,7 @@ and columns destinations) or a longer table of origin-destination pairs.
 origins and destinations present in the flow data.
 At a bare minimum, this means the centroids of each zone in the study area, preferably weighted by population and/or work location.
 In addition to this, geographic variables could also include additional
-features of the urban environment that affect cyclists, such as
+features of the urban environment that affect cycling, such as
 hilliness or number of nodes on the public transport network.
 
 The flow model described in this paper can work for
@@ -452,7 +457,7 @@ or more regions.  To overcome this issue it is worth considering
 using more than one regional geography, as well as considering
 running at least one version of the model at the national level.
 Another solution to the problem of 'edge zones'
-is to create buffers around the the regions (as discussed below).
+is to create buffers around the regions (as discussed below).
 We plan to test each of these options in future work, and ask
 practitioners for feedback on the advantages and disadvantages of each.
 
@@ -464,12 +469,11 @@ practitioners for feedback on the advantages and disadvantages of each.
 
 In Britain, transport decisions (such as where to build new cycle routes)
 are often made at the local level [@Gaffron2003]. At present, this
-primarily means at the level of local Highway Authorities, which
+primarily means local Highway Authorities, which
 generally have the same boundaries as County and Unitary Authorities (CUAs).
 There are 152 CUAs in England (some of which are illustrated in Fig. 2).
-We recommend using the geographical regions at which money is spent on
-transport as the regional level of analysis for future versions
-of the PCT.
+The regions used as the building blocks of the PCT could adapt to
+reflect new funding structures.
 
 ```{r, echo=FALSE}
 # As well as CUA level an increasing proportion of transport funding in
@@ -611,7 +615,7 @@ greatest value of the PCT lies in its ability to represent different
 scenarios of change. Illustrations of how the number of cyclists using
 different flow-lines could shift in the future were
 described as 'very useful' for transport planning during user testing.
-In addition, the visualisation of different scenarios
+The visualisation of different scenarios
 enables 'visioning', an activity that has great potential
 to improve transport planning for sustainability [@Tight2011].
 
@@ -619,7 +623,7 @@ For all scenarios, except *gender equality*, a regression model was used
 to estimate the potential rate of cycling at the flow level. Place of
 home and work are geographical variables with a high degree of inertia,
 so we assumed these would remain constant under all scenarios.
-An exciting future direction of this research would involve
+An exciting future direction of this research would
 shift work and home locations, for example to reflect a more localised
 economy. This could provide insight into the impact of changing
 travel demand patterns on the potential rate of active travel in
@@ -667,6 +671,36 @@ using the base R function `glm`, which predicts $log(pcycle)$
 to account for the aforementioned exponential decay.^[See [github.com/npct/pct/blob/master/models/aggregate-model.R.](https://github.com/npct/pct/blob/master/models/aggregate-model.R).]
 
 # Model scenarios
+
+Three scenarios were implemented for the case study presented in this paper.
+The PCT allows different scenarios (e.g. generated by participatory modelling)
+to be used and scenarios should be modified to reflect local contexts.
+The scenarios were selected to allow transport planners to consider different
+possibilities for the future of cycling in England.
+In brief, these were:
+
+- Cycling Delivery Plan (*cdp*). Under this scenario 
+the level of cycling doubles. The *cdp* scenario represents
+a short-term vision for growing cycling.
+This scenario is closely tied to current propensities to cycle by age and gender, while other scenarios focus more on potential (based on trip characteristics).
+
+- Gender Equality (*gendereq*). This scenario assumes that in each flow the
+proportion of females cycling becomes the same as the proportion of males.
+In places where cycling is the norm, women are equally as likely to cycle
+as are men (Pucher et al 2010).
+*gendereq* illustrates the increase in cycling that
+would result from gender equality being reached in England.
+
+- Go Dutch (*dutch*).
+While *cdp* and *gendereq* are based on current cycling behaviour,
+the *dutch* scenario focuses on long-term potential.
+If English people had the same likelihood of cycling given trips
+(i.e. of the same distance and hilliness) as do the Dutch
+how would the rate and spatial distribution of cycling change?
+The Go Dutch scenario answers this question by applying Dutch
+distance decay curves to English travel patterns. 
+
+## Implementing the scenarios
 
 The model does not treat time
 as a continuous variable, instead providing 'snapshots' of future scenarios [@McCollum2009].
@@ -719,11 +753,13 @@ future work.
 
 Additional explanatory variables can be included to predict
 cycling more accurately and to differentiate more finely between different types
-of area. We have data on the following variables and the impact of each on model
-fit will be explored (we will also explore additional variables for which we do
-not yet have data in a suitable form for the model such as weather):
+of area. 
 
 ```{r, echo=FALSE}
+# We have data on the following variables and the impact of each on model
+# fit will be explored (we will also explore additional variables for which we do
+# not yet have data in a suitable form for the model such as weather):
+
 # - Gender balance. The remit for including this variable is that the male:female
 # ratio of cycle commuters is around 3:1 in the
 # UK;^[The mean proportion of males cycling to work from the 2011 census
@@ -744,37 +780,36 @@ not yet have data in a suitable form for the model such as weather):
 # - Gender. There is evidence that women are more put-off cycling
 # by poor transport infrastructure and heavy traffic than men, so this could be
 # linked to a measure of transport infrastructure quality.
+# - Weather. It rains in some places more than others and there is evidence
+# to suggest that this is a deterrent to cycling. This could be included with
+# reference to interpolated rasters of estimated rainfall.
+# 
+# - Age/occupational status. There is evidence that much of the uptake
+# in cycling in some
+# areas has been due to students and other mobile groups taking up cycling
+# when they move away from home. This could be represented in the model as
+# % of students or % of people between 16 and 30 in each area.
+# 
+# - Infrastructure quality. Preliminary tests with the commuting data suggest that
+# having a direct off-road path along the flow-line is a strong predictor of the
+# rate of cycling. This can be quantified in various ways, for example
+# via the 'quietness diversion factor' ($qdf$), the ratio
+# between the 'quietest' and the 'fastest' route calculated by CycleStreets.net ($qdf = d_{fast} / d_{quiet}$).
+# The inclusion of this variable per flow creates an opportunity
+# to estimate the short-term impacts of new or improved cycle provision,
+# up to the standard of a current average quieter route but along
+# a more direct route.
+# By setting $qdf$ to 1 (i.e. setting $d_{quiet} = d_{fast}$), the
+# increase in the number of cyclists using upgraded routes can be estimated.
+# An example in which the length of a quiet route is much further than
+# the fastest route (i.e. $qdf > 1.2$) is provided at the end of this
+# paper, in Fig. 9. Note that $qdf$ is different than
+# circuity ($q$), the diversion
+# from straight-line (Euclidean) distance as it approximates
+# represents *how much further* one must travel to use a quiet path.
+# Where $qdf$ is low, this means that the quiet routes are also the
+# most direct, which will likely encourage new cyclists.
 ```
-
-- Weather. It rains in some places more than others and there is evidence
-to suggest that this is a deterrent to cycling. This could be included with
-reference to interpolated rasters of estimated rainfall.
-
-- Age/occupational status. There is evidence that much of the uptake
-in cycling in some
-areas has been due to students and other mobile groups taking up cycling
-when they move away from home. This could be represented in the model as
-% of students or % of people between 16 and 30 in each area.
-
-- Infrastructure quality. Preliminary tests with the commuting data suggest that
-having a direct off-road path along the flow-line is a strong predictor of the
-rate of cycling. This can be quantified in various ways, for example
-via the 'quietness diversion factor' ($qdf$), the ratio
-between the 'quietest' and the 'fastest' route calculated by CycleStreets.net ($qdf = d_{fast} / d_{quiet}$).
-The inclusion of this variable per flow creates an opportunity
-to estimate the short-term impacts of new or improved cycle provision,
-up to the standard of a current average quieter route but along
-a more direct route.
-By setting $qdf$ to 1 (i.e. setting $d_{quiet} = d_{fast}$), the
-increase in the number of cyclists using upgraded routes can be estimated.
-An example in which the length of a quiet route is much further than
-the fastest route (i.e. $qdf > 1.2$) is provided at the end of this
-paper, in Fig. 9. Note that $qdf$ is different than
-circuity ($q$), the diversion
-from straight-line (Euclidean) distance as it approximates
-represents *how much further* one must travel to use a quiet path.
-Where $qdf$ is low, this means that the quiet routes are also the
-most direct, which will likely encourage new cyclists.
 
 Note that *total number of cycle trips* is not an explanatory variable on
 its own. This is because
@@ -813,7 +848,8 @@ proportion of trips made by cycling nationwide.
 distribution of potential cycling uptake in their publication of the scenario, and so we made our own
 assumptions about this (see next paragraph) and investigated their implications.
 The *cdp* scenario should help
-transport planners identify where new demand for cycling is likely to be greatest.
+transport planners identify where new demand for cycling is likely to be
+greatest in the near term.
 
 In line with the target set out in the draft Cycling Delivery Plan, the *cdp* scenario
 seeks to approximate the geographic distribution of growth in cycling
@@ -871,9 +907,9 @@ rate of cycling tend to see the greatest increase in cycling under the *cdp* sce
 # ```
 ```
 
-At the heart of the *cdp* scenario is a regression model at
-the national level (labelled $natmod$) estimating
-the current proportion of trips by cycle by (*pcycle*).
+At the heart of the *cdp* scenario is the previously discussed
+regression model (labelled $natmod$) estimating
+the dependent variable (*pcycle*).
 Route distance and hilliness at the national level were the explanatory variables.
 As explained above, additional variables could easily added.
 The resulting national
@@ -1180,7 +1216,7 @@ grid.raster(readPNG("../figures/man-nor-output.png"))
 ```
 
 The difference between the spatial distribution in cycling potential between
-the shorter-term Cycling Delivery Plan (*cdp*) and longer-term Go Dutch
+the Cycling Delivery Plan (*cdp*) and Go Dutch
 (*dutch*) scenarios is illustrated in Fig. 7. Note that the top 20 flows
 in Norwich under *cdp* assumptions are dominated by the current rate of cycling,
 with the highest flows projected to continue to be found towards the east of
@@ -1216,10 +1252,15 @@ illustrates the route with the highest cycling potential under the
 distance of 2.8 km (as shown by clicking on the line). The 'fastest'
 route is more direct (with a route distance of 2.3 km) but it passes
 along Trinity Way (the A6042), a busy dual carriage way.
-Dutch evidence suggests that cyclists will not divert to a route which
+The PCT (with the 'Straight Lines' option) tells us that Euclidean distance
+associated with this flow is 1.6 km, resulting in cirquity values of
+1.44 and 1.75 for 'fast' and 'quiet' routes respectively.
+
+Dutch evidence suggests that cyclists are generally unwilling to
+divert to a route which
 is more than about 1.4 to 1.5 times the length of the
-'crow-flies' Euclidean distance (defined as $q$ above),
-and that the target "for cycle provision should be 1.2".^[Reference: 'Design manual for bicycle traffic', CROW, 2007.]
+'crow-flies' Euclidean distance (defined as $q$ above)
+and that the target "for cycle provision should be 1.2" [@crow2007].
 This suggests that high quality cycle infrastructure along the Trinity Way route
 would be much better used by commuters than an
 alternative quiet route that diverges greatly from the shortest path.
@@ -1233,7 +1274,6 @@ groups who currently cycle the least.
 grid.raster(readPNG("../figures/fast-quiet-man.png"))
 ```
 
-
 # Discussion
 
 The flexibility of the PCT methodology
@@ -1245,7 +1285,9 @@ applications. This flexibility
 has so far been demonstrated by the tool's ability to be deployed in any
 Local Authority (or other administrative area)
 in England. Extensibility has been demonstrated by the addition of
-new scenarios of the futures and new features such as 'freeze scope'.
+new scenarios. Three user testing sessions have helped identify shorter-term
+changes to the interface (such as 'freeze scope') and longer-term needs
+(such as the use of additional data sources).
 
 The results demonstrate the utility of online, interactive and open source
 web applications for cost-effective
@@ -1260,9 +1302,7 @@ all of Scotland over various time-scales [@Beatley2012]. A mode share of
 "20% by 2020" has been set for several cities including San Francisco and
 Orlando.]
 Moreover, as illustrated by the *cdp* scenario, the method can be used to
-translate national targets into national aspirations. With the PCT tool,
-local transport planners can answer the question, "can cycling here be expected
-to surpass the national target of x% of trips by bike?"
+translate national targets into national aspirations.
 
 Potential applications go
 beyond these policy relevant near-tern applications which involved
@@ -1282,7 +1322,8 @@ cycling potential receive the greatest amount of cycling investment?" and
 rates of cycling?"
 
 - The extension of the model to cover different demographic
-groups and breakdown by currently dominant mode
+groups. This would enable the use of new factors,
+such as socio-economic status, within scenario assumptions,
 to enable more targeted cycling policies.
 
 - Additional purposes of trips in the model.
@@ -1304,7 +1345,7 @@ Modifying the code base would also allow transport planners
 to decide on and create the precise set of online tools that are
 that are most useful for their work.
 Building on participatory models at the macro-level [@Macmillan2014], extensions
-to the model could also include using the PCT methodology to
+to the model could include using the PCT methodology to
 enable public engagement in the strategic planning process around active travel.
 
 The wide range of opportunities to extend the tool do not mean that the PCT
@@ -1347,19 +1388,25 @@ creation and visualisation of evidence-based scenarios about change in travel
 behaviour, the PCT methodology can empower transport decision-makers across
 England and beyond to
 supplement their own understandings of where need for new infrastructure is
-greatest. By indicating where investment could be most cost-effective,
-the PCT methodology and interactive planning tool will also help to
+greatest. By indicating routes where investment could be most cost-effective,
+the PCT methodology and interactive planning tool will help to
 build business cases for further investment and policy change.
-Careful allocation of resources is critical for creating
-highly cost-effective interventions, with benefit-cost ratios
-in double figures. Such targetted interventions are
-critical to ensure a long-term transition away from the private car and
-towards a more sustainable and healthy transport system.
+The methods and applications
+presented in this paper can help to help prioritise high-quality
+and well targetted infastructure interventions as part of a wider shifts in
+transport policies. Thus tools such as the PCT can play a role
+in the long-term transition away from the private car and towards
+more sustainable and healthy transport systems.
 
 # Acknowledgements:
 
 We would like to thank the following people for comments on earlier versions of the report and the direction of the flow-level model:
 Roger Geffen, Ian Philips and John Parkin.
+Thanks to Simon Nutall and Martin Lucas-Smith for access to and instructions
+on the use of the CycleStreets.net API.
+We would also like to thank all
+participants in the user testing sessions and our funders the Department for
+Transport.
 
 ```{r, echo=FALSE}
 # # Using the tool
