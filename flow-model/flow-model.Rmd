@@ -117,13 +117,17 @@ spent effectively.
 
 The Propensity to Cycle Tool (PCT)
 an interactive map-based 'planning support system'
-[@Geertman2009]. As with such previously documented online systems, the PCT
-provides a range of information to the user to enable evidence-based policy
-[@Pettit2013]. The PCT differs from previous work, however:
-in the method's focus on future scenarios of active travel;
-in its estimation and visualisation of information at three levels
-(at the zone, 'desire line' and transport network level);
-and in its use of open source code and open access data.
+[@Geertman2009]. As with such previously documented online systems [e.g. @CPE:CPE3282],
+the PCT
+provides a range of information to the user to inform evidence-based policy
+[@Pettit2013]. The PCT differs from previous planning support systems, in its:
+
+- Focus on future scenarios of active travel.
+- Estimation and visualisation of information at
+the zone and 'desire line' level.
+- Route-allocation of flows, enabling specific routes to be identified
+for improvement.
+
 The open approach to model development is key to the utility of the PCT,
 enabling it to be readily recreated by others in new contexts.
 The PCT is, to our knowledge,
@@ -651,21 +655,23 @@ grid.raster(readPNG("../figures/log-sqrt-params.png"))
 The gradual decline of
 $pcycle$ with increasing distance results in a 'long tail' distribution,
 typical of exponential decay. Thus we estimated
-the $log$ of $pcycle$ rather than $pcycle$ directly. Also, to avoid
-estimates that are above 1 or below zero, we applied a *logit link*
-to the model to improve model fit. We also included hilliness as an
+the $log$ of $pcycle$ rather than $pcycle$ directly.
+We also included hilliness as an
 independent variable as this will impact on cycling rates.
-The formula chosen to model the data with was:
+The formula chosen was:
 
 $$
-pcycle = \alpha + \beta_1 d + \beta_2 d^{0.5} + \theta H,
+log(pcycle) = \alpha + \beta_1 d + \beta_2 d^{0.5} + \theta H,
 $$
 
 where $d$ is distance (km, route distance) and
-$H$ is the hilliness (described below) per flow.
+$H$ is the hilliness (average angular degrees of origin and destination zones)
+per flow. The remaining values are scalar
+coefficients to be estimated.
 $\alpha$ represents the intercept (the rate of cycling very short
-trips), $\beta_1$ and $\beta_2$ represent the rate of distance decay
-and $\theta$ represents the impact of hilliness on cycling.
+trips). $\beta_1$ (which must be negative for $pcycle$ to tend to zero as
+distance tends to infinity) and $\beta_2$ represent the rate of distance decay.
+$\theta$ represents the impact of hilliness on cycling.
 A 'quasipoisson' general linear model was used to implement this formula
 using the base R function `glm`, which predicts $log(pcycle)$
 to account for the aforementioned exponential decay.^[See [github.com/npct/pct/blob/master/models/aggregate-model.R.](https://github.com/npct/pct/blob/master/models/aggregate-model.R).]
@@ -753,7 +759,9 @@ future work.
 
 Additional explanatory variables can be included to predict
 cycling more accurately and to differentiate more finely between different types
-of area. 
+of area. Note that *pcycle* was used instead of the total number of commuter
+cyclists as the dependent variable because it's
+large variations in the absolute flow by all modes.
 
 ```{r, echo=FALSE}
 # We have data on the following variables and the impact of each on model
@@ -810,12 +818,6 @@ of area.
 # Where $qdf$ is low, this means that the quiet routes are also the
 # most direct, which will likely encourage new cyclists.
 ```
-
-Note that *total number of cycle trips* is not an explanatory variable on
-its own. This is because
-the dependent variable includes cycling by using
-the *proportion* of those who cycle. This measure, labelled $pcycle$,
-is robust to large variations in the absolute flow by all modes.
 
 ```{r, echo=FALSE}
 # ## Baseline
