@@ -1,15 +1,52 @@
 ---
 title:
   "The Propensity to Cycle Tool: An open source online system for sustainable transport planning"
-output: 
-  word_document: 
-    fig_caption: yes
+header-includes: \usepackage{amsmath}
+                 \usepackage{longtable}
+                 \usepackage{booktabs}
+author:
+  - name: Robin Lovelace
+    affiliation: '1'
+  - name: Rachel Aldred
+    affiliation: '2'
+  - name: Anna Goodman
+    affiliation: '3'
+  - name: James Woodcock
+    affiliation: '4'
+    
+affiliation:
+  - id: '1'
+    department: Consumer Data Research Centre, School of Geography
+    institution: University of Leeds
+    city: Leeds
+    state: West Yorkshire
+    country: UK
+  - id: '2' 
+    department: Dept/Program/Center
+    institution: Institution Name
+    city: City
+    state: State
+    country: Country
+  - id: '3' 
+    department: Dept/Program/Center
+    institution: Institution Name
+    city: City
+    state: State
+    country: Country
+  - id: '4' 
+    department: Dept/Program/Center
+    institution: Institution Name
+    city: City
+    state: State
+    country: Country
+output: rticles::els_article
 csl: elsevier-harvard.csl
 bibliography: ../documents/Transport.bib
 ---
 
 ```{r, echo=FALSE, include=FALSE}
 # output: word_document
+    # fig_caption: yes
 # header-includes: \usepackage{amsmath}
 #                  \usepackage{longtable}
 #                  \usepackage{booktabs}
@@ -661,7 +698,7 @@ independent variable as this will impact on cycling rates.
 The formula chosen was:
 
 $$
-log(pcycle) = \alpha + \beta_1 d + \beta_2 d^{0.5} + \theta H,
+log(pcycle) = \alpha + \beta_1 d + \beta_2 d^{0.5} + \theta H
 $$
 
 where $d$ is distance (km, route distance) and
