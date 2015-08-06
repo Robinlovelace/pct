@@ -1,45 +1,19 @@
 ---
 title:
   "The Propensity to Cycle Tool: An open source online system for sustainable transport planning"
+output: 
+  pdf_document: 
+    fig_caption: yes
+    number_sections: yes
+    toc: yes
 header-includes: \usepackage{amsmath}
                  \usepackage{longtable}
                  \usepackage{booktabs}
-author:
-  - name: Robin Lovelace
-    affiliation: '1'
-  - name: Rachel Aldred
-    affiliation: '2'
-  - name: Anna Goodman
-    affiliation: '3'
-  - name: James Woodcock
-    affiliation: '4'
-    
-affiliation:
-  - id: '1'
-    department: Consumer Data Research Centre, School of Geography
-    institution: University of Leeds
-    city: Leeds
-    state: West Yorkshire
-    country: UK
-  - id: '2' 
-    department: Dept/Program/Center
-    institution: Institution Name
-    city: City
-    state: State
-    country: Country
-  - id: '3' 
-    department: Dept/Program/Center
-    institution: Institution Name
-    city: City
-    state: State
-    country: Country
-  - id: '4' 
-    department: Dept/Program/Center
-    institution: Institution Name
-    city: City
-    state: State
-    country: Country
-output: rticles::els_article
+author: 
+  - Robin Lovelace
+  - Anna Goodman
+  - Rachel Aldred
+  - James Woodcock
 csl: elsevier-harvard.csl
 bibliography: ../documents/Transport.bib
 ---
