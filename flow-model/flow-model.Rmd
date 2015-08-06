@@ -107,12 +107,14 @@ would otherwise be totally dependent on motorised modes or
 other people [@Aldred2008].
 Mounting evidence external costs associated with car-dominated
 transport systems [@Newman1999;@Han2008;@Mizutani2011;@Shergold2012]
-and the benefits of active travel [@Oja2011;@Saunders2013;@DeNazelle2011]
+and the benefits of cycling [@Oja2011;@Woodcock2013;@DeNazelle2011]
 has pushed cycling up the
 transport agenda.
 Cycling is no longer regarded as a fringe mode of transport, as
 illustrated, for example, by the global
 proliferation of publicly subsidized 'bike share' schemes [@OBrien2014a].
+Emerging evidence illustrates that high-quality infrastructure
+is an effective way of promoting cycling [@Heinen2015].
 
 Within this fast-moving policy context,
 the question of where to construct new strategic cycle routes
@@ -133,7 +135,7 @@ the PCT
 provides a range of information to the user to inform evidence-based policy
 [@Pettit2013]. The PCT differs from previous planning support systems, in its:
 
-- Focus on future scenarios of active travel.
+- Focus on future scenarios of cycling.
 - Estimation and visualisation of information at
 the zone and 'desire line' level.
 - Route-allocation of flows, enabling specific routes to be identified
@@ -146,7 +148,7 @@ the first planning support system of any kind to focus explicitly on cycling.
 
 The PCT is a *strategic* transport planning tool.
 Its policy-relevance stems from its ability to develop, compare and visualise
-various scenarios for cycling futures at the city to national levels.
+various scenarios for cycling futures at city to national levels.
 Unlike 'microscopic' transport
 models such as SUMO and PTV VISSIM, which simulate vehicular traffic in
 real time [@Behrisch2014;@Krajzewicz2014], the PCT is scalable
@@ -155,7 +157,7 @@ On the other hand, the PCT is also able to estimate cycling potential at
 relatively fine-grained (and flexible) levels of geographic resolution
 in contrast to 'macroscopic' transport models [e.g. @Kolosz2013].
 Instead, the PCT operates at the 'meso scale', an appropriate
-level active travel planning [@Moniruzzaman2012]. 
+level for active travel planning [@Moniruzzaman2012]. 
 
 Unlike @McCollum2009 and other national-level scenario-based approaches,
 the PCT allows estimation of where new cycling trips are most likely to
@@ -180,13 +182,15 @@ cycle trips plausibly occur?
 This ability to model propensity to at the flow-level is one important,
 and novel, feature of the PCT.
 A 'flow' in this context constitutes an origin-destination pair: the place where
-a trip begins and the destination where it ends. Flows therefore represent 'desire lines',
+a trip begins and the destination where it ends.
+Flows therefore represent 'desire lines' --- the straight lines connecting
+places where people want to travel [@Chan2003] ---
 typically connecting residential origins with workplace, educational or other
 destinations. As described below in more detail, the model takes the current
 rate of cycling and other variables per flow and uses this to simulate what
 the rate of cycling per flow could be under various future scenarios.
 By aggregating data from the flow level to geographic zones, the PCT
-model also enables areal-based planning (encouraging users to focus on
+model also enables area-based planning (encouraging users to focus on
 particular zones rather than flows). This inclusion of flow-level data is one
 important difference between PCT and previous approaches to modeling cycling
 potential. @Parkin2008, for example, used
@@ -271,7 +275,7 @@ users interact with visualisations of the model output.  This makes the user
 interface more accessible, and the pre-calculation of outputs
 also means that the interface is fast and responsive.
 To ensure the model is accessible, the
-user is not required to perform any model parameters to interact with
+user is not required to specify any model parameters to interact with
 the PCT. Advanced users are free to analyse and
 and modify the PCT's underlying code base, however,
 through the project's online code repository.
@@ -329,7 +333,13 @@ In cases where no census data are available
 alternative sources
 may be able to provide a reasonable approximation of real world travel.
 
-With the rapid update of mobile telephones by populations worldwide, flows
+In practice a variety of data sets may work best when combined.
+Individual and areal data, for example, can be combined for transport
+planning purposes using spatial microsimulation [@Lovelace2014-jtg].
+Even when travel survey data contains geographical information,
+sample sizes are generally comparatively small, less than 1% of the population.
+This limits the use of travel surveys for geographical modelling. 
+With uptake of mobile telephones by populations worldwide, flows
 inferred from device-cell communications are particularly promising. Recent
 work has been able to accurately reconstruct travel flow patterns from millions
 of anonymous users, including inference of purpose of travel [@Alexander2015].
@@ -337,7 +347,7 @@ If origin-destination flow estimates resulting from such datasets
 become more widely available to researchers, this could constitute one of the
 most single most valuable data sources for transport planners worldwide.
 Although mobile phone data does not provide information of mode of travel,
-inferring modal splits from smaller local surveys is a feasible alternative
+inferring modal splits from travel surveys is a feasible alternative
 that would allow tools such as the PCT to estimate where future demand is greatest.
 In any case, flow data are
 provided as a 'flow matrix' (with rows representing origins
@@ -482,13 +492,13 @@ practitioners for feedback on the advantages and disadvantages of each.
 # In Phase I of the work to implement the PCT for the UK we used LADs, then switched to CUAs after user testing.  TTWs also possible, and in the long term perhaps LEPS.  Our recommendation is to build it at the CUA level
 ```
 
-In Britain, transport decisions (such as where to build new cycle routes)
-are often made at the local level [@Gaffron2003]. At present, this
-primarily means local Highway Authorities, which
-generally have the same boundaries as County and Unitary Authorities (CUAs).
-There are 152 CUAs in England (some of which are illustrated in Fig. 2).
-The regions used as the building blocks of the PCT could adapt to
-reflect new funding structures.
+Transport decisions (such as where to build new cycle routes)
+are often made at the local level [@Gaffron2003]. In England this
+often means local Highway Authorities, which
+operate have a slightly different geography than the more commonly used
+LAD divisions (Fig. 2).
+The regions used as the building blocks of the PCT can adapt to
+reflect either, or alternative, funding structures.
 
 ```{r, echo=FALSE}
 # As well as CUA level an increasing proportion of transport funding in
@@ -560,8 +570,10 @@ can be adjusted to reach a reasonable balance between
 comprehensive coverage on the one hand and being fast to save and load on the other.
 Setting the maximum Euclidean distance is another way to reduce the number of
 flow-lines, and this can be done in conjunction with setting a maximum number of commuters.
-We used a maximum value of 15km Euclidean distance which roughly translates to 20km
-on the route network.
+We used a maximum value of 15 km Euclidean distance which translates to around 20 km
+on the route network (assuming a circuity value of 1.3).
+From the National Travel Survey, only 1.1% of
+cycle commutes were found to exceed this distance.
 
 Although flow-lines are the unit of analysis for running the model,
 zones are the basic unit of visualisation of the results over geographic space.
@@ -638,13 +650,11 @@ For all scenarios, except *gender equality*, a regression model was used
 to estimate the potential rate of cycling at the flow level. Place of
 home and work are geographical variables with a high degree of inertia,
 so we assumed these would remain constant under all scenarios.
-An exciting future direction of this research would
+Future research could explore the impacts of
 shift work and home locations, for example to reflect a more localised
 economy. This could provide insight into the impact of changing
-travel demand patterns on the potential rate of active travel in
-different areas. This section describes the regression model
-and how it was used to generate geographically-specific scenarios
-of transport futures.
+travel demand patterns on the potential rate of cycling in
+different areas.
 
 The regression model operates at the *flow* level and
 seeks to explain the current level of cycling.
@@ -654,10 +664,8 @@ linking the *explanatory variables* described above to the *dependent variable*:
 the proportion of trips made by cycling per flow ($pcycle$). Central to the
 model is *distance decay*, which describes the (non-linear) relationship
 between the distance of a trip and the probability of it being made by cycling.
-After trying various functional forms on various flow datasets,
-we found that the distance decay
-curve displayed in Fig. 4, and variations thereof,
-seemed to fit the data well.
+The distance decay
+curve displayed in Fig. 4, based on equation x, was used.
 
 ```{r, echo=FALSE, fig.cap="The distance decay curve resulting from the log-square-root function. The green lines represent increases of 0.25 times original parameter values (obtained by running the model on data from the 2011 Census for Manchester) and the red lines represent -0.1 times the original value."}
 grid.raster(readPNG("../figures/log-sqrt-params.png"))
@@ -690,29 +698,33 @@ to account for the aforementioned exponential decay.^[See [github.com/npct/pct/b
 # Model scenarios
 
 Three scenarios were implemented for the case study presented in this paper.
-The PCT allows different scenarios (e.g. generated by participatory modelling)
+The PCT allows different scenarios
 to be used and scenarios should be modified to reflect local contexts.
 The scenarios were selected to allow transport planners to consider different
 possibilities for the future of cycling in England.
 In brief, these were:
 
-- Cycling Delivery Plan (*cdp*). Under this scenario 
-the level of cycling doubles. The *cdp* scenario represents
-a short-term vision for growing cycling.
-This scenario is closely tied to current propensities to cycle by age and gender, while other scenarios focus more on potential (based on trip characteristics).
+- Cycling Delivery Plan (*cdp*). Under this scenario the level of cycling doubles,
+in-line with government targets. This scenario represents a near-term vision:
+a substantial relative increase in cycling. In absolute terms cycling would
+remain low relative to high cycling nations such as the Netherlands.
+The scenario assumes new cycle trips are generated
+in addition current trips. The scenario implies that
+existing inequalities in cycling by area and by demographics are reduced
+but not overcome.
 
 - Gender Equality (*gendereq*). This scenario assumes that in each flow the
-proportion of females cycling becomes the same as the proportion of males.
+proportion of female cycle commuters becomes the same as the proportion of males.
 In places where cycling is the norm, women are equally as likely to cycle
 as are men (Pucher et al 2010).
 *gendereq* illustrates the increase in cycling that
-would result from gender equality being reached in England.
+would result from gender-equal propensity to cycle in England.
 
 - Go Dutch (*dutch*).
-While *cdp* and *gendereq* are based on current cycling behaviour,
+While *cdp* and *gendereq* build on current cycling behaviour,
 the *dutch* scenario focuses on long-term potential.
 If English people had the same likelihood of cycling given trips
-(i.e. of the same distance and hilliness) as do the Dutch
+(i.e. of the same distance and hilliness) as the Dutch do, then
 how would the rate and spatial distribution of cycling change?
 The Go Dutch scenario answers this question by applying Dutch
 distance decay curves to English travel patterns. 
@@ -762,11 +774,9 @@ zones.^[The
 average gradient of the administrative zones was
 data from the Shuttle Radar Topography Mission (SRTM), collected by the National Aeronautics and Space Administration (NASA) and provided for public download by the Consultative Group on International Agricultural Research (CGIAR - see http://srtm.csi.cgiar.org/). "Version 4" of the dataset was used. At the equator, this has a resolution of 90m. Across the UK, the average resolution of the raster, converted to the OSGB1936 Coordinate Reference System (CRS) is 56.5 m along the east-west axis 92.6 m along the north-south axis. To convert the elevation data into a gradient in degrees for each raster cell the function 'terrain' from R's 'raster' package was used which implements the algorithm of Horn (1981). To geographically aggregate these values to find the average gradient per LSOA zone the function 'extract' was used, also from the raster package.]
 To allocate this area-based hilliness metric to flows, we calculated the average
-hilliness of origin and destination. This method has the disadvantage that it
-becomes far less accurate for longer journeys spanning many intermediate zones
-and is also less accurate for origin or destination zones with considerable
-internal variation in hilliness. We therefore plan to refine this method in
-future work.
+hilliness of origin and destination zones. This method has the disadvantage that
+accuracy decreases with increased trip distance.
+Future work should refine the treatment of hilliness in the PCT.
 
 Additional explanatory variables can be included to predict
 cycling more accurately and to differentiate more finely between different types
@@ -781,7 +791,7 @@ large variations in the absolute flow by all modes.
 
 # - Gender balance. The remit for including this variable is that the male:female
 # ratio of cycle commuters is around 3:1 in the
-# UK;^[The mean proportion of males cycling to work from the 2011 census
+# UK;^[The mean proportion of male cycle commuters to work from the 2011 census
 # across Local Authorities
 # in England is 0.77. This corresponds to a ratio of 3.3:1.]
 # thus including the
@@ -843,20 +853,10 @@ proposed target to double cycling in England, from 0.8 billion stages currently 
 1.6 billion stages by 2025 [@DepartmentforTransport2014].
 Assuming increases in population offset
 the national trend towards lower trip
-rates,^[Increases
-in population would mean the *proportion* of trips by cycle
-would not need to double for the *absolute number* of trips to double.
-However, the rate of trips overall (measured in the number of trips
-per person per year by any mode for any purpose) is on a long-term
-downward trajectory which more than offsets the impact of population
-growth. See
-[@Crawford2014] for a detailed discussion of this issue.
-The authors could not find evidence about how this trend was
-accounted for by the DfT in scenarios from the National Transport
-Model (NTM) or elsewhere.]
+rates,
 achieving the draft Cycling Delivery Plan's proposed target would
 result in a doubling in the
-proportion of trips made by cycling nationwide.
+proportion of trips made by cycling nationwide [@Crawford2014].
 @DepartmentforTransport2014 does not investigate the geographic
 distribution of potential cycling uptake in their publication of the scenario, and so we made our own
 assumptions about this (see next paragraph) and investigated their implications.
@@ -923,12 +923,6 @@ rate of cycling tend to see the greatest increase in cycling under the *cdp* sce
 At the heart of the *cdp* scenario is the previously discussed
 regression model (labelled $natmod$) estimating
 the dependent variable (*pcycle*).
-Route distance and hilliness at the national level were the explanatory variables.
-As explained above, additional variables could easily added.
-The resulting national
-distance decay curve is then applied locally. The additional number of cyclists
-for each flow is calculated by multiplying the proportion expected for the
-distance of the flow nationally.
 The new rate of cycling ($pcycle(cdp)$) is the current rate of
 cycling plus this model-based estimate:
 
@@ -979,15 +973,16 @@ The approach here assumes that cycling potential against a given national
 increase is always a positive number.
 This applies even in the
 areas in which cycling is currently substantially above what would be
-expected given trip distances and hilliness we model an increase in
-cycling. The larger the increase in cycling the less the baseline matters
+expected given the present low average level of cycling and the
+distribution of trip distances and hills.
+The larger the increase in cycling the less the baseline matters
 compared with the potential.
 By contrast, the larger the current rate of cycling, the less important
 is the scenario in influencing the projected total flow.
 
 This implementation of the *cdp* is in line with findings from
-@Sloman2014 that suggest building in areas with a high current rate
-of cycling will further increase the rate of cycling. The method
+@Sloman2014 and @Heinen2015 that suggest building where cycling is already
+common can further increase the rate of cycling. The method
 also links to the discussion of 'propensity' vs 'potential' to cycle:
 the former relates to short-term responses, based on
 demographic, social and cultural likelihood of cycling. Some groups
@@ -1006,10 +1001,11 @@ scenario cycling tends to grow much more in areas that already
 have a high rate of cycling. Thus this scenario is more about
 propensity than the long-term potential levels of cycling
 described in *Go Dutch* and *Ebike* scenarios. In the long-run,
-inter-group differences in the rate of cycling tend to zero
-as the rate of cycling increases. In Holland, for example,
+inter-group differences in the rate of cycling fall
+as the rate of cycling increases. In the Netherlands,
 cycling is almost equally common among males, females, and
-people of different socio-economic status. Thus for
+people of different socio-economic status, although ethnic
+persist [@Fishman2015]. Thus for
 strategic planning purposes demographics should play less of a
 roll in influencing the decision-making process than it should
 in implementing short-term 'quick-win' policies.
@@ -1023,22 +1019,14 @@ in implementing short-term 'quick-win' policies.
 
 ## Gender equality
 
-The Gender Equality scenario (*gendereq*) is a relatively simple modification of
-an existing scenario. For the purposes of explanation, we will
-use the *observed level of cycling* (*OLC*) in the 2011 Census
-as the basis of the
-scenario. However, it is possible to apply the *gendereq* method to
-any scenario, as described towards the end of this section.
-
-The Cycling Delivery Plan scenario
-(*cdp*) makes no assumption about the future
-gender split in cycling.
+The Gender Equality scenario (*gendereq*) builds
+on the *observed level of cycling* (*OLC*) from the 2011 Census.
 On average in England around  3/4 of cycle commuters
 are male, although this varies geographically [@Aldred2015].
 *gendereq*, by contrast, is based on the assumption that
 gender equality is reached in cycling.
 Specifically, the scenario assumes that in each flow the proportion
-of females cycling is the same as the proportion of males.
+of female cycle commuters is the same as the proportion of males.
 A prerequisite is a model-based estimate of the number of male
 and female cyclists between origin and destinations for
 the observed data.
@@ -1053,11 +1041,11 @@ $$
 More males cycle than females in every Local Authority in the country
 (Fig. 5). For this reason, the *gendereq* scenario
 is based on the assumption that the rate of cycling amongst
-females increases to match the rate of cycling amongst males, rather than vice
-versa. Under *gendereq* $SLC_m$ remains constant. The challenge is to
+females increases to match the rate of cycling amongst males.
+Under *gendereq* $SLC_m$ remains constant. The challenge is to
 find the value of $SLC_f$ such that the proportion of
-females cycling under the gender equity scenario ('$pcycle(gendereq)_f$')
-becomes equal to the observed proportion of males cycling ($pmale_{cyclist}$).
+female cycle commuters under the gender equity scenario ('$pcycle(gendereq)_f$')
+becomes equal to the observed proportion of male cycle commuters ($pmale_{cyclist}$).
 Note that this is not as simple as $SLC_f = SLC_m$,
 as the absolute number of female and male cyclists will also depend on the gender split of the total commuting population within each flow.^[To
 illustrate this point, consider a flow in which the total number of female
@@ -1080,9 +1068,9 @@ $$
 SLC(gendereq)_f = tflow_f * \frac{OLC_m}{tflow_m}
 $$
 
-$OLC_m$ is the observed number of males cycling
+$OLC_m$ is the observed number of male cycle commuters
 (in the 2011 Census in this case),
-$SLC(gendereq)_f$ is number of females cycling in the gender equality scenario, and
+$SLC(gendereq)_f$ is number of female cycle commuters in the gender equality scenario, and
 $tflow_m$ and $tflow_f$ are the total numbers of males
 and females in the flow respectively.
 
@@ -1093,7 +1081,7 @@ in each flow ($pmale_(cyclist)$) is not, however, available in the published 201
 The smallest level at which the gender breakdown of cyclists is currently available
 is the zone level ('$pmale_{cyclist}(zone)$'), and we assume that all flows have
 this same proportion of male cyclists. This allows the estimation
-the number of males cycling as $OLC_m = OLC * pmale_{cyclist}(zone)$, so that
+the number of male cycle commuters as $OLC_m = OLC * pmale_{cyclist}(zone)$, so that
 
 $$
 SLC(gendereq)_f = OLC * pmale_{cyclist}(zone) *  \frac{tflow_f}{tflow_m}
@@ -1194,10 +1182,7 @@ This allows us to illustrate the type of output that will
 be possible in this model. In future work we will implement the
 model fully by basing the changes to the distance decay
 parameters on real data from the Dutch National Travel Survey.
-Analysis of the influence of Ebikes on propensity to cycle
-(of people using both using
-ebikes and conventional bicycles) bikes in the Netherlands has
-was conducted as part of the Co-benefits model. 
+
 # Results
 
 To demonstrate
@@ -1302,6 +1287,15 @@ new scenarios. Three user testing sessions have helped identify shorter-term
 changes to the interface (such as 'freeze scope') and longer-term needs
 (such as the use of additional data sources).
 
+Planners can use the different scenarios to consider short, medium, and
+long-term potential for cycling locally and along specific routes,
+in combination with local knowledge.
+In the PCT can therefore shed light on whether cycling investment should prioritise
+areas of relatively low current propensity (but high potential) or relatively
+high current propensity
+(but lower potential) [@Sloman2014;@Aldred2014].
+The answer is likely to depend on the timescale of interest.
+
 The results demonstrate the utility of online, interactive and open source
 web applications for cost-effective
 allocation of investment. User testing has indicated that the tool
@@ -1331,56 +1325,60 @@ a range of sources.
 - Inter-regional and international comparisons of model results. This could
 help answer long-standing questions such as: "do areas with the highest
 cycling potential receive the greatest amount of cycling investment?" and
-"is there a strong link between a country's propensity to cycle and actual
+"is there a strong link between a country's cycling potential and actual
 rates of cycling?"
 
-- The extension of the model to cover different demographic
+- The extension of the model to cover variation between different demographic
 groups. This would enable the use of new factors,
 such as socio-economic status, within scenario assumptions,
-to enable more targeted cycling policies.
+to enable more targeted interventions [@Lovelace2014-jtg].
 
 - Additional purposes of trips in the model.
 An 'education layer' would enable prioritisation of 'safe routes to school',
 building on methods analysing 'school commute' data [@Singleton2014a].
 
 - The extension of the tool to enable the estimation of cycling demand
-following new developments, such as high-density housing or a new
-school.
+following new developments, such as high-density housing, a new
+school or local job creation.
 
 The PCT's open source licence allows others to
 modify it for their own needs, for example to implement these extensions and
 others yet to be discovered. We actively encourage practitioners
 to modify the scenarios, input data and display of the results to suit
 local contexts. This could help to visualise city-level targets for
-the proportion cycling by a certain year and which
+the proportion cycling by a certain year and
 which will vary considerably from place to place in ways not yet well understood.
 Modifying the code base would also allow transport planners
 to decide on and create the precise set of online tools that are
 that are most useful for their work.
 Building on participatory models at the macro-level [@Macmillan2014], extensions
 to the model could include using the PCT methodology to
-enable public engagement in the strategic planning process around active travel.
+enable public engagement in the strategic planning process around
+sustainable transport.
 
-The wide range of opportunities to extend the tool do not mean that the PCT
-methodology can solve every urban mobility problem. Transport policy is a
+Transport policy is a
 complex and contested field [@Banister2008].
-Therefore solutions to entrenched problems such as
-car over-dependence cannot be found solely by reliance on numerical models:
-policy, politics, leadership and vision are key ingredients for sustainable
-urban mobility that computer models cannot provide [@Melia2015a].
+Therefore policy, politics, leadership and vision are key ingredients for sustainable
+urban mobility that computer models alone cannot provide [@Melia2015a].
+The approach described here can assist in this wider context by providing
+new tools for assessing the best available evidence.
+The PCT thus supports informed and open decision making.
+A more specific limitation of the PCT method is its current lack of inclusion of
+cycle route quality. Future versions of the tool could make use of
+data derived from new network assesment technologies
+[@Joo2013]. 
 
-A more specific limitation of the PCT method is its lack of inclusion of
-cycle route quality. Recent advances in cycle path network measurement
-[@Joo2013]
-could allow route network data to be fed-into more sophisticated versions
-of the tool. However, we would argue that cycle path quality is not something
-that needs to be modelled at the meso-level in a tool such as the PCT. The
-tool's niche is strategic planning for cycling uptake: once areas, travel
-corridors and road segments have been prioritised by the PCT, it is up to
-local transport engineers to ensure that the quality of the new paths is sufficient.
+```{r, echo=FALSE}
+# However, we would argue that cycle path quality is not something
+# that needs to be modelled at the meso-level in a tool such as the PCT. The
+# tool's niche is strategic planning for cycling uptake: once areas, travel
+# corridors and road segments have been prioritised by the PCT, it is up to
+# local transport engineers to ensure that the quality of the new paths is sufficient.
+```
 
-In the realm of geographically specific strategic transport planning
-the PCT can be seen not only as a tool but as a framework.
+Its extensibility means the
+PCT can be seen not only as a tool but as a framework for strategic
+transport planning.
 Under this interpretation the case study of cycling in England is
 just one of many potential applications.
 Still, a number of the lessons learned throughout the
@@ -1426,6 +1424,10 @@ Transport.
 #
 # This Appendix summarises the work from the perspective of practitioners
 # by describing how the PCT may be used to inform the decision-making process.
+
+# My affiliation: UKCRC Centre for Diet and Activity Research (CEDAR), MRC Epidemiology Unit, University of Cambridge, School of Clinical Medicine, Institute of Metabolic Science, Cambridge Biomedical Campus, Box 285, Cambridge CB2 0QQ, UK
+# 
+# I also need institutional acknowledgement: Dr Woodcock’s contribution was undertaken under the auspices of the Centre for Diet and Activity Research (CEDAR), a UKCRC Public Health Research Centre of Excellence which is funded by the British Heart Foundation, Cancer Research UK, Economic and Social Research Council, Medical Research Council, the National Institute for Health Research, and the Wellcome Trust”
 ```
 
 # References
