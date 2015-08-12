@@ -81,10 +81,10 @@ The Propensity to Cycle Tool (PCT) seeks to inform such decisions by providing a
 evidence-based support tool that models current and potential future
 distributions and volumes of cycling across cities and regions. This paper
 describes this model and its application to case study cities in England.
-Origin-destination 'flow' data, combined with
+Origin-destination (OD) data, combined with
 quantitative information at the level of administrative zones,
 form the basis of the model, which estimates cycling potential as a function of
-route distance, hilliness and other factors at the flow and area level.
+route distance, hilliness and other factors at the OD and area level.
 Multiple scenarios were generated and interactively displayed, including a
 'Government Target' scenario, to double the proportion of trips made by cycling.
 A more ambitious
@@ -144,7 +144,7 @@ provides a range of information to the user to inform evidence-based policy
 - Focus on future scenarios of cycling.
 - Estimation and visualisation of information at
 the zone and 'desire line' level.
-- Route-allocation of flows, enabling specific routes to be identified
+- Route-allocation of OD lines, enabling specific routes to be identified
 for improvement.
 
 The PCT was commissioned by the UK's Department for Transport to identify
@@ -166,7 +166,7 @@ and R programming skills, the PCT can be deployed in new
 contexts. The codebase
 underlying the PCT is publicly available at
 [github.com/npct](https://github.com/npct) under the conditions of the MIT
-license. The flow model underlying the PCT was written in R,
+license. The OD model underlying the PCT was written in R,
 a mature language for statistical computing [@RCoreTeam2015]. The
 interface was written in shiny, an R package for creating online
 web applications for data visualisation [@Chang2015].
@@ -204,22 +204,23 @@ cycle trips plausibly occur?
 # tricycles, quadricycles and hand cycles.]
 ```
 
-This ability to model propensity to at the flow-level is one important,
+This ability to model propensity to cycle at the OD level is one important,
 and novel, feature of the PCT.
-A 'flow' in this context constitutes an origin-destination pair: the place where
-a trip begins and the destination where it ends.
-Flows therefore represent 'desire lines', the straight lines connecting
-places where people want to travel [@Chan2003].
-These typically connect residential origins with workplace, educational or other
-destinations. As described below in more detail, the model takes the current
-rate of cycling and other variables per flow and uses this to simulate what
-the rate of cycling per flow could be under various future scenarios.
-By aggregating data from the flow level to geographic zones, the PCT
+An 'OD pair' in this context constitutes a 'desire line' connecting origins and destinations
+[@Chan2003]. The 'O' represents the place where
+a trip begins and the 'D' where it ends. These concepts are also
+represented by the $T_{ij}$ matrix notation in transport modelling [@...].
+ 'desire lines', the straight lines connecting
+places where people want to travel .
+As described below in more detail, the model takes the current
+rate of cycling and other variables per OD pair and uses this to simulate what
+the rate of cycling could be at the OD and route level under various future scenarios.
+By aggregating data from the OD level to geographic zones, the PCT
 model also enables area-based planning (encouraging users to focus on
-particular zones rather than flows). This inclusion of flow-level data is one
+particular zones rather than OD pairs). This inclusion of OD level data is one
 important difference between PCT and previous approaches to modeling cycling
 potential. @Parkin2008, for example, used
-a multiple regression model to estimate levels of commuter cycling at
+a multiple regression model to estimate levels of commuter cycling at an
 area level. Similarly local, survey data has been used to identify areas with
 high numbers of 'potentially cyclable trips' in London [@TfL2010].
 Neither analysis identified the travel corridors the simulated cycle trips
@@ -232,11 +233,11 @@ commuter data, it became possible to identify routes with a
 "higher priority in the construction plan" [@Zhang2014]. Our model performs a
 similar function but provides a greater range of graphical and numerical
 outputs due to the flexible online interface.
-The model underlying the PCT is based on flow data
+The model underlying the PCT is based on aggregate OD data
 (which is more readily available than
 individual level data). This makes the approach highly scalable.
 Being based on open source software,
-which is gradually gaining traction in transport planning [@Tamminga2012;@novosel2015agent]
+which is gradually gaining traction in academic transport research [@Tamminga2012;@novosel2015agent]
 the approach is also highly flexible and relatively easy to modify. The PCT
 can thus be used basis for creating new cycling planning tools in diverse contexts
 and relying on multiple data inputs.
@@ -244,13 +245,13 @@ and relying on multiple data inputs.
 ```{r, echo=FALSE}
 # Key to the PCT's utility as a PSS for strategic sustainable transport planning
 # is its ability to visualise various scenarios for cycling futures. The
-# flow-level model described in the Methods section explains how these scenarios
-# can be translated into flows at high geographical resolution and allocated to the
+# OD level model described in the Methods section explains how these scenarios
+# can be translated into ODs at high geographical resolution and allocated to the
 # route network. Scenarios can be based on national, regional or city-wide targets
 # or alternative criteria, such as the outputs of an agent based model.
 # Due to the open approach in model development the PCT methodology can be
 # replicated in many other locations worldwide. We therefore expect this article
-# to be useful not only academically, in terms of development of a flow-level
+# to be useful not only academically, in terms of development of a OD level
 # model for cycling and visualisation of the results, but also practically,
 # for practitioners designing sustainable transport plans.
 
@@ -331,15 +332,16 @@ specific to the local area.
 
 The PCT relies on two key input datasets:
 
-- *Flow* (or *origin-destination*) data relating the number of trips
-taking place between administrative zones.
+- *Origin-destinateion* (OD) data relating the number of trips
+taking place between administrative zones. These can be represented as
+straight 'desire lines' or allocated to the route network.
 - *Geographical data* providing the coordinates of trip
 origins and destinations.
 
 Hilliness and route network distance were also used in the regression model.
-The flow model described in this paper can work for
+The OD level model described in this paper can work for
 anywhere that has access to such data. To link
-the flow and geographic datasets together, *zone ids* are needed in both
+the OD and geographic datasets together, *zone ids* are needed in both
 datasets. An R package, **stplanr**, was developed for this purpose
 and other data manipulation
 challenges.
@@ -353,16 +355,18 @@ challenges.
 
 Tables 1 and 2 illustrate the two input datasets. Fig. 1
 shows the output, straight lines with attributes for
-each flow in both directions. These were labelled flow-lines after @Tobler1987;
-their handling built on published work on cartographic visualisation [@Rae2009;@Wood2010].
-Such datasets are available in many countries and cities across the world.
-The model for England described in this paper uses the following open datasets:
+each OD pair in both directions. These are also referred to as 'desire lines' when
+represented as straight lines on the map [see @Tobler1987; @Chan2003].
+The visualisation of the OD data builds
+on published work on cartographic visualisation [@Rae2009;@Wood2010].
+The model for England described in this paper uses the following open datasets
+(similar OD datasets are available for cities across the world):
 
-Table: Sample of the 'flow' input dataset, representing the number of people who commute from locations within and between administrative zones (MSOAs)
+Table: Sample of the OD input dataset, representing the number of people who commute from locations within and between administrative zones (MSOAs)
 
 ```{r tflow, echo=FALSE, results='asis'}
 # For latex version: use xtable:
-# t1 <- xtable(head(flow[c(1:3, 12)]), caption = "Sample of the 'flow' input dataset, representing the number of people who commute from locations within and between administrative zones (MSOAs)", label = "tbl:flow")
+# t1 <- xtable(head(flow[c(1:3, 12)]), caption = "Sample of the 'OD' input dataset, representing the number of people who commute from locations within and between administrative zones (MSOAs)", label = "tbl:flow")
 # print(t1, type = "latex", comment = FALSE, caption.placement = "top")
 
 # For docx and latex: use kable
@@ -377,18 +381,18 @@ Table: Sample of the 'cents' input dataset, representing the geographical locati
 kable(as.data.frame(cents[1:3,-c(3,4)]))
 ```
 
-```{r, echo=FALSE, fig.cap="Illustration of 'flow data' converted into geographical lines between origin and destination pairs for Coventry. Width represents the total number of trips. Note the use of population-weighted (as opposed to geographic) centroids used for the point of departure and destination."}
+```{r, echo=FALSE, fig.cap="Illustration of 'OD data' converted into geographical lines between origin and destination pairs for Coventry. Width represents the total number of trips. Note the use of population-weighted (as opposed to geographic) centroids used for the point of departure and destination."}
 # data("flowlines")
 # plot(flowlines, lwd = flowlines$All / 10)
 grid.raster(readPNG("../figures/coventry-centroids.png"))
 ```
 
-- Flow data representing the number of trips between origin destination pairs,
+- OD data representing the number of trips between origin destination pairs,
 disaggregated by mode of travel.
 We used the file `wu03ew_v2.csv`, obtained from the UK Data Service
 (see Table 2 for a sample of this dataset)^[See [wicid.ukdataservice.ac.uk/cider/wicid/downloads.php](https://wicid.ukdataservice.ac.uk/cider/wicid/downloads.php).]
 Note the origin and destination codes in some rows
-are the same, indicating *intra-zone* flow.
+are the same, indicating *intra-zone* movement.
 
 - The population-weighted centroids of local
 administrative zones (see Table 1). We used the official 'Medium Super
@@ -399,7 +403,7 @@ This file was originally downloaded as a Shapefile
 under the UK's Open Government
 Licence.^[See [data.gov.uk/dataset/lower-layer-super-output-areas-ew-2011-population-weighted-centroids](http://data.gov.uk/dataset/lower-layer-super-output-areas-ew-2011-population-weighted-centroids).]
 
-- Route distance, assigned to each flowline
+- Route distance, assigned to each OD pair
 using the CycleStreets.net
 API.^[To implement this functionality in a generalisable way
 a custom function, `route_cyclestreet()`, was
@@ -412,11 +416,11 @@ complex (e.g. total amount of climb along the route network in both directions).
 We calculated gradient per MSOA zone using digital elevation model (DEM)
 data supplied by NASA.^[See
 [srtm.csi.cgiar.org/](http://srtm.csi.cgiar.org/). "Version 4" of the dataset was used.
-To allocate this area-based hilliness metric to flows, we calculated the average
+To allocate this area-based hilliness metric to OD pairs, we calculated the average
 hilliness of origin and destination zones. This method has the disadvantage that
 accuracy decreases with increased trip distance.]
 
-We used the English Census 2011 dataset on travel to work flows
+We used the English Census 2011 dataset on travel to work data
 for its comprehensive coverage of the population,
 high geographic resolution and assurances surrounding
 data quality. Official data on commuting and education trips are available
@@ -426,7 +430,7 @@ In cases where no census data are available
 alternative sources
 may be able to provide a reasonable approximation of real world travel.
 
-A variety of emerging sources can also provide data on travel flows,
+A variety of emerging sources can also provide data on travel OD pairs,
 including 'Big Data' from commercial companies.
 These alternative souces of flow data include:
 mobile telephone service providers
@@ -542,31 +546,27 @@ grid.raster(readPNG("../figures/cuas-las.png"))
 
 ## Variable zone and flowline selection criteria
 
-Flow-routes are where the origin-destination pair is mapped onto the current
+Flows assigned to the transport network were generated when OD pairs are mapped onto the current
 travel network.
-Flow-routes are used in the model but calculating them for
-the travel routes possible between all origin-destination pairs
-requires significant computational resources.
-The route allocation algorithm, implemented 'in the
-cloud' by CycleStreets.net (an online routing service for
-planning cycle trips),
-is the bottle-neck in terms of computational time.
+This network-level data generation 
+was undertaken by CycleStreets.net (a routing service for
+planning cycle trips), constituting the most computationally intensive part of the model.
 
-To reduce data processing and visualisation times
-only a sub-sample of flow-lines for each region were used.
-The aim was to reduce the number of flows whilst retaining the overall
+To reduce data processing and visualisation times,
+only a sub-sample of OD pairs for each region were used.
+The aim was to reduce the number of OD pairs whilst retaining the overall
 travel pattern. We did this using a minimum values for the total flow,
 following the insight that the
 distribution of number of commuters per flow is
 skewed: commuters using a few major 'commuter corridors'
 mean a high proportion of displacements can be represented by
-a relatively small proportion of flow-lines. In Manchester,
-for example, disregarding flow-lines with fewer than 30 commuters leaves
+a relatively small proportion of OD pairs. In Manchester,
+for example, disregarding OD pairs with fewer than 30 commuters leaves
 15% of all possible origin destination pairs but includes almost 70% of commuters.
 The number 30 is a parameter (labelled `mflow`) that can be adjusted to reach a reasonable
 balance between comprehensive coverage and speed of saving and loading.
 Setting the maximum Euclidean distance is another way to reduce the number of
-flow-lines, and this can be done in conjunction with setting a maximum number of commuters.
+OD pairs, and this can be done in conjunction with setting a maximum number of commuters.
 We used a maximum value of 15 km Euclidean distance which translates to around 20 km
 on the route network (assuming a circuity value of 1.3).
 From the National Travel Survey, only 1.1% of cycle commutes exceed this distance.
@@ -585,7 +585,7 @@ linking distance ($d$) and hilliness ($H$) to the *dependent variable*:
 the proportion of trips made by cycling per flow ($pcycle$).
 The concept of 'distance decay' [@Martinez2013]
 was used in the model to describe the (non-linear) relationship
-between the route distance of flow-lines and the proportion of trips made by cycling.
+between the route distance of OD pairs and the proportion of trips made by cycling.
 Euclidean distance could be used in contexts where route distance is not known.
 
 It is well-known that
@@ -776,7 +776,7 @@ commute distances or that already have a rate of cycling above the national
 average will see cycling increase less than two-fold; areas with a below average
 current rate of cycling but high potential based on the number of short commute
 trips will see cycling increase more than two-fold. The same logic applies to
-flows: origin-destination pairs that are close together but with a currently low
+desire lines: OD pairs that are close together but with a currently low
 rate of cycling tend to see the greatest increase in cycling under the *cdp* scenario.
 
 ```{r, echo=FALSE}
@@ -847,7 +847,7 @@ SLC(cdp) = (pcycle + pcycle(natmod)) * tflow
 $$
 
 An example of this scenario for illustrative purposes is as follows.
-Based on a representative sample of flows in the UK,
+Based on a representative sample of OD pairs in the UK,
 among those making trips with a 'fastest route' distance of between 4 and 5 km,
 the proportion who used a cycle as their main mode is 5.0%.
 Under the 'national doubling' assumption of the *cdp* scenario, this
@@ -865,7 +865,7 @@ The total number of commuters cycling to work in Manchester
 i.e. the proportion cycling multiplied by the total number of commuters.
 
 Note that this does not mean
-that *all* flows in Manchester between 4 and 5 km would be projected to have
+that *all* OD pairs in Manchester between 4 and 5 km would be projected to have
 a 9.6% proportion of cycle commuters in the *cdp* scenario.
 The initial level of cycling
 (*pcycle*) will vary widely: a flow with an exceptionally high initial rate
@@ -971,7 +971,7 @@ as is the total number of cyclists ($OLC$).  The proportion of cyclists who are 
 in each flow ($pmale_(cyclist)$) is not, however, available in the published 2011 datasets
 (although we intend to commission such tables for future work).
 The smallest level at which the gender breakdown of cyclists is currently available
-is the zone level ('$pmale_{cyclist}(zone)$'), and we assume that all flows have
+is the zone level ('$pmale_{cyclist}(zone)$'), and we assume that all OD pairs have
 this same proportion of male cyclists. This allows the estimation
 the number of male cycle commuters as $OLC_m = OLC * pmale_{cyclist}(zone)$, so that
 
@@ -1002,7 +1002,7 @@ males ($pmale_{cyclist}(zone) = 0.70$). This means that
 an estimated $5 * 0.70 = 3.5$ cycle commuters are male ($OLC_m = 3.5$) and
 1.5 are female ($OLC_f = 1.5$).
 These are not whole numbers but represent the average
-number expected in many flows with the same characteristics.
+number expected in many OD pairs with the same characteristics.
 
 Applying the formulae presented on the previous page:
 
@@ -1088,20 +1088,20 @@ grid.raster(readPNG("../figures/man-nor-output.png"))
 
 The difference between the spatial distribution in cycling potential between
 the Cycling Delivery Plan (*cdp*) and Go Dutch
-(*dutch*) scenarios is illustrated in Fig. 7. Note that the top 20 flows
+(*dutch*) scenarios is illustrated in Fig. 7. Note that the top 20 OD pairs
 in Norwich under *cdp* assumptions are dominated by the current rate of cycling,
-with the highest flows projected to continue to be found towards the east of
+with the highest OD pairs projected to continue to be found towards the east of
 the city (this can be explained by the location of the Unviversity of
 East Anglia to the east of the city).
 Under *dutch* assumptions, by contrast,
-the pattern of cycling flows shifts substantially to the west.
+the pattern of cycling shifts substantially to the west.
 The cycling pattern under the *dutch* scenario
-are more representative of short-distance flows across the city overall.
-In both cases the flows are focused around Norwich city centre: the region
+are more representative of short-distance routes across the city overall.
+In both cases the desire lines are focused around Norwich city centre: the region
 has a mono-centric regional economy, making trips beyond around 5 km from the
 centre much less likely to be made by cycling.
 
-```{r, echo=FALSE, fig.cap="Model output illustrating the top 20 most cycled flows in Norwich under Cycling Delivery Plan and Go Dutch scenarios."}
+```{r, echo=FALSE, fig.cap="Model output illustrating the top 20 most cycled OD pairs in Norwich under Cycling Delivery Plan and Go Dutch scenarios."}
 grid.raster(readPNG("../figures/nor-cdp-dutch.png"))
 ```
 
@@ -1112,11 +1112,11 @@ centre. Note in both scenarios the large increase in the level of cycling in
 between *cdp* (which represents only a doubling nationwide) and *dutch*
 scenarios (which represents a more ambitious plan for cycling uptake).
 
-```{r, echo=FALSE, fig.cap="Model output illustrating the top 20 most cycled flows in Manchester under Cycling Delivery Plan and Go Dutch scenarios."}
+```{r, echo=FALSE, fig.cap="Model output illustrating the top 20 most cycled OD pairs in Manchester under Cycling Delivery Plan and Go Dutch scenarios."}
 grid.raster(readPNG("../figures/man-cdp-dutch.png"))
 ```
 
-As described earlier, Cyclestreets.net was used to allocate flow-lines to
+As described earlier, Cyclestreets.net was used to allocate OD pairs to
 the travel network. 'Fastest' and
 'quietest' routes were estimated by the service and the difference between
 these routes can be important from a transport planning perspective.
@@ -1182,7 +1182,7 @@ roll in estimating cycling potential for strategic purposes
 than for identifying 'quick-win' policies based on current propensities.
 Based on this understanding, the PCT has the ability to represent different
 scenarios of change. Illustrations of how the number of cyclists using
-different flow-lines could shift in the future were
+different OD pairs could shift in the future were
 described as 'very useful' for transport planning during user testing.
 The visualisation of different scenarios
 enables 'visioning', an activity with great potential
@@ -1303,7 +1303,7 @@ more sustainable and healthy transport systems.
 
 # Acknowledgements:
 
-We would like to thank the following people for comments on earlier versions of the report and the direction of the flow-level model:
+We would like to thank the following people for comments on earlier versions of the report and the direction of the OD level model:
 Roger Geffen, Ian Philips and John Parkin.
 Thanks to Simon Nutall and Martin Lucas-Smith for access to and instructions
 on the use of the CycleStreets.net API.
