@@ -1,20 +1,19 @@
 ---
-title:
-  "The Propensity to Cycle Tool: An open source online system for sustainable transport planning"
-output: 
-  pdf_document: 
+title: 'The Propensity to Cycle Tool: An open source online system for sustainable
+  transport planning'
+author:
+- Robin Lovelace
+- Anna Goodman
+- Rachel Aldred
+- James Woodcock
+csl: elsevier-harvard.csl
+output:
+  word_document: default
+  pdf_document:
     fig_caption: yes
     number_sections: yes
     toc: yes
-header-includes: \usepackage{amsmath}
-                 \usepackage{longtable}
-                 \usepackage{booktabs}
-author: 
-  - Robin Lovelace
-  - Anna Goodman
-  - Rachel Aldred
-  - James Woodcock
-csl: elsevier-harvard.csl
+header-includes: \usepackage{amsmath} \usepackage{longtable} \usepackage{booktabs}
 bibliography: ../documents/Transport.bib
 ---
 
@@ -177,18 +176,18 @@ a mature language for statistical computing [@RCoreTeam2015]. The
 interface was written in shiny, an R package for creating online
 web applications for data visualisation [@Chang2015].
 
+
 The PCT is a *strategic* transport planning tool.
 Its policy-relevance stems from its ability to develop, compare and visualise
 various scenarios for cycling futures at city to national levels.
 Unlike 'microscopic' transport
 models such as SUMO and PTV VISSIM, which simulate vehicular traffic in
-real time [@Behrisch2014;@Krajzewicz2014], the PCT is scalable
-to the national level.
-On the other hand, the PCT is also able to estimate cycling potential at
-relatively fine-grained (and flexible) levels of geographic resolution
-in contrast to 'macroscopic' transport models [e.g. @Kolosz2013].
-Instead, the PCT operates at the 'meso scale', an appropriate
-level for active travel planning [@Moniruzzaman2012]. 
+continous time [@Behrisch2014;@Krajzewicz2014], the PCT is based on static
+'snapshot' scenarios of plausible future states.
+The PCT is based on aggregate-level data, making it scalable
+to the national level on a desktop computer.
+The PCT's use of O-D data enables it to estimate cycling potential at
+relatively fine-grained (and flexible) levels of geographic resolution.
 
 Unlike @McCollum2009 and other national-level scenario-based approaches,
 the PCT allows estimation of where new cycling trips are most likely to
@@ -239,11 +238,11 @@ commuter data, it became possible to identify routes with a
 "higher priority in the construction plan" [@Zhang2014]. Our model performs a
 similar function but provides a greater range of graphical and numerical
 outputs due to the flexible online interface.
-The model underlying the PCT is based on OD data
+The model underlying the PCT is based on aggregate OD data
 (which is more readily available than
 individual level data). This makes the approach highly scalable.
 Being based on open source software,
-which is gradually gaining traction in transport planning [@Tamminga2012;@novosel2015agent]
+which is gradually gaining traction in academic transport research [@Tamminga2012;@novosel2015agent],
 the approach is also highly flexible and relatively easy to modify. The PCT
 can thus be used basis for creating new cycling planning tools in diverse contexts
 and relying on multiple data inputs.
