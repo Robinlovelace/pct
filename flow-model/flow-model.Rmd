@@ -1,7 +1,8 @@
 ---
 title:
   "The Propensity to Cycle Tool: An open source online system for sustainable transport planning"
-header-includes: 
+output: word_document
+header-includes: \usepackage{amsmath}
                  \usepackage{longtable}
                  \usepackage{booktabs}
 author: 
@@ -21,7 +22,11 @@ bibliography: ../documents/Transport.bib
 ```{r, echo=FALSE, include=FALSE}
 # output: word_document
     # fig_caption: yes
-
+# output: 
+#   pdf_document: 
+#     fig_caption: yes
+#     number_sections: yes
+#     toc: yes
 # header-includes: \usepackage{amsmath}
 #                  \usepackage{longtable}
 #                  \usepackage{booktabs}
@@ -73,14 +78,14 @@ vapply(pkgs, require, character.only = T, FUN.VALUE = logical(1))
 
 Encouraging cycling, as part of a wider sustainable mobility strategy, is an
 increasingly common objective in transport planning institutions worldwide.
-Emerging evidence illustrates that high-quality infrastructure
-is an effective way of promoting cycling. To maximize the benefits of new
+Emerging evidence indicates that high-quality and appropriate infrastructure
+can be an effective way of promoting cycling. To maximize the benefits of new
 infrastructure, it is important to build in the right places.
 Cycle paths, for example, will have the greatest impact if they are constructed
 along 'desire lines' of greatest latent demand.
-The Propensity to Cycle Tool (PCT) seeks to inform such decisions by providing
-evidence-based support tools that model current and potential future
-distributions in cycling across cities and regions. This paper
+The Propensity to Cycle Tool (PCT) seeks to inform such decisions by providing an
+evidence-based support tool that models current and potential future
+distributions and volumes of cycling across cities and regions. This paper
 describes this model and its application to case study cities in England.
 Origin-destination 'flow' data, combined with
 quantitative information about administrative zones,
@@ -556,9 +561,9 @@ following the insight that the
 distribution of number of commuters per flow is
 skewed: commuters using a few major 'commuter corridors'
 mean a high proportion of displacements can be represented by
-a relatively small proportion of flow-lines. In in the city of Manchester,
+a relatively small proportion of OD pairs. In in the city of Manchester,
 (a local authority within Greater Manchester),
-for example, disregarding flow-lines with fewer than 30 commuters leaves
+for example, disregarding OD pairs with fewer than 30 commuters leaves
 15% of all possible origin destination pairs but includes almost 70% of commuters.
 The number 30 is a parameter (labelled `mflow`) that can be adjusted to reach a reasonable
 balance between comprehensive coverage and speed of saving and loading.
