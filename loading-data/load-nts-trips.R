@@ -1,7 +1,8 @@
 source("set-up.R")
 
 # Set the data directory for the NTS data in spss format
-data_dir <- "private-data/spss19/"
+# data_dir <- "private-data/spss19/"
+data_dir <- "/media/robin/data/data/UKDA-5340-spss/spss/spss19/"
 list.files(data_dir) # check which files are available
 
 # Data source: National Travel Survey

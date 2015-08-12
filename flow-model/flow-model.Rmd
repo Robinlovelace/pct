@@ -1,8 +1,7 @@
 ---
 title:
   "The Propensity to Cycle Tool: An open source online system for sustainable transport planning"
-output: word_document
-header-includes: \usepackage{amsmath}
+header-includes: 
                  \usepackage{longtable}
                  \usepackage{booktabs}
 author: 
@@ -10,6 +9,11 @@ author:
   - Anna Goodman
   - Rachel Aldred
   - James Woodcock
+output: 
+  pdf_document: 
+    fig_caption: yes
+    number_sections: yes
+    toc: yes
 csl: elsevier-harvard.csl
 bibliography: ../documents/Transport.bib
 ---
@@ -17,11 +21,7 @@ bibliography: ../documents/Transport.bib
 ```{r, echo=FALSE, include=FALSE}
 # output: word_document
     # fig_caption: yes
-# output: 
-#   pdf_document: 
-#     fig_caption: yes
-#     number_sections: yes
-#     toc: yes
+
 # header-includes: \usepackage{amsmath}
 #                  \usepackage{longtable}
 #                  \usepackage{booktabs}
@@ -556,7 +556,8 @@ following the insight that the
 distribution of number of commuters per flow is
 skewed: commuters using a few major 'commuter corridors'
 mean a high proportion of displacements can be represented by
-a relatively small proportion of flow-lines. In Manchester,
+a relatively small proportion of flow-lines. In in the city of Manchester,
+(a local authority within Greater Manchester),
 for example, disregarding flow-lines with fewer than 30 commuters leaves
 15% of all possible origin destination pairs but includes almost 70% of commuters.
 The number 30 is a parameter (labelled `mflow`) that can be adjusted to reach a reasonable
@@ -592,9 +593,11 @@ Hilliness was included a continuous variable in our model
 and was expected to have a linear impact on $pcycle$.
 The formula chosen was:
 
-$$
-log(pcycle) = \alpha + \beta_1 d + \beta_2 d^{0.5} + \theta H
-$$
+(@) $$ log(pcycle) = \alpha + \beta_1 d + \beta_2 d^{0.5} + \theta H $$
+
+```{r, echo=FALSE}
+# {#eq:description}
+```
 
 where $d$ is distance (km, route distance) and
 $H$ is the hilliness (average angular degrees of origin and destination zones)
@@ -620,8 +623,9 @@ To solve this problem for smaller regions we created buffers around each region,
 from which additional
 zones were sampled. This sampling
 could be triggered if the number of zones falls below some threshold.
-We set this threshold to 60 for Manchester (which contains 57 MSOAs) so that
-zones would be selected outside the long and thin LAD shape.
+We set this threshold to 60 for the city of
+Manchester (which contains 57 MSOAs) so that
+zones would be selected outside the long and thin LAD shape (see Fig. 7 below).
 This protocol increases the sample size by including all
 zones whose population-weighted centroid lies inside the
 buffer.
@@ -646,10 +650,9 @@ grid.raster(readPNG("../figures/model-outpute.png"))
 ```{r, echo=FALSE}
 # Some of the outputs of
 # the Model Output tab are illustrated in Fig. xx to Fig. xx below.
-```
-
-```{r, echo=FALSE, fig.cap="The distance decay curve resulting from the log-square-root function. The green lines represent increases of 0.25 times original parameter values (obtained by running the model on data from the 2011 Census for Manchester) and the red lines represent -0.1 times the original value."}
-grid.raster(readPNG("../figures/log-sqrt-params.png"))
+# ```{r, echo=FALSE, fig.cap="The distance decay curve resulting from the log-square-root function. The green lines represent increases of 0.25 times original parameter values (obtained by running the model on data from the 2011 Census for Manchester) and the red lines represent -0.1 times the original value."}
+# grid.raster(readPNG("../figures/log-sqrt-params.png"))
+# ```
 ```
 
 # Model scenarios
@@ -826,9 +829,7 @@ the dependent variable (*pcycle*).
 The new rate of cycling ($pcycle(cdp)$) is the current rate of
 cycling plus this model-based estimate:
 
-$$
-pcycle(cdp) = (pcycle + pcycle(natmod))
-$$
+(@) $$ pcycle(cdp) = (pcycle + pcycle(natmod)) $$
 
 where $pcycle$ is the proportion of commuters who cycle per flow
 in the 2011 Census and $pcycle(natmod)$ is the proportion of commuters expected to
@@ -838,9 +839,7 @@ is multiplied by $tflow$, the total number of commuters all modes,
 to convert the proportion into
 a number of cyclists, i.e.:
 
-$$
-SLC(cdp) = (pcycle + pcycle(natmod)) * tflow
-$$
+(@) $$ SLC(cdp) = (pcycle + pcycle(natmod)) * tflow $$
 
 An example of this scenario for illustrative purposes is as follows.
 Based on a representative sample of flows in the UK,
@@ -922,12 +921,10 @@ This involves splitting the number of cyclists project by the model,
 the *Scenario-based Level of Cycling*, into
 male ($SLC_m$) and female ($SLC_f$) components:
 
-$$
-SLC = SLC_m + SLC_f
-$$
+(@) $$ SLC = SLC_m + SLC_f $$
 
 More males cycle to work than females in every Local Authority in the country
-(Fig. 5). For this reason, the *gendereq* scenario
+(Fig. 4). For this reason, the *gendereq* scenario
 is based on the assumption that the rate of cycling amongst
 females increases to match the rate of cycling amongst males.
 Under *gendereq* $SLC_m$ remains constant. The challenge is to
@@ -944,17 +941,11 @@ number of male cyclists in the *gendereq* scenario.
 It is the *proportion* of males and females
 per flow who cycle that becomes equal, as follows.
 
-$$
-pcycle(gendereq)_f = pcycle_{m}
-$$
+(@) $$ pcycle(gendereq)_f = pcycle_{m}$$
 
-$$
-\frac{SLC(gendereq)_f}{tflow_f} = \frac{OLC_m}{tflow_m}
-$$
+(@) $$ \frac{SLC(gendereq)_f}{tflow_f} = \frac{OLC_m}{tflow_m} $$
 
-$$
-SLC(gendereq)_f = tflow_f * \frac{OLC_m}{tflow_m}
-$$
+(@) $$ SLC(gendereq)_f = tflow_f * \frac{OLC_m}{tflow_m}$$
 
 $OLC_m$ is the observed number of male cycle commuters
 (in the 2011 Census in this case),
@@ -971,19 +962,13 @@ is the zone level ('$pmale_{cyclist}(zone)$'), and we assume that all flows have
 this same proportion of male cyclists. This allows the estimation
 the number of male cycle commuters as $OLC_m = OLC * pmale_{cyclist}(zone)$, so that
 
-$$
-SLC(gendereq)_f = OLC * pmale_{cyclist}(zone) *  \frac{tflow_f}{tflow_m}
-$$
+(@) $$ SLC(gendereq)_f = OLC * pmale_{cyclist}(zone) *  \frac{tflow_f}{tflow_m} $$
 
 and therefore the total flow for gender equality $SLC(gendereq)$ would be
 
-$$
-SLC(gendereq) = OLC_m + SLC(gendereq)_f
-$$
+(@) $$ SLC(gendereq) = OLC_m + SLC(gendereq)_f $$
 
-$$
-SLC(gendereq) = OLC * pmale_{cyclist}(zone) * (1 + \frac{tflow_f}{tflow_m})
-$$
+(@) $$ SLC(gendereq) = OLC * pmale_{cyclist}(zone) * (1 + \frac{tflow_f}{tflow_m}) $$
 
 ```{r, echo=FALSE, fig.cap="Cycling and the gender balance of cycling in England. The choropleth maps illustrate the spatial distribution of the two variables. The scatter plot illustrates the relationship between the two variables cycle commuting (x axis) against the proportion of commuter cyclists who are male (y axis) for all 326 Local Authorities (including Districts) in the UK."}
 grid.raster(readPNG("../figures/las-gender-pcycle.png"))
@@ -1002,13 +987,9 @@ number expected in many flows with the same characteristics.
 
 Applying the formulae presented on the previous page:
 
-$$
-SLC(gendereq)_f = OLC * pmale_{cyclists}zone * (1 + \frac{tflow_f}{tflow_m})
-$$
+(@) $$ SLC(gendereq)_f = OLC * pmale_{cyclists}zone * (1 + \frac{tflow_f}{tflow_m}) $$
 
-$$
-SLC(gendereq) = 5 * 0.70 * (1 + \frac{20}{30} ) = 5.83
-$$
+(@) $$ SLC(gendereq) = 5 * 0.70 * (1 + \frac{20}{30} ) = 5.83 $$
 
 ```{r, echo=FALSE}
 tflow <- 50
@@ -1056,7 +1037,7 @@ found in the Netherlands to each flow in the study area.
 
 To demonstrate
 how the scenarios work in practice and to provide an overview of the results,
-Fig. 6 illustrates the observed level of cycling
+Fig. 5 illustrates the observed level of cycling
 ($OLC$, from the
 2011 Census) and the scenario-based level of cycling
 in two Local Authorities (Manchester and Norwich). Note that while Manchester
@@ -1084,7 +1065,8 @@ grid.raster(readPNG("../figures/man-nor-output.png"))
 
 The difference between the spatial distribution in cycling potential between
 the Cycling Delivery Plan (*cdp*) and Go Dutch
-(*dutch*) scenarios is illustrated in Fig. 7. Note that the top 20 flows
+(*dutch*) scenarios is illustrated in Fig. 6 for Norwich.
+Note that the top 20 flows
 in Norwich under *cdp* assumptions are dominated by the current rate of cycling,
 with the highest flows projected to continue to be found towards the east of
 the city (this can be explained by the location of the Unviversity of
@@ -1101,7 +1083,7 @@ centre much less likely to be made by cycling.
 grid.raster(readPNG("../figures/nor-cdp-dutch.png"))
 ```
 
-The equivalent results are shown for Manchester in Fig. 8. This shows that
+The equivalent results are shown for Manchester in Fig. 7. This shows that
 Manchester has a poly-centric structure, favouring the construction of cycle
 routes between the various sub-centres, not just in radial routes to a single
 centre. Note in both scenarios the large increase in the level of cycling in
@@ -1116,7 +1098,7 @@ As described earlier, Cyclestreets.net was used to allocate flow-lines to
 the travel network. 'Fastest' and
 'quietest' routes were estimated by the service and the difference between
 these routes can be important from a transport planning perspective.
-Fig. 9 illustrates this by showing route in Manchester with the highest cycling
+Fig. 8 illustrates this by showing route in Manchester with the highest cycling
 potential under the *cdp* scenario.
 The 'quietest' route is substantially further, with a
 distance of 2.8 km (as shown by clicking on the line). The 'fastest'
