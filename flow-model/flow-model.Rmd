@@ -76,8 +76,8 @@ vapply(pkgs, require, character.only = T, FUN.VALUE = logical(1))
 
 Encouraging cycling, as part of a wider sustainable mobility strategy, is an
 increasingly common objective in transport planning institutions worldwide.
-Emerging evidence indicates that high-quality and appropriate infrastructure
-can be an effective way of promoting cycling. To maximize the benefits of new
+Emerging evidence shows that high-quality and appropriate infrastructure
+can boost local cycling rates. To maximize the benefits and cost-effectiveness of new
 infrastructure, it is important to build in the right places.
 Cycle paths, for example, will have the greatest impact if they are constructed
 along 'desire lines' of greatest latent demand.
@@ -90,7 +90,7 @@ quantitative information at the level of administrative zones,
 form the basis of the model, which estimates cycling potential as a function of
 route distance, hilliness and other factors at the OD and area level.
 Multiple scenarios were generated and interactively displayed
-These were: 'Government Target', in which the rate of cycling doubles;
+These were: 'Government Target', in which the rate of cycling doubles in England;
 'Gender Equality', in which women cycle as much as men;
 ‘Go Dutch’, in which English people cycle as much as people in
 the Netherlands; and 'Ebikes', an exploratory analysis of increasing the distance
@@ -108,10 +108,6 @@ Cycling can play an important role in making transport systems more
 sustainable, healthy and equitable.
 This mode of transport already provides fast, affordable,
 healthy and convenient mobility to millions of people each day [@Komanoff2004].
-Thanks to various designs of modified bicycles, quadricycles and handcycles,
-cycling can also provide an efficient means of self propulsion for people who
-would otherwise depend on motorised modes or
-other people [@Aldred2008].
 Mounting evidence of the external costs associated with car-dominated
 transport systems [@Newman1999;@Han2008;@Mizutani2011;@Shergold2012]
 and the benefits of cycling [@Oja2011;@Woodcock2013;@DeNazelle2011]
@@ -121,7 +117,13 @@ Cycling is no longer regarded as a fringe mode of transport, as
 illustrated, for example, by the global
 proliferation of publicly subsidized 'bike share' schemes [@OBrien2014a].
 Emerging evidence illustrates that high-quality infrastructure
-is an effective way of promoting cycling [@Heinen2015].
+is an effective way of promoting cycling
+as a safe, accessible and convenient
+transport option for people of all ages and abilities [@Heinen2015].
+Thanks to various designs of modified bicycles, quadricycles and handcycles,
+cycling can also provide an efficient means of self propulsion for people who
+would otherwise depend on motorised modes or
+other people [@Aldred2008].
 
 Within this fast-moving policy context,
 the question of where to construct new strategic cycle routes
@@ -201,7 +203,11 @@ Thus the PCT provides a method to answer the question:
 if cycling increases by 'x' nationally or regionally,
 how much is cycling likely to increase locally?
 More specifically: along which routes would the new
-cycle trips plausibly occur?
+cycle trips plausibly occur? As highlighted in the discussion,
+future work building on tools such as the PCT could help answer more complex
+and policy-relevant questions, such as:
+Which modes would new cycle trips replace?
+And hence, what would be the net benefits of these changes? 
 
 ```{r, echo=FALSE}
 # ^[We
@@ -228,8 +234,9 @@ potential. @Parkin2008, for example, used
 a multiple regression model to estimate levels of commuter cycling at an
 area level. Similarly local, survey data has been used to identify areas with
 high numbers of 'potentially cyclable trips' in London [@TfL2010].
-Neither analysis identified the travel corridors the simulated cycle trips
-would take.
+However, neither analysis identified the travel corridors along which
+these simulated cycle trips would be made.
+
 An individual-level regression model described by @Zhang2014 provided
 a basis for prioritising investment in cycle paths at the city-level in Brazil.
 By allocating the results to the route network the authors were able to
@@ -395,9 +402,9 @@ Note the origin and destination codes in some rows
 are the same, indicating *intra-zone* travel.
 
 - The population-weighted centroids of local
-administrative zones (see Table 1). We used the official 'Medium Super
+administrative zones (see Table 1). We used the official UK 'Medium Super
 Output Areas' (MSOAs) zonal system for both origins and destinations.
-MSOAs are a geographic unit used for the release of
+MSOAs are a geographic unit used for the release of UK
 statistical data (average population around 7,800 people).
 This file was originally downloaded as a Shapefile
 under the UK's Open Government
@@ -494,12 +501,13 @@ practitioners for feedback on the advantages and disadvantages of each.
 ```
 
 Many transport decisions (such as where to build new cycle routes)
-are made at the local level [@Gaffron2003]. In England this
-often means local Highway Authorities, which
-operate a slightly different geography than the more commonly used
-LAD divisions (Fig. 2).
-The regions used as the building blocks of the PCT can adapt to
-reflect either, or alternative, funding structures.
+are made at the local level [@Gaffron2003]. In England however, there is
+sometimes a difference between the areas covered by Highway Authorities and
+the more commonly used Local Authority District (LAD) divisions
+(Fig. 2).^[Highway
+Authorities and LADs will coincide in places where there are ‘unitary authorities’ (e.g. in England’s large conurbations, and the whole of Scotland and Wales). However in many parts of rural England, the Highway Authority will cover several District Authority areas. in any event though, the regions used as the building blocks of the PCT can adapt to reflect either, or alternative, funding structures (e.g. England’s Combined Authorities or Local Enterprise Partnerships
+(LEPs)).
+]
 
 ```{r, echo=FALSE}
 # As well as CUA level an increasing proportion of transport funding in
@@ -560,17 +568,20 @@ following the insight that the
 distribution of number of commuters per OD pair is
 skewed: commuters using a few major 'commuter corridors'
 mean a high proportion of displacements can be represented by
-a relatively small proportion of OD pairs. In in the city of Manchester,
-(a local authority within Greater Manchester),
-for example, disregarding OD pairs with fewer than 30 commuters leaves
+a relatively small proportion of OD pairs. For example, in the City of
+Manchester (whose area encompasses the centre of Greater Manchester but
+also extends several miles southwards),
+disregarding OD pairs with fewer than 30 commuters leaves
 15% of all possible origin destination pairs but includes almost 70% of commuters.
 The number 30 is a parameter (labelled `mflow`) that can be adjusted to reach a reasonable
 balance between comprehensive coverage and speed of saving and loading.
-Setting the maximum Euclidean distance is another way to reduce the number of
-OD pairs, and this can be done in conjunction with setting a maximum number of commuters.
+another way to reduce the number of flow-lines is to set the maximum Euclidean
+(or "crow-flies") distance. This can be done in conjunction with setting a maximum
+number of commuters.
 We used a maximum value of 15 km Euclidean distance which translates to around 20 km
 on the route network (assuming a circuity value of 1.3).
-From the National Travel Survey, only 1.1% of cycle commutes exceed this distance.
+From the Great Britain National Travel Survey, only 1.1% of cycle commutes
+in Britain exceed this distance.
 
 ## The regression model
 
@@ -597,7 +608,7 @@ Hilliness was included a continuous variable in our model
 and was expected to have a linear impact on $pcycle$.
 The formula chosen was:
 
-(@) $$ log(pcycle) = \alpha + \beta_1 d + \beta_2 d^{0.5} + \theta H $$
+(@) $$ log(pcycle) = \alpha + \beta_1 d + \beta_2 d^{0.5} + \gamma H $$
 
 ```{r, echo=FALSE}
 # {#eq:description}
@@ -610,7 +621,7 @@ coefficients to be estimated.
 $\alpha$ represents the intercept (the rate of cycling very short
 trips). $\beta_1$ (which must be negative for $pcycle$ to tend to zero as
 distance tends to infinity) and $\beta_2$ represent the rate of distance decay.
-$\theta$ represents the impact of hilliness on cycling.
+$\gamma$ represents the impact of hilliness on cycling.
 A 'quasipoisson' general linear model was used to implement this formula
 using the base R function `glm`, which predicts $log(pcycle)$
 to account for the aforementioned exponential decay.
@@ -661,28 +672,42 @@ grid.raster(readPNG("../figures/model-outpute.png"))
 
 # Model scenarios
 
-Three scenarios were implemented for the case study presented in this paper.
-The PCT allows different scenarios
-to be used and scenarios should be modified to reflect local contexts.
-The scenarios were selected to allow transport planners to consider different
-possibilities for the future of cycling in England.
-In brief, these were:
+In essence, the PCT provides a model of of how cycle use in different locations is
+inhibited by various constraints, and the potential for increased cycle use if these
+contraints were reduced or removed.  Although not explicitly represented in the model,
+these constraints can be assumed to include a mix of infrastructural and cultural
+constrains (i.e. the deterrent effects of sub-optimal cycling conditions and the
+cultural resistance of certain groups to take up cycling --- these may well be
+inter-related).  They also include the factors of distance and hilliness which have
+already been discussed.
 
-- Government target (*govtarget*). Under this scenario the level of cycling doubles.
-This scenario represents a near-term vision:
-a substantial relative increase in cycling. In absolute terms cycling would
-remain low relative to high cycling nations such as the Netherlands.
-The scenario assumes new cycle trips are generated
-in addition current trips. The scenario implies that
-existing inequalities in cycling by area and by demographics are reduced
-but not overcome.
+For the case study presented in this paper, four scenarios were developed in order to
+allow transport planners to consider different possibilities for the future of cycling
+in England (n.b. the *Ebike* scenario has yet to be fully implemented). 
+The following sections explain these four scenarios.  However it is worth summarising them at the outset, as this illustrates the flexibility of the PCT as a tool that could be to develop other scenarios for different geographical and political contexts.
 
-- Gender Equality (*gendereq*). This scenario assumes that in each OD pair the
-proportion of female cycle commuters becomes the same as the proportion of males.
-In places where cycling is the norm, women are equally as likely to cycle
-as are men (Pucher et al 2010).
-*gendereq* illustrates the increase in cycling that
-would result from gender-equal propensity to cycle in England.
+- Government target (*govtarget*). This scenario models a doubling of
+the number of cycling trip-stages in England. 
+Although this is a substantial increase in relative terms, cycle use still
+remains low in this scenario compared with countries such as the Netherlands.
+*govtarget* allows for different rates of growth in different places,
+with above-average increases (i.e. more than a doubling) in areas where
+there is a significant proportion of short (i.e. potentially cyclable)
+commute trips and low levels of current cycle use.
+Conversely, areas with higher cycle use and/or a low proportion
+of short commutes will have below-average growth in relative
+(but not absolute) terms.
+*govtarget* represents a slight reduction
+(but not elimination) of the localised infrastructural or cultural
+constraints which deter cycle use more in some places than in others.
+It therefore indicates where investment in increased cycle use might achieve the greatest impact in the short term.
+
+- Gender Equality (*gendereq*). This scenario illustrates the increase in cycling that would result if women were as likely to cycle in England as men – or, more specifically, if the proportion of female cycle commuters in each flow were the same as the current proportion of males. In places where cycling is the norm, women are equally as likely to cycle as are men (Pucher et al 2010).
+The *gendereq* scenario therefore represents
+the elimination of one specific cultural constraint,
+namely the lower propensity of women than men
+to cycle. This scenario is expected to have greatest impact where
+cycling conditions are hostile.
 
 - Go Dutch (*dutch*).
 While *govtarget* and *gendereq* build on current cycling behaviour,
@@ -691,7 +716,25 @@ If English people had the same likelihood of cycling given trips
 (i.e. of the same distance and hilliness) as the Dutch do, then
 how would the rate and spatial distribution of cycling change?
 The Go Dutch scenario answers this question by applying Dutch
-distance decay curves to English travel patterns. 
+distance decay curves to English travel patterns.
+'Go Dutch' therefore represents the elimination of the
+infrastructural and cultural constraints which currently hold back cycle
+use in England, including all localised differences.
+So, unlike the *govtarget* and *gendereq* scenarios,
+the predicted levels of cycle use in *dutch*
+are unrelated to current levels, and are constrained
+only by local trip distance distributions and hilliness.
+
+- Ebikes (*ebikes*). This scenario models the additional increase
+in cycle use that would would be achieved through the widespread uptake of electric
+cycles ('Ebikes').
+Ebikes enable longer journeys, as well as making cycling a viable option for older
+people and people with impaired mobility who might otherwise be unwilling to cycle
+at all. This scenario therefore goes beyond the *dutch*
+scenario in also reducing the
+impacts of the distance and hilliness constraints to cycling.
+
+These scenarios are described more fully below.
 
 ```{r, echo=FALSE}
 # We have data on the following variables and the impact of each on model
@@ -757,9 +800,10 @@ distance decay curves to English travel patterns.
 
 ## Government Target
 
-The Government Target scenario (*govtarget*) is based on the government's
-proposed target to double cycling in England, from 0.8 billion stages currently to
-1.6 billion stages by 2025 [@DepartmentforTransport2014].
+The Government Target scenario (*govtarget*)
+is based on the UK government's proposed target
+(as set out in its draft Cycling Delivery Plan [@DepartmentforTransport2014])
+to double cycling in England, from 0.8 billion stages currently to 1.6 billion stages by 2025.
 Taking population increases and trip rate decreases into account,
 the target implies a doubling in the proportion of trips made by cycling nationwide [@Crawford2014].
 @DepartmentforTransport2014 does not investigate the geographic
@@ -1083,7 +1127,7 @@ by contrast, the current rate of cycling is considerably greater than the
 national average, so the *govtarget* scenario represents less than a doubling in
 cycling.
 
-```{r, echo=FALSE, fig.cap="Results of observed and scenario-based levels of cycling from PCT model runs for Manchester (left) and Norwich (right)."}
+```{r, echo=FALSE, fig.cap="Results of observed and scenario-based levels of cycling from PCT model runs for the city of Manchester (left) and Norwich (right)."}
 grid.raster(readPNG("../figures/man-nor-output.png"))
 ```
 
@@ -1107,7 +1151,7 @@ centre much less likely to be made by cycling.
 grid.raster(readPNG("../figures/nor-cdp-dutch.png"))
 ```
 
-The equivalent results are shown for Manchester in Fig. 7. This shows that
+The equivalent results are shown for the city of Manchester in Fig. 7. This shows that
 Manchester has a poly-centric structure, favouring the construction of cycle
 routes between the various sub-centres, not just in radial routes to a single
 centre. Note in both scenarios the large increase in the level of cycling in
@@ -1212,10 +1256,17 @@ Potential applications go far beyond these policy relevant near-term
 applications. Wider extensions of the model that could build on the framework
 presented here include:
 
+- Additional 'output tabs' in the PCT's user interface, to estimate the
+quantitative benefits of cycling uptake at the local (and potentially
+route-allocated) level. Benefits estimated could include health savings
+through increased physical activity [@Fraser2011] and the local energy and
+carbon savings of cycling uptake
+[@Lovelace2011c].
+
 - Deployment of the PCT for entire countries.
-This would depend on having appropriate OD data. As indicated
-above, the datasets required for the PCT are increasingly available, from
-a range of sources.
+This would depend on having appropriate OD data and could
+could build on emerging 'Big Data' sources for origin-destination
+flows [@Alexander2015].
 
 - International comparisons of cycling potential.
 This could include include an exploration of
