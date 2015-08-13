@@ -10,12 +10,8 @@ author:
 - James Woodcock
 csl: elsevier-harvard.csl
 output:
-  word_document: default
-  pdf_document:
+  word_document:
     fig_caption: yes
-    number_sections: yes
-    toc: yes
-  word_document: default
 header-includes: \usepackage{amsmath} \usepackage{longtable} \usepackage{booktabs}
 bibliography: ../documents/Transport.bib
 ---
@@ -500,7 +496,7 @@ practitioners for feedback on the advantages and disadvantages of each.
 Many transport decisions (such as where to build new cycle routes)
 are made at the local level [@Gaffron2003]. In England this
 often means local Highway Authorities, which
-operate have a slightly different geography than the more commonly used
+operate a slightly different geography than the more commonly used
 LAD divisions (Fig. 2).
 The regions used as the building blocks of the PCT can adapt to
 reflect either, or alternative, funding structures.
@@ -856,7 +852,7 @@ travelling 4 to 5 km to work,
 who used a cycle as their main mode, was 4.6% ($pcycle = 4.6$).
 
 All else being equal (specifically, assuming average hilliness in
-Manchester is equal to the national average), the number percent of
+Manchester is equal to the national average), the percent of
 commuters cycling to work in this case under the Government Target
 scenario ($SLC(govtarget)$) would be 4.6% + 5.0% = 9.6%.
 The total number of commuters cycling to work in Manchester
@@ -1023,7 +1019,7 @@ and women (2.33 / 20).
 
 The 'Go Dutch' scenario represents the rate of cycling that would occur
 if people had the same propensity to cycle as the Dutch do, for trips of
-the same length. It is
+the same length and hilliness. It is
 important to note that this is not a 'top down' scenario in which the national
 level of cycling is set to levels found in The Netherlands. The scenario is
 'bottom up' because the proportion of trips being cycled is set per OD pair
@@ -1184,24 +1180,26 @@ among males and females. Cycling levels are also even
 between different socio-economic groups,
 although ethnic and religious differences exist [@Fishman2015].
 Demographics should therefore play less of a
-roll in estimating cycling potential for strategic purposes
+role in estimating cycling potential for strategic purposes
 than for identifying 'quick-win' policies based on current propensities.
 Based on this understanding, the PCT has the ability to represent different
 scenarios of change. Illustrations of how the 
-pattern of cycling could shift to new transport corridors in the future were
+pattern of cycling could shift to new transport corridors in the
+hypothetical future represented by 'Go Dutch' were
 described as 'very useful' by transport planners during user testing.
-The visualisation of different scenarios
-enables 'visioning', an activity with great potential
-to improve transport planning for sustainability [@Tight2011].
+This finding coincides with 'visioning' work, which has great potential
+to improve transport planning for the long-term [@Tight2011].
+Further work in this direction could explore the impact of high levels
+of 'telecommuting', for example, based on Finnish data [@Helminen2007].
 
-The results demonstrate the utility of online, interactive and open source
+The results of user testing indicated the utility of online, interactive and open source
 web applications for cost-effective
-allocation of investment. User testing has indicated that the tool
-would be useful for setting local targeting or locally-specific policies within
-a single city, country or region. Minor modifications of the methods
-described in this paper could help determine the suitability of localised
+allocation of investment. Specifically, transport planners said that the tool
+could be useful for setting local targets or implementing locally-specific policies within
+a single city or region. To follow-up on such feedback, modifications of the methods
+described in this paper are planned to help determine the suitability of localised
 cycling targets in relation to investment 
-plans.^[Targets have proliferated in recent years, including an official
+options.^[Targets have proliferated in recent years, including an official
 target to reach 10% of trips made by bicycle has been
 made by authorities in Dublin, Leicester and across
 all of Scotland over various time-scales [@Beatley2012]. A mode share of
@@ -1337,7 +1335,7 @@ AG’s contribution was also supported by a National Institute for Health Resear
 # References
 
 ```{r, echo=FALSE, eval=FALSE}
-file.copy("~/Documents/Transport.bib", "documents/Transport.bib", overwrite = T)
+# file.copy("~/Documents/Transport.bib", "documents/Transport.bib", overwrite = T)
 # this fails
 # system("bibtool -x documents/flow-model.aux -o ~/Documents/Transport.bib")
 
