@@ -8,11 +8,11 @@ author:
 - James Woodcock
 csl: elsevier-harvard.csl
 output:
-  word_document: default
   pdf_document:
     fig_caption: yes
     number_sections: yes
     toc: yes
+  word_document: default
 header-includes: \usepackage{amsmath} \usepackage{longtable} \usepackage{booktabs}
 bibliography: ../documents/Transport.bib
 ---
