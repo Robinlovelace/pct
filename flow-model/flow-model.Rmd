@@ -198,7 +198,7 @@ Unlike @McCollum2009 and other national-level scenario-based approaches,
 the PCT allows estimation of where new cycling trips are most likely to
 be generated given predetermined overall increases in cycling.
 This makes the tool especially well-suited to local-level analysis of
-the impacts of acheiving a target level of cycling
+the impacts of achieving a target level of cycling
 (typically measured as a proportion of all trips).
 For example, the ’Government target’ scenario assumes a doubling in
 the level of cycling nationwide (DfT 2014).
@@ -231,7 +231,7 @@ route network in the study region under various future scenarios.
 By aggregating data from the OD level to geographic zones, the PCT
 model also enables area-based planning (encouraging users to focus on
 particular zones rather than OD pairs). This inclusion of OD level data is one
-important difference between PCT and previous approaches to modeling cycling
+important difference between PCT and previous approaches to modelling cycling
 potential. @Parkin2008, for example, used
 a multiple regression model to estimate levels of commuter cycling at an
 area level. Similarly local, survey data has been used to identify areas with
@@ -443,7 +443,7 @@ may be able to provide a reasonable approximation of real world travel.
 
 A variety of emerging sources can also provide OD data,
 including 'Big Data' from commercial companies.
-These alternative souces of OD data include:
+These alternative sources of OD data include:
 mobile telephone service providers
 [@smoreda2013spatiotemporal];
 public transport data [@Kitchin2013]; household
@@ -572,7 +572,7 @@ of trips between OD pairs was specified. OD pairs with less than
 `mflow` trips were removed from the analysis. This followed the insight that the
 distribution of number of commuters per OD pair is
 skewed: a small number of OD pairs along major travel corridors
-account fo a disproportionately high proportion of travel.
+account for a disproportionately high proportion of travel.
 In the City of Manchester, for example,
 setting `mflow` to 30 reduced the number of OD pairs by 85%
 still accounted almost 70% of commuters.
@@ -637,7 +637,7 @@ self-contained transport system this does will not create problems.
 But if the region is part
 of a larger conurbation the clipping could be problematic, as
 travel between zones inside the LAD and those directly outside would be
-igored.
+ignored.
 To solve this problem for smaller regions we created buffers around each region,
 from which additional zones were sampled in a process that was triggered if
 the number of zones fell below some threshold.
@@ -677,7 +677,7 @@ grid.raster(readPNG("../figures/model-outpute.png"))
 
 In essence, the PCT provides a model of of how cycle use in different locations is
 inhibited by various constraints, and the potential for increased cycle use if these
-contraints were reduced or removed.  Although not explicitly represented in the model,
+constraints were reduced or removed.  Although not explicitly represented in the model,
 these constraints can be assumed to include a mix of infrastructural and cultural
 constrains (i.e. the deterrent effects of sub-optimal cycling conditions and the
 cultural resistance of certain groups to take up cycling --- these may well be
@@ -705,12 +705,17 @@ of short commutes will have below-average growth in relative
 constraints which deter cycle use more in some places than in others.
 It therefore indicates where investment in increased cycle use might achieve the greatest impact in the short term.
 
-- Gender Equality (*gendereq*). This scenario illustrates the increase in cycling that would result if women were as likely to cycle in England as men – or, more specifically, if the proportion of female cycle commuters in each flow were the same as the current proportion of males. In places where cycling is the norm, women are equally as likely to cycle as are men (Pucher et al 2010).
-The *gendereq* scenario therefore represents
-the elimination of one specific cultural constraint,
-namely the lower propensity of women than men
-to cycle. This scenario is expected to have greatest impact where
-cycling conditions are hostile.
+- Gender Equality (*gendereq*). This scenario illustrates the increase in cycling
+that would result if females cycled as much as men, all things being equal.
+Specifically, the scenario sets the proportion of female cycle commuters
+to the current proportion of males in each OD pair.
+In places where cycling is the norm,
+cycle as much as men (Pucher et al 2010), so *gendereq* represents
+the elimination of one specific cultural constraint.
+This scenario has greatest impact in areas where
+the rate of cycling is low and highly unequal (Fig. 4)
+and along desire lines where cycling
+is already a common mode of transport.
 
 - Go Dutch (*dutch*).
 While *govtarget* and *gendereq* build on current cycling behaviour,
@@ -729,7 +734,7 @@ are unrelated to current levels, and are constrained
 only by local trip distance distributions and hilliness.
 
 - E-bikes (*ebikes*). This scenario models the additional increase
-in cycle use that would would be achieved through the widespread uptake of electric
+in cycle use that would be achieved through the widespread uptake of electric
 cycles ('E-bikes').
 E-bikes enable longer journeys, as well as making cycling a viable option for older
 people and people with impaired mobility who might otherwise be unwilling to cycle
@@ -817,13 +822,14 @@ transport planners identify where new demand for cycling is likely to be
 greatest in the near term.
 
 In our implementation of this
-scenario, cycling does not double in all areas. Places that have high average
-commute distances or that already have a rate of cycling above the national
-average will see cycling increase less than two-fold; areas with a below average
-current rate of cycling but high potential based on the number of short commute
-trips will see cycling increase more than two-fold. The same logic applies to
-desire lines: OD pairs that are close together but with a currently low
-rate of cycling tend to see the greatest increase in cycling under the *govtarget* scenario.
+scenario, cycling does not double in all areas.
+In zones that have high average
+commute distances or a high observed rate of cycling, cycling will increase
+by less than double. In zones with a below average
+current rate of cycling but high potential based on
+trip distance distributions
+cycling will more than double. In all cases the rate of cycling
+increases.
 
 ```{r, echo=FALSE}
 # Old description of govtarget
@@ -1099,7 +1105,7 @@ be possible in this model. In future work we plan to
 update this scenario, basing the changes to the distance decay
 parameters on real data from the Dutch National Travel Survey.
 This will build on analysis of the influence of E-bikes on propensity to cycle
-in the Netherlands that is being undertaken in paralell to the work
+in the Netherlands that is being undertaken in parallel to the work
 presented in this paper. 
 
 # Results
@@ -1140,7 +1146,7 @@ the Government Target (*govtarget*) and Go Dutch
 Note that the top 20 OD pairs
 in Norwich under *govtarget* assumptions are dominated by the current rate of cycling,
 with the most travelled desire lines projected to continue to be found towards the east of
-the city (this can be explained by the location of the Unviversity of
+the city (this can be explained by the location of the University of
 East Anglia to the east of the city).
 Under *dutch* assumptions, by contrast,
 the pattern of cycling shifts substantially to the west.
@@ -1318,7 +1324,7 @@ of detailed cycle route quality data (e.g. width and bumpiness of
 path), which could help planners assess the scale of
 changes needed to enable substantial uptake.  Future versions of the tool could
 make use of
-data derived from new network assesment technologies
+data derived from new network assessment technologies
 [@Joo2013]. 
 
 ```{r, echo=FALSE}
@@ -1354,7 +1360,7 @@ it can help to
 build business cases for further investment and policy change.
 The methods and applications
 presented in this paper can help to help prioritise high-quality
-and well targetted infastructure interventions as part of a wider shifts in
+and well targetted infrastructure interventions as part of a wider shifts in
 transport policies. Thus tools such as the PCT can play a role
 in the long-term transition away from the private car and towards
 more sustainable and healthy transport systems.
