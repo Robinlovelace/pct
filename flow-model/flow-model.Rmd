@@ -12,6 +12,10 @@ csl: elsevier-harvard.csl
 output:
   word_document:
     fig_caption: yes
+  pdf_document:
+    fig_caption: yes
+    number_sections: yes
+    toc: yes
 header-includes: \usepackage{amsmath} \usepackage{longtable} \usepackage{booktabs}
 bibliography: ../documents/Transport.bib
 ---
@@ -89,11 +93,11 @@ Origin-destination (OD) data, combined with
 quantitative information at the level of administrative zones,
 form the basis of the model, which estimates cycling potential as a function of
 route distance, hilliness and other factors at the OD and area level.
-Multiple scenarios were generated and interactively displayed
+Multiple scenarios were generated and interactively displayed.
 These were: 'Government Target', in which the rate of cycling doubles in England;
 'Gender Equality', in which women cycle as much as men;
 ‘Go Dutch’, in which English people cycle as much as people in
-the Netherlands; and 'Ebikes', an exploratory analysis of increasing the distance
+the Netherlands; and 'E-bikes', an exploratory analysis of increasing the distance
 people are willing to cycle due to new technology.
 The model is freely available online and can be accessed at [geo8.webarch.net/master/](http://geo8.webarch.net/master/).
 This paper also explains how the model's open source code base
@@ -126,20 +130,19 @@ would otherwise depend on motorised modes or
 other people [@Aldred2008].
 
 Within this fast-moving policy context,
-the question of where to construct new strategic cycle routes
-is a critically important question for professional transport planners who have
-developed methods, such as Aecom's proprietary Permeability Assessment Tool,
-for assessing the most cost-effective infrastructure
-intervention [@Payne2014].
-Yet this issue is seldom raised in academic research.
-The design [@Heath2006;@TfL2014;@WG2014] and geographic location [@Aultman-Hall1997;@Minikel2012]
+the question of where to construct new cycle infrastructure
+is of strategic importance. In response, professional transport planners and
+consultancies have developed new methods for identifying cost-effective infrastructure
+interventions, such as Aecom's proprietary Permeability Assessment Tool
+[@Payne2014]. Yet geographically specific prioritisation of new infrastructure
+is seldom raised in academic research on cycling and active travel more widely.
+The design [@Heath2006;@TfL2014;@WG2014]
+and geographic location [@Aultman-Hall1997;@Minikel2012]
 of cycle paths are
-important factors influencing the attractiveness of cycling, which
-is in turn crucial for high cycling uptake [@Pucher2010].
-The premise of this paper is that
-planning support tools, such as the 
-tool described in this paper, can help the associated investment to be
-spent effectively.
+important factors influencing the attractiveness of cycling
+and the rate of cycling [@Pucher2010].
+Through the case study of the PCT, this paper explores the ability of strategic
+transport planning support tools to ensure that cycling investment is spent effectively.
 
 The Propensity to Cycle Tool (PCT) is
 an interactive map-based 'planning support system'
@@ -222,10 +225,9 @@ An 'OD pair' in this context constitutes a 'desire line' connecting origins and 
 a trip begins and the 'D' where it ends. These concepts are also
 represented by the $T_{ij}$ matrix notation in transport modelling
 [@Ortuzar2001;Simini2012].
-As described below in more detail, the model takes the current
-rate of cycling and other variables per OD pair and uses this to simulate what
-the rate of cycling could be at the OD and network-allocated
-route level under various future scenarios.
+The model takes OD level data and uses this to
+simulate what the rate of cycling could be along the desire lines
+route network in the study region under various future scenarios.
 By aggregating data from the OD level to geographic zones, the PCT
 model also enables area-based planning (encouraging users to focus on
 particular zones rather than OD pairs). This inclusion of OD level data is one
@@ -292,23 +294,25 @@ outputs due to the flexible online interface.
 # spatial distribution for cycle infrastructure. It is also of
 # great policy relevance during a time of transition away from energy inefficient
 # forms of transport such as the personal automobile.
+# The model described in this paper is easy to modify and extend,
+# despite the online interface being easy to learn (it little more complex than
+# Google Maps, which many users will have experience with).
 ```
 
-The model described in this paper is easy to modify and extend,
-despite the online interface being easy to learn (it little more complex than
-Google Maps, which many users will have experience with).
-The scenarios are highly responsive to user input because the
-scenarios are pre-calculated, rather than being computed 'on the fly',
+The scenarios are highly responsive to user input.
+This is because the results for each scenario are pre-calculated,
+rather than being computed 'on the fly'.
 To ensure the model is accessible, the
 user is not required to specify any numerical model parameters to interact with
-the PCT. Advanced users can modify any part of the model, however.
-The PCT's open source licence reduces common barriers to
-development of additional features in the PCT: cost and access to source code.
-Anyone with programming
-skills can modify the code base for their own needs.
-The PCT is therefore part of a wider trend in transport research towards
-greater transparency in software development and collaboration [@Tamminga2012;@novosel2015agent].. 
-The transferability of the PCT to new settings is likewise enhanced by its use of aggregate OD data,
+the PCT. Advanced users can modify any part of the model.
+Furthermore, the PCT's open source approach reduces two additional barriers to
+effective use of transport planning software: cost and access to source code.
+With the PCT anyone with programming
+skills can enhance the tool for their own purposes.
+The PCT is part of a wider trend in transport research towards
+greater transparency in software development and collaboration [@Tamminga2012;@novosel2015agent]..
+The transferability of the PCT to new settings is likewise enhanced
+by its use of aggregate OD data,
 which is more readily available than individual level data.
 The use of aggregate OD data also makes the model highly scalable.
 The PCT thus has the potential to provide a basis for the creation of new
@@ -561,24 +565,23 @@ was undertaken by CycleStreets.net (a routing service for
 planning cycle trips), constituting the most computationally intensive part of the model.
 
 To reduce data processing and visualisation times
-only a sub-sample of OD pairs for each region were used.
+a sub-sample of OD pairs was used.
 The aim was to reduce the number of OD pairs whilst retaining the overall
-travel pattern. We did this using a minimum number of trips between OD pairs,
-following the insight that the
+travel pattern. To do this a minimum number (labelled `mflow`)
+of trips between OD pairs was specified. OD pairs with less than
+`mflow` trips were removed from the analysis. This followed the insight that the
 distribution of number of commuters per OD pair is
-skewed: commuters using a few major 'commuter corridors'
-mean a high proportion of displacements can be represented by
-a relatively small proportion of OD pairs. For example, in the City of
-Manchester (whose area encompasses the centre of Greater Manchester but
-also extends several miles southwards),
-disregarding OD pairs with fewer than 30 commuters leaves
-15% of all possible origin destination pairs but includes almost 70% of commuters.
-The number 30 is a parameter (labelled `mflow`) that can be adjusted to reach a reasonable
-balance between comprehensive coverage and speed of saving and loading.
-another way to reduce the number of flow-lines is to set the maximum Euclidean
-(or "crow-flies") distance. This can be done in conjunction with setting a maximum
-number of commuters.
-We used a maximum value of 15 km Euclidean distance which translates to around 20 km
+skewed: a small number of OD pairs along major travel corridors
+account fo a disproportionately high proportion of travel.
+In the City of Manchester, for example,
+setting `mflow` to 30 reduced the number of OD pairs by 85%
+still accounted almost 70% of commuters.
+Different values for `mflow` were tested to reach a reasonable
+balance between comprehensive coverage and speed of saving and loading data.
+Another way to subset OD pairs is to set the maximum Euclidean
+(or "crow-flies") distance between OD pairs (labelled `mdist`).
+We tested various values for `mdist` and settled on
+15 km. This translates to around 20 km
 on the route network (assuming a circuity value of 1.3).
 From the Great Britain National Travel Survey, only 1.1% of cycle commutes
 in Britain exceed this distance.
@@ -629,15 +632,15 @@ to account for the aforementioned exponential decay.
 ## Zone Buffer
 
 As previously discussed selecting a Local Authority 'LAD' region means
-arbitrarily ignoring all the MSOAs outside this region. If the region is a
-self-contained hub this does not present a major issue but if the region is part
-of a larger metropolitan district then there may be significant travel between zones
-inside the LAD and ones that have been clipped outside.
-In future work this will be solved by using larger regional units.
+ignoring all the MSOAs outside this region. If the region is a
+self-contained transport system this does will not create problems.
+But if the region is part
+of a larger conurbation the clipping could be problematic, as
+travel between zones inside the LAD and those directly outside would be
+igored.
 To solve this problem for smaller regions we created buffers around each region,
-from which additional
-zones were sampled. This sampling
-could be triggered if the number of zones falls below some threshold.
+from which additional zones were sampled in a process that was triggered if
+the number of zones fell below some threshold.
 We set this threshold to 60 for the city of
 Manchester (which contains 57 MSOAs) so that
 zones would be selected outside the long and thin LAD shape (see Fig. 7 below).
@@ -725,10 +728,10 @@ the predicted levels of cycle use in *dutch*
 are unrelated to current levels, and are constrained
 only by local trip distance distributions and hilliness.
 
-- Ebikes (*ebikes*). This scenario models the additional increase
+- E-bikes (*ebikes*). This scenario models the additional increase
 in cycle use that would would be achieved through the widespread uptake of electric
-cycles ('Ebikes').
-Ebikes enable longer journeys, as well as making cycling a viable option for older
+cycles ('E-bikes').
+E-bikes enable longer journeys, as well as making cycling a viable option for older
 people and people with impaired mobility who might otherwise be unwilling to cycle
 at all. This scenario therefore goes beyond the *dutch*
 scenario in also reducing the
@@ -1077,7 +1080,7 @@ Based on these insights, the essence of the 'Go Dutch' scenario
 (henceforth simply *dutch*) is the application of distance decay parameters
 found in the Netherlands to each OD pair in the study area.
 
-## Ebikes
+## E-bikes
 
 This scenario was to provide an indication of the increased rate of cycling
 that may be possible due the electric cycles.
@@ -1095,7 +1098,7 @@ This allows us to illustrate the type of output that will
 be possible in this model. In future work we plan to
 update this scenario, basing the changes to the distance decay
 parameters on real data from the Dutch National Travel Survey.
-This will build on analysis of the influence of Ebikes on propensity to cycle
+This will build on analysis of the influence of E-bikes on propensity to cycle
 in the Netherlands that is being undertaken in paralell to the work
 presented in this paper. 
 
@@ -1177,10 +1180,9 @@ associated with this OD pair is 1.6 km, resulting in cirquity values of
 1.44 and 1.75 respectively.
 
 Dutch evidence suggests that cyclists are generally unwilling to
-divert to a route which
-is more than about 1.4 to 1.5 times the length of the
-'crow-flies' Euclidean distance (defined as $q$ above)
-and that the target "for cycle provision should be 1.2" [@crow2007].
+take a path that is more than around 1.3 to 1.5 times the length of the
+'crow-flies' Euclidean distance (defined as $q$ above).
+The same research suggests target "for cycle provision should be 1.2" [@crow2007].
 This suggests that high quality cycle infrastructure along the Trinity Way route
 would be much better used by commuters than an
 alternative quiet route that diverges greatly from the shortest path.
