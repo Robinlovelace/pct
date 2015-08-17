@@ -640,21 +640,20 @@ ignoring all the MSOA zones outside the region. If the region is a
 self-contained transport system this will not create problems.
 If the region is part
 of a larger conurbation, however, the clipping could be problematic.
-To solve this problem for smaller regions we created buffers around each region,
-from which additional zones were sampled in a process that was triggered if
-the number of zones fell below some threshold.
-We set this threshold to 60 for the City of
-Manchester (which contains 57 MSOAs) so that
-zones would be selected outside the city's long and thin area (see Fig. 7 below).
-This protocol increases the sample size by including all
+To solve this problem we created buffers around each region,
+from which additional zones were sampled in regions where
+the number of MSOA zones fell below some threshold.
+We set this threshold to 60.
+This meant that additional zones were
+selected outside the City of Manchester, which has 57 MSOAs
+(see Fig. 7 below).
+This protocol increased the sample size by including all
 zones whose population-weighted centroid lies inside the
-buffer.
+buffer, the width of which can also be pre-specified.
 
 ## The Model Output tab
 
-Users can view a summary of the model, including the subsetting
-criteria mentioned above, without going through all the
-underlying code. This is can be done via the 'Model Output' tab (Fig. 3).
+Users can view a summary of the model via the 'Model Output' tab (Fig. 3).
 This serves three purposes: to show the underlying model;
 to ensure transparency; and to provide further information.
 The tab was added in response to feedback during the user testing sessions.
@@ -677,22 +676,23 @@ grid.raster(readPNG("../figures/model-outpute.png"))
 
 # Model scenarios
 
-In essence, the PCT provides a model of of how cycle use in different locations is
-inhibited by various constraints, and the potential for increased cycle use if these
-constraints were reduced or removed.  Although not explicitly represented in the model,
-these constraints can be assumed to include a mix of infrastructural and cultural
-constrains (i.e. the deterrent effects of sub-optimal cycling conditions and the
-cultural resistance of certain groups to take up cycling --- these may well be
-inter-related).  They also include the factors of distance and hilliness which have
-already been discussed.
+Scenarios were developed to indicate how local cycle use
+could increase following the removal of various constraints that
+currently inhibit cycling in England below its long-term potential.
+These constraints include a mix of infrastructural and cultural factors.
+Note that the impact of poor cycling conditions and the
+cultural resistance of certain groups to cycle may well be
+inter-related. More fundamental constraints to cycling include the
+aforementioned factors of distance and hilliness, which can to some degree
+be overcome by new technology (see the *ebike* scenario below).
 
-For the case study presented in this paper, four scenarios were developed in order to
-allow transport planners to consider different possibilities for the future of cycling
-in England (n.b. the *Ebike* scenario has yet to be fully implemented). 
-The following sections explain these four scenarios.  However it is worth summarising them at the outset, as this illustrates the flexibility of the PCT as a tool that could be to develop other scenarios for different geographical and political contexts.
+The four scenarios developed for the case study cities were developed to
+explore different cycling futures in England.
+Because timescales are not specified, they are not
+necesarily mutually exclusive. 
 
 - Government target (*govtarget*). This scenario models a doubling of
-the number of cycling trip-stages in England. 
+the number of cycling trips in England. 
 Although this is a substantial increase in relative terms, cycle use still
 remains low in this scenario compared with countries such as the Netherlands.
 *govtarget* allows for different rates of growth in different places,
@@ -708,16 +708,16 @@ constraints which deter cycle use more in some places than in others.
 It therefore indicates where investment in increased cycle use might achieve the greatest impact in the short term.
 
 - Gender Equality (*gendereq*). This scenario illustrates the increase in cycling
-that would result if females cycled as much as men, all other variables being equal.
+that would result if women cycled as much as men, all other variables being equal.
 Specifically, the scenario sets the proportion of female cycle commuters
 to the current proportion of males in each OD pair.
-In places where cycling is the norm,
+The scenario is based on the observation that in places where cycling is the norm,
 women cycle at least as much as men (Pucher et al 2010).
 *gendereq* thus represents
 the elimination of one specific cultural constraint.
-This scenario has greatest impact in areas where
-the rate of cycling is low and highly unequal (Fig. 4)
-and along desire lines where cycling
+This scenario has greatest relative impact in areas where
+the rate of cycling is highly gender-unequal (Fig. 4).
+In absolute terms, cycling increases most in this scenario where cycling
 is already a common mode of transport.
 
 - Go Dutch (*dutch*).
@@ -739,13 +739,14 @@ only by local trip distance distributions and hilliness.
 - E-bikes (*ebikes*). This scenario models the additional increase
 in cycle use that would be achieved through the widespread uptake of electric
 cycles ('E-bikes').
-E-bikes enable longer journeys, as well as making cycling a viable option for older
-people and people with impaired mobility who might otherwise be unwilling to cycle
-at all. This scenario therefore goes beyond the *dutch*
-scenario in also reducing the
-impacts of the distance and hilliness constraints to cycling.
+E-bikes enable longer journeys and make cycling a more viable option for
+a number of people, including those with low fitness and people
+with impaired mobility. This scenario is based on the Go Dutch scenario.
 
 These scenarios are described more fully below.
+They are not intended to be definitive scenarios of cycling futures
+in England or anywhere else; we encourage users of the PCT to
+develop new scenarios relevant to new contexts.
 
 ```{r, echo=FALSE}
 # We have data on the following variables and the impact of each on model
@@ -828,16 +829,16 @@ the near term.
 
 The key point about this scenario is that cycling does not simply double in all
 areas. Instead, the increase depends on the proportion of
-commuter trips in each area which are of cyclable length (i.e. typically less
-than around 5 miles) and the proportion of trips which are already made by cycling.
-The *govtarget* scenario therefore projects above
-average growth (i.e. more than a doubling)
-in areas with many cyclable length but a
-low current rate of cycling. Lower relative increases in cycling
-are projected in areas where a relatively low proportion of trips are
-cyclable and high current cycling rates.
+commuter trips in each area that are cyclable (i.e. typically less
+than around 5 miles).
 
 ```{r, echo=FALSE}
+# The *govtarget* scenario therefore projects above
+# average growth (i.e. more than a doubling)
+# in areas with many cyclable length but a
+# low current rate of cycling. Lower relative increases in cycling
+# are projected in areas where a relatively low proportion of trips are
+# cyclable and high current cycling rates.
 # Old description of govtarget
 # The *govtarget* scenario also relates to the *distribution* of trips
 # in the study area compared with the data used for the model.
@@ -906,7 +907,7 @@ among those making trips with a 'fastest route' distance of between 4 and 5 km,
 the proportion who used a cycle as their main mode is 5.0%.
 Under the 'national doubling' assumption of the *govtarget* scenario, this
 implies that the total increase in the proportion of cyclists in this distance band is 5.0% --- i.e. $pcycle(natmod) = 0.05$.
-In the case study city of Manchester, the proportion of commuters
+In the City of Manchester the proportion of commuters
 travelling 4 to 5 km to work,
 who used a cycle as their main mode, was 4.6% ($pcycle = 4.6$).
 
@@ -919,24 +920,19 @@ The total number of commuters cycling to work in Manchester
 i.e. the proportion cycling multiplied by the total number of commuters.
 
 Note that this does not mean
-that *all* OD pairs in Manchester between 4 and 5 km would be projected to have
-a 9.6% proportion of cycle commuters in the *govtarget* scenario.
-The initial level of cycling
-(*pcycle*) will vary widely: an OD pair with an exceptionally high initial rate
+that $SLC(govtarget) = 9.6%$ in *all* OD pairs in Manchester between 4 and 5 km
+because initial levels of cycling
+vary widely. An OD pair with an exceptionally high initial rate
 of cycling, for example $pcycle$ = 30%, would end up with a projected
 rate of cycling of 35% ($pcycle(govtarget)$ = 35%). Likewise, a desire line of
 4.5 km that has no cycling currently would be projected to reach 5%.
 
-The approach here assumes that cycling potential against a given national
+The approach assumes that cycling potential against a given national
 increase is always a positive number.
-This applies even in the
-areas in which cycling is currently substantially above what would be
-expected given the present low average level of cycling and the
-distribution of trip distances and hills.
-The larger the increase in cycling the less the baseline matters
-compared with the potential.
-By contrast, the larger the current rate of cycling, the less important
-is the scenario in influencing the projected total flow.
+The larger the increase in cycling for the scenario, the less the baseline matters
+influences the projected rate.
+By contrast, the larger the current rate of cycling, the lower the
+impact of the scenario on the future rate of cycling.
 
 Our implementation of the *govtarget* scenario is thus in line with findings from
 @Sloman2014 and @Heinen2015, who found that it is initially
