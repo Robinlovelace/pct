@@ -74,6 +74,10 @@ if(grepl(pattern = "pct$", x = getwd())){
 # source("../set-up.R")
 pkgs <- c("stplanr", "knitr", "xtable", "sp", "grid", "png")
 vapply(pkgs, require, character.only = T, FUN.VALUE = logical(1))
+
+# To do:
+# Add speed-bumps/speed cameras/cycling priority or remove lanes for motorised traffic
+# Thanks also to Phil Tate for comments
 ```
 
 # Abstract
@@ -124,7 +128,7 @@ Emerging evidence illustrates that high-quality infrastructure
 is an effective way of promoting cycling
 as a safe, accessible and convenient
 transport option for people of all ages and abilities [@Heinen2015].
-Thanks to various designs of modified bicycles, quadricycles and handcycles,
+Thanks to various designs of modified cycles (e.g. quadricycles and handcycles),
 cycling can also provide an efficient means of self propulsion for people who
 would otherwise depend on motorised modes or
 other people [@Aldred2008].
@@ -162,8 +166,8 @@ The PCT was commissioned by the UK's Department for Transport to identify
 prioritise strategic investment in active travel [@DepartmentforTransport2015].
 Part of the contract involved user testing sessions.
 Over 70 practitioners and policy-makers provided feedback which provided
-(i) confirmation of the tool's utility for decision-making
-(ii) input into the tool's user interface, and
+(i) confirmation of the tool's utility for decision-making;
+(ii) input into the tool's user interface; and
 (iii) ideas for future development.
 
 The PCT is, to our knowledge,
@@ -178,7 +182,7 @@ underlying the PCT is publicly available at
 [github.com/npct](https://github.com/npct) under the conditions of the MIT
 license. The aggregate level OD model underlying the PCT was written in R,
 a mature language for statistical computing [@RCoreTeam2015]. The
-interface was written in shiny, an R package for creating online
+interface was written in **shiny**, an R package for creating online
 web applications for data visualisation [@Chang2015].
 
 The PCT is a *strategic* transport planning tool.
@@ -200,8 +204,8 @@ be generated given predetermined overall increases in cycling.
 This makes the tool especially well-suited to local-level analysis of
 the impacts of achieving a target level of cycling
 (typically measured as a proportion of all trips).
-For example, the ’Government target’ scenario assumes a doubling in
-the level of cycling nationwide (DfT 2014).
+For example, our 'Government target' scenario assumes a doubling in
+the level of cycling in England (DfT 2014).
 Thus the PCT provides a method to answer the question:
 if cycling increases by 'x' nationally or regionally,
 how much is cycling likely to increase locally?
@@ -488,9 +492,9 @@ script, OD model and output visualisations were run on a region-by-region basis.
 This was to prevent overloading the computer with national data and to
 focus attention on the level at which funding is allocated.
 Using only one regional geographic level
-could have a potentially
-detrimental reduction of emphasis on 'edge zones' that straddle two
-or more regions.  To overcome this issue it is worth considering
+could, however,
+reduce emphasis on 'edge zones' that straddle two
+or more regions. To overcome this issue it is worth considering
 using more than one regional geographical system.
 A modified version of the model could be run at the national level.
 Another solution to the problem of 'edge zones'
@@ -571,11 +575,11 @@ travel pattern. To do this a minimum number (labelled `mflow`)
 of trips between OD pairs was specified. OD pairs with less than
 `mflow` trips were removed from the analysis. This followed the insight that the
 distribution of number of commuters per OD pair is
-skewed: a small number of OD pairs along major travel corridors
+skewed: a relatively small number of OD pairs along major travel corridors
 account for a disproportionately high proportion of travel.
 In the City of Manchester, for example,
-setting `mflow` to 30 reduced the number of OD pairs by 85%
-still accounted almost 70% of commuters.
+setting `mflow` to 30 reduced the number of OD pairs by 85%, yet
+still accounted for almost 70% of commuters.
 Different values for `mflow` were tested to reach a reasonable
 balance between comprehensive coverage and speed of saving and loading data.
 Another way to subset OD pairs is to set the maximum Euclidean
@@ -597,7 +601,7 @@ to estimate the potential rate of cycling at the OD level.
 It does so using Ordinary Least Squares (OLS) to
 optimize a number of model parameters
 linking distance ($d$) and hilliness ($H$) to the *dependent variable*:
-the proportion of trips made by cycling per OD pair ($pcycle$).
+the proportion of trips made per OD pair ($pcycle$).
 The concept of 'distance decay' [@Martinez2013]
 was used in the model to describe the (non-linear) relationship
 between the route distance of OD pairs and the proportion of trips made by cycling.
@@ -631,19 +635,17 @@ to account for the aforementioned exponential decay.
 
 ## Zone Buffer
 
-As previously discussed selecting a Local Authority 'LAD' region means
-ignoring all the MSOAs outside this region. If the region is a
-self-contained transport system this does will not create problems.
-But if the region is part
-of a larger conurbation the clipping could be problematic, as
-travel between zones inside the LAD and those directly outside would be
-ignored.
+Running the PCT region-by-region means
+ignoring all the MSOA zones outside the region. If the region is a
+self-contained transport system this will not create problems.
+If the region is part
+of a larger conurbation, however, the clipping could be problematic.
 To solve this problem for smaller regions we created buffers around each region,
 from which additional zones were sampled in a process that was triggered if
 the number of zones fell below some threshold.
-We set this threshold to 60 for the city of
+We set this threshold to 60 for the City of
 Manchester (which contains 57 MSOAs) so that
-zones would be selected outside the long and thin LAD shape (see Fig. 7 below).
+zones would be selected outside the city's long and thin area (see Fig. 7 below).
 This protocol increases the sample size by including all
 zones whose population-weighted centroid lies inside the
 buffer.
@@ -706,11 +708,12 @@ constraints which deter cycle use more in some places than in others.
 It therefore indicates where investment in increased cycle use might achieve the greatest impact in the short term.
 
 - Gender Equality (*gendereq*). This scenario illustrates the increase in cycling
-that would result if females cycled as much as men, all things being equal.
+that would result if females cycled as much as men, all other variables being equal.
 Specifically, the scenario sets the proportion of female cycle commuters
 to the current proportion of males in each OD pair.
 In places where cycling is the norm,
-cycle as much as men (Pucher et al 2010), so *gendereq* represents
+women cycle at least as much as men (Pucher et al 2010).
+*gendereq* thus represents
 the elimination of one specific cultural constraint.
 This scenario has greatest impact in areas where
 the rate of cycling is low and highly unequal (Fig. 4)
@@ -720,9 +723,9 @@ is already a common mode of transport.
 - Go Dutch (*dutch*).
 While *govtarget* and *gendereq* build on current cycling behaviour,
 the *dutch* scenario focuses on long-term potential.
-If English people had the same likelihood of cycling given trips
-(i.e. of the same distance and hilliness) as the Dutch do, then
-how would the rate and spatial distribution of cycling change?
+If English people were as likely to cycle for a given trip (i.e. of the same
+distance and hilliness) as Dutch people, then how would the rate and spatial
+distribution of cycling change?
 The Go Dutch scenario answers this question by applying Dutch
 distance decay curves to English travel patterns.
 'Go Dutch' therefore represents the elimination of the
@@ -808,28 +811,31 @@ These scenarios are described more fully below.
 
 ## Government Target
 
+```{r, echo=FALSE}
+# Taking population increases and trip rate decreases into account,
+# the target implies a doubling in the proportion of trips made by cycling nationwide [@Crawford2014].
+```
+
 The Government Target scenario (*govtarget*)
 is based on the UK government's proposed target
 (as set out in its draft Cycling Delivery Plan [@DepartmentforTransport2014])
 to double cycling in England, from 0.8 billion stages currently to 1.6 billion stages by 2025.
-Taking population increases and trip rate decreases into account,
-the target implies a doubling in the proportion of trips made by cycling nationwide [@Crawford2014].
-@DepartmentforTransport2014 does not investigate the geographic
-distribution of potential cycling uptake in their publication of the scenario, and so we made our own
-assumptions about this (see next paragraph) and investigated their implications.
-*govtarget* should help
-transport planners identify where new demand for cycling is likely to be
-greatest in the near term.
+However @DepartmentforTransport2014 says nothing about where these additional
+trips would come from. The *govtarget* scenario is therefore based on our own
+assumptions about this --- see the next paragraph. It aims to assist transport
+planners in identifying where new demand for cycling is likely to be greatest in
+the near term.
 
-In our implementation of this
-scenario, cycling does not double in all areas.
-In zones that have high average
-commute distances or a high observed rate of cycling, cycling will increase
-by less than double. In zones with a below average
-current rate of cycling but high potential based on
-trip distance distributions
-cycling will more than double. In all cases the rate of cycling
-increases.
+The key point about this scenario is that cycling does not simply double in all
+areas. Instead, the increase depends on the proportion of
+commuter trips in each area which are of cyclable length (i.e. typically less
+than around 5 miles) and the proportion of trips which are already made by cycling.
+The *govtarget* scenario therefore projects above
+average growth (i.e. more than a doubling)
+in areas with many cyclable length but a
+low current rate of cycling. Lower relative increases in cycling
+are projected in areas where a relatively low proportion of trips are
+cyclable and high current cycling rates.
 
 ```{r, echo=FALSE}
 # Old description of govtarget
@@ -932,17 +938,15 @@ compared with the potential.
 By contrast, the larger the current rate of cycling, the less important
 is the scenario in influencing the projected total flow.
 
-This implementation of the *govtarget* is in line with findings from
-@Sloman2014 and @Heinen2015 that suggest building where cycling is already
-common can further increase the rate of cycling. The method
-also links to the discussion of 'propensity' vs 'potential' to cycle:
-the former relates to short-term responses, based on existing demographic,
-social and cultural disparities in cycling. Under *govtarget*,  areas with
-lower propensity to cycle (lower cycling rates than one might expect given trip
-distances and hilliness) would still have a lower than expected rate of cycling
-based on national trends. By contrast, in the longer-term 'Go Dutch' scenario,
-it is the potential rate of cycling that determines the rate of flow,
-meaning that the current rate of cycling has no bearing on the scenario.
+Our implementation of the *govtarget* scenario is thus in line with findings from
+@Sloman2014 and @Heinen2015, who found that it is initially
+easier to achieve growth in cycle use in places where it cycling is
+already common.
+However, with sustained investment in overcoming the infrastructural and
+cultural constraints which limit cycle use,
+there is great long-term potential for
+increased cycling in many areas that currently have a low rate of cycling.
+This is modelled in the Go Dutch scenario (described after the *gendereq* scenario).  
 
 ```{r, echo=FALSE}
 # Although the *govtarget* and gender equality (described below)
@@ -976,7 +980,7 @@ male ($SLC_m$) and female ($SLC_f$) components:
 
 (@) $$ SLC = SLC_m + SLC_f $$
 
-More males cycle to work than females in every Local Authority in the country
+More males cycle to work than females in every Local Authority in England
 (Fig. 4). For this reason, the *gendereq* scenario
 is based on the assumption that the rate of cycling amongst
 females increases to match the rate of cycling amongst males.
@@ -1086,13 +1090,22 @@ Based on these insights, the essence of the 'Go Dutch' scenario
 (henceforth simply *dutch*) is the application of distance decay parameters
 found in the Netherlands to each OD pair in the study area.
 
+In contrast to *govtarget* and *gendereq* scenarios,
+Go Dutch is unrelated to the current rate of cycling. The scenario
+thus represents the elimination of localised
+constraints which inhibit cycle use more in some area than others.
+Local cycle use in Go Dutch is therefore constrained
+only by trip distances and hilliness.
+
 ## E-bikes
 
-This scenario was to provide an indication of the increased rate of cycling
-that may be possible due the electric cycles.
-This is the most ambitious and also the most speculative
-of the scenarios presented in this paper and it
-builds on 'Go Dutch', with Dutch model parameters.
+The aim of this scenario was to provide an indication of the increased rate of cycling
+be possible due the uptake new technology, specifically electric cycles ('E-bikes').
+The scenario represents a reduction in the degree to which cycle use is 
+constrained by trip distances.
+This is the most ambitious and speculative
+scenario presented in this paper; it
+builds on 'Go Dutch'.
 
 The results are
 based on the decision to increase by a small amount the $\beta_1$ distance decay parameter,
@@ -1182,7 +1195,7 @@ distance of 2.8 km (as shown by clicking on the line). The 'fastest'
 route is more direct (with a route distance of 2.3 km) but passes
 along Trinity Way (the A6042), a busy dual carriage way.
 The PCT (with the 'Straight Lines' option) tells us that Euclidean distance
-associated with this OD pair is 1.6 km, resulting in cirquity values of
+associated with this OD pair is 1.6 km, resulting in circuity values of
 1.44 and 1.75 respectively.
 
 Dutch evidence suggests that cyclists are generally unwilling to
@@ -1193,8 +1206,8 @@ This suggests that high quality cycle infrastructure along the Trinity Way route
 would be much better used by commuters than an
 alternative quiet route that diverges greatly from the shortest path.
 The decline in cycling propensity with distance supports this approach.
-The faster decline for women and older people combined with their greater
-preference for protected infrastructure indicates the importance of
+The faster decline for women and older people, combined with their greater
+preference for protected infrastructure, highlights the importance of
 providing direct and safe routes to encourage cycling amongst
 groups who currently cycle the least.
 
@@ -1251,7 +1264,7 @@ could be useful for setting local targets or implementing locally-specific polic
 a single city or region. To follow-up on such feedback, modifications of the methods
 described in this paper are planned to help determine the suitability of localised
 cycling targets in relation to investment 
-options.^[Targets have proliferated in recent years, including an official
+options.^[Targets have proliferated in recent years. For instance, an official
 target to reach 10% of trips made by bicycle has been
 made by authorities in Dublin, Leicester and across
 all of Scotland over various time-scales [@Beatley2012]. A mode share of
@@ -1346,39 +1359,60 @@ Indeed, one of the major motivations for writing this paper is to showcase the m
 for use by others to avoid 'reinventing the wheel' to solve such a ubiquitous
 and embedded problem as the un-sustainability of current travel patterns.
 
-It is likely that future work will focus on enabling
-practitioners to add
-new features that have not been considered in this paper.
-After all, the people who best understand the
-requirements of transport planners (and other users), are the
-'end users' themselves. By reducing the barriers to entry into the
-creation and visualisation of evidence-based scenarios about change in travel
-behaviour, the PCT methodology can empower transport decision-makers to
-supplement their own understandings of where need for new infrastructure is
-greatest. By indicating routes where investment could be most cost-effective,
-it can help to
-build business cases for further investment and policy change.
-The methods and applications
-presented in this paper can help to help prioritise high-quality
-and well targetted infrastructure interventions as part of a wider shifts in
-transport policies. Thus tools such as the PCT can play a role
-in the long-term transition away from the private car and towards
-more sustainable and healthy transport systems.
+Future work will focus on enabling practitioners to add
+new features to the PCT. This is based on the understanding
+that the people who best understand the
+requirements of transport planners are the transport planners themselves.
+By reducing barriers to entry in scenario-based transport modelling,
+the PCT methodology can empower decision-makers, planners and citizens to
+supplement their understanding of transport systems with evidence and plausible
+visions of the future.
+
+The PCT is highly policy relevant.
+By identifying specific routes where intervention is expected to be most effective,
+it can help to build business cases for further investment and policy change.
+Moreover, by highlighting the importance of 'arterial' routes to key destinations,
+the PCT can help rejuvenate longstanding debates
+such as the re-allocation of road space away from
+private cars [@Jones2014;@Sharples2009;@Black1992].
+In conclusion, new tools such as the PCT can inform the decision of where to construct
+new cycling infrastructure and, more widely,
+strengthen the evidence-base needed for a transition
+towards sustainable transport systems.
 
 # Acknowledgements:
 
-We would like to thank the following people for comments on earlier versions of the report and the direction of the OD level model:
-Roger Geffen (CTC, the National Cycling Charity),
-Ian Philips (Institute for Transport Studies, Leeds),
+We would like to thank the following people for comments on earlier versions of the report and the development of the PCT:
+Roger Geffen (CTC, the national cycling charity),
 Helen Bowkett (Welsh Government)
 and John Parkin (University of the West of England).
 Thanks to Simon Nutall and Martin Lucas-Smith for access to and instructions
 on the use of the CycleStreets.net API.
-We would also like to thank all
-participants in the user testing sessions and our funders the Department for
-Transport.
+Thanks to developers of open source software we have been able to make
+the PCT free and open to the world.
+We would also like to thank Brook Lyndhurst for assistance with the user testing,
+and all participants in the user testing sessions.
 
-AG’s contribution was also supported by a National Institute for Health Research (NIHR) post-doctoral fellowship. The views reported in this paper are those of the authors and do not necessarily represent those of [the DfT], the NIHR, the NHS or the Department for Health.
+# Funding
+
+The work presented was funded by the Department for
+Transport (contract no. RM5019SO7766: "Provision of Research Programme into
+Cycling: Propensity to Cycle").
+RL's contribution was supported by the Consumer Data Research Centre
+(Economic and Social Research Council grant number ES/L011891/1).
+JW’s contribution was supported by the Centre for Diet and
+Activity Research (CEDAR), a UKCRC Public Health Research Centre of Excellence
+funded by the British Heart Foundation, Cancer Research UK, Economic
+and Social Research Council, Medical Research Council, the National Institute
+for Health Research, and the Wellcome Trust. AG’s contribution was
+supported by a National Institute for Health Research (NIHR) post-doctoral
+fellowship. The views reported in this paper are those of the authors and do not
+necessarily represent those of the DfT, Brook Lyndhurst, the NIHR, the NHS or
+the Department for Health.  DfT staff contributed to the design of the
+PCT by offering feedback during user testing sessions.  Otherwise, none of
+the funders played any role in the design and development of the PCT, in
+the interpretation of its outputs, in the writing or this report, or the
+decision to submit this article for publication.
 
 ```{r, echo=FALSE}
 # # Using the tool
