@@ -15,8 +15,8 @@ bibliography: ../documents/Transport.bib
 # output: word_document
     # fig_caption: yes
 
-# output: 
-#   pdf_document: 
+# output:
+#   pdf_document:
 #     fig_caption: yes
 #     number_sections: yes
 #     toc: yes
@@ -32,7 +32,7 @@ bibliography: ../documents/Transport.bib
 #     affiliation: '3'
 #   - name: James Woodcock
 #     affiliation: '4'
-#     
+#
 # affiliation:
 #   - id: '1'
 #     department: Consumer Data Research Centre, School of Geography
@@ -40,19 +40,19 @@ bibliography: ../documents/Transport.bib
 #     city: Leeds
 #     state: West Yorkshire
 #     country: UK
-#   - id: '2' 
+#   - id: '2'
 #     department: Dept/Program/Center
 #     institution: Institution Name
 #     city: City
 #     state: State
 #     country: Country
-#   - id: '3' 
+#   - id: '3'
 #     department: Dept/Program/Center
 #     institution: Institution Name
 #     city: City
 #     state: State
 #     country: Country
-#   - id: '4' 
+#   - id: '4'
 #     department: Dept/Program/Center
 #     institution: Institution Name
 #     city: City
@@ -106,7 +106,7 @@ assist with the global transition away from fossil fuels.
 Cycling can play an important role in making transport systems more
 sustainable, healthy and equitable.
 This mode of transport already provides fast, affordable,
-healthy and convenient mobility to millions of people each day [@Komanoff2004].
+and convenient mobility to millions of people each day [@Komanoff2004].
 Mounting evidence of the external costs associated with car-dominated
 transport systems [@Newman1999;@Han2008;@Mizutani2011;@Shergold2012]
 and the benefits of cycling [@Oja2011;@Woodcock2013;@DeNazelle2011]
@@ -127,7 +127,7 @@ as a safe, accessible and convenient
 transport option for people of all ages and abilities [@Heinen2015].
 Thanks to various designs of modified cycles (e.g. quadricycles and handcycles),
 cycling can also provide an efficient means of self propulsion for people who
-would otherwise depend on motorised modes or
+would previously have depend on motorised modes or
 other people [@Aldred2008].
 
 Within this fast-moving policy context,
@@ -169,10 +169,9 @@ Over 70 practitioners and policy-makers provided feedback which provided
 (ii) input into the tool's user interface; and
 (iii) ideas for future development.
 
-The PCT is, to our knowledge,
-the first online, interactive and open source
+The PCT is the first online and interactive
 planning support system to focus explicitly on cycling. The
-computer code underlying the PCT is open 
+computer code underlying the PCT is open
 source, enabling the methods described in this paper to be
 reproduced. With access to appropriate data (described in the next section)
 and R programming skills, the PCT can be deployed in new
@@ -214,7 +213,7 @@ cycle trips plausibly occur?
 # future work building on tools such as the PCT could help answer more complex
 # and policy-relevant questions, such as:
 # Which modes would new cycle trips replace?
-# And hence, what would be the net benefits of these changes? 
+# And hence, what would be the net benefits of these changes?
 # ^[We
 # use the term 'cycle' instead of 'bicycle' to include trips made by
 # tricycles, quadricycles and hand cycles.]
@@ -223,20 +222,18 @@ cycle trips plausibly occur?
 This ability to model propensity to cycle at the OD level is one important,
 and novel, feature of the PCT.
 An 'OD pair' in this context can be represented visually as a
-'desire line'. This is the straight line connecting the origin (O) where
-a trip begins with the destination (D)
-where it ends [@Chan2003]. These concepts are related to the common
+'desire line'. This is the straight line connecting the origin
+(O) with the destination (D)
+[@Chan2003]. These concepts are related to the common
 $T_{ij}$ matrix notation in transport modelling, which represent the number
-of trips between origin and destination pairs
+of trips between OD pairs
 [@Ortuzar2001;@Simini2012].
 The model takes OD level data and uses this to
 simulate the proportion trips made by cycle
 between OD pairs.
 By aggregating data from the OD level to geographic zones, the PCT
 model also enables area-based planning (encouraging users to focus on
-particular zones rather than OD pairs). This inclusion of OD level data is one
-important difference between PCT and previous approaches to modelling cycling
-potential. @Parkin2008, for example, used
+particular zones rather than OD pairs). @Parkin2008, for example, used
 a multiple regression model to estimate levels of commuter cycling at an
 area level. Similarly local, survey data has been used to identify areas with
 high numbers of 'potentially cyclable trips' in London [@TfL2010].
@@ -252,10 +249,8 @@ in a form that is dynamic or accessible to transport planners.
 By allocating the results of an individual-level regression model to the
 route network, a method presented by @Zhang2014 was able to
 prioritise routes to "achieve maximum impacts early on".
-Our model differs by operating at the OD level
-for scalability. Also the PCT approach provides a framework for implementing
-scenarios of the future and a greater range of graphical and numerical
-outputs. 
+The PCT differs by operating at the OD level
+for scalability.
 
 ```{r, echo=FALSE}
 # This is thanks in part to the flexible online interface.
@@ -311,19 +306,14 @@ outputs.
 # Google Maps, which many users will have experience with).
 ```
 
-The scenarios are highly responsive to user input.
-This is because the results for each scenario are pre-calculated,
-rather than being computed 'on the fly'.
-To ensure the model is accessible, the
+The results for each scenario are pre-calculated,
+rather than being computed 'on the fly' to create a responsive
+user interface.  To ensure the model is accessible, the
 user is not required to specify any numerical model parameters to interact with
-the PCT. Advanced users can modify any part of the model, for example to
-allow updated scenarios to be generated and presented based on new evidence.
-Furthermore, the PCT's open source approach reduces two additional barriers to
+the PCT. Furthermore, the PCT's open source approach reduces two additional barriers to
 effective use of transport planning software: cost and access to source code.
-With the PCT anyone with programming
-skills can enhance the tool for their own purposes.
 The PCT is part of a wider trend in transport research towards
-greater transparency in software development and collaboration [@Tamminga2012;@novosel2015agent]..
+greater transparency in software development and collaboration [@Tamminga2012;@novosel2015agent].
 The transferability of the PCT to new settings is likewise enhanced
 by its use of aggregate OD data,
 which is more readily available than individual level data.
@@ -356,16 +346,16 @@ cycling planning tools in new contexts.
 
 The PCT relies on two key input datasets:
 
-- *Origin-destinateion* (OD) data relating the number of trips
+- *Origin-destination* (OD) data relating the number of trips
 taking place between administrative zones. These can be represented as
 straight 'desire lines' or allocated to the route network.
 - *Geographical data* providing the coordinates of trip
 origins and destinations.
 
-Hilliness and route network distance were also used in the regression model.
 The OD model described in this paper can work for
-anywhere that has access to such data. To link
-the OD and geographic datasets together, *zone ids* are needed in both
+anywhere that has access to such data.
+Hilliness and route network distance were also included in the regression model.
+To link the OD and geographic datasets together, *zone ids* are needed in both
 datasets. An R package, **stplanr**, was developed for this purpose
 and other data manipulation
 challenges.
@@ -386,36 +376,10 @@ on published work on cartographic visualisation [@Rae2009;@Wood2010].
 The model for England described in this paper uses the following open datasets
 (similar OD datasets are available for cities across the world):
 
-Table: Sample of the OD input dataset, representing the number of people who commute from locations within and between administrative zones (MSOAs)
-
-```{r tflow, echo=FALSE, results='asis'}
-# For latex version: use xtable:
-# t1 <- xtable(head(flow[c(1:3, 12)]), caption = "Sample of the 'flow' input dataset, representing the number of people who commute from locations within and between administrative zones (MSOAs)", label = "tbl:flow")
-# print(t1, type = "latex", comment = FALSE, caption.placement = "top")
-
-# For docx and latex: use kable
-kable(head(flow[c(1:3, 12)]))
-```
-
-Table: Sample of the 'cents' input dataset, representing the geographical location of the population-weighted centroids of MSOA zones described in Table 1.
-
-```{r tcents, echo=FALSE, results='asis'}
-# t2 <- xtable(as.data.frame(cents[1:3,-c(3,4)]), caption = "Sample of the 'cents' input dataset, representing the geographical location of the population-weighted centroids of MSOA zones described in Table~\\ref{tbl:flow}", label = "tbl:cents")
-# print(t2, type = "latex", comment = FALSE, caption.placement = "top")
-kable(as.data.frame(cents[1:3,-c(3,4)]))
-```
-
-```{r, echo=FALSE, fig.cap="Illustration of the OD data converted into geographical lines between origin and destination pairs for Coventry. Width represents the total number of trips. Note the use of population-weighted (as opposed to geographic) centroids used for the point of departure and destination."}
-# data("flowlines")
-# plot(flowlines, lwd = flowlines$All / 10)
-grid.raster(readPNG("../figures/coventry-centroids.png"))
-```
-
 - OD data representing the number of trips between origin destination pairs,
 disaggregated by mode of travel.
 We used the file `wu03ew_v2.csv`, obtained from the UK Data Service
-(see Table 2 for a sample of this dataset)^[See [wicid.ukdataservice.ac.uk/cider/wicid/downloads.php](https://wicid.ukdataservice.ac.uk/cider/wicid/downloads.php).]
-Note the origin and destination codes in some rows
+(see Table 2 for a sample of this dataset)^[See [wicid.ukdataservice.ac.uk/cider/wicid/downloads.php](https://wicid.ukdataservice.ac.uk/cider/wicid/downloads.php).]  This dataset is from the English Census 2011 on travel to work.  Note the origin and destination codes in some rows
 are the same, indicating *intra-zone* travel.
 
 - The population-weighted centroids of local
@@ -444,15 +408,34 @@ To allocate this area-based hilliness metric to OD pairs, we calculated the aver
 hilliness of origin and destination zones. This method has the disadvantage that
 accuracy decreases with increased trip distance.]
 
-We used the English Census 2011 dataset on travel to work OD pairs
+Table: Sample of the OD input dataset, representing the number of people who commute from locations within and between administrative zones (MSOAs)
+
+```{r tflow, echo=FALSE, results='asis'}
+# For latex version: use xtable:
+# t1 <- xtable(head(flow[c(1:3, 12)]), caption = "Sample of the 'flow' input dataset, representing the number of people who commute from locations within and between administrative zones (MSOAs)", label = "tbl:flow")
+# print(t1, type = "latex", comment = FALSE, caption.placement = "top")
+
+# For docx and latex: use kable
+kable(head(flow[c(1:3, 12)]))
+```
+
+Table: Sample of the 'cents' input dataset, representing the geographical location of the population-weighted centroids of MSOA zones described in Table 1.
+
+```{r tcents, echo=FALSE, results='asis'}
+# t2 <- xtable(as.data.frame(cents[1:3,-c(3,4)]), caption = "Sample of the 'cents' input dataset, representing the geographical location of the population-weighted centroids of MSOA zones described in Table~\\ref{tbl:flow}", label = "tbl:cents")
+# print(t2, type = "latex", comment = FALSE, caption.placement = "top")
+kable(as.data.frame(cents[1:3,-c(3,4)]))
+```
+
+```{r, echo=FALSE, fig.cap="Illustration of the OD data converted into geographical lines between origin and destination pairs for Coventry. Width represents the total number of trips. Note the use of population-weighted (as opposed to geographic) centroids used for the point of departure and destination."}
+# data("flowlines")
+# plot(flowlines, lwd = flowlines$All / 10)
+grid.raster(readPNG("../figures/coventry-centroids.png"))
+```
+We used the Census 2011 travel to work dataset
 for its comprehensive coverage of the population,
 high geographic resolution and assurances surrounding
-data quality. Official data on commuting and education trips are available
-from official sources in many countries.
-In cases where no census data are available
-(e.g. in relation to shopping trips), some combination of the aforementioned
-alternative sources
-may be able to provide a reasonable approximation of real world travel.
+data quality.
 
 A variety of emerging sources can also provide OD data,
 including 'Big Data' from commercial companies.
@@ -471,7 +454,7 @@ geolocated social media [@Stefanidis2013].
 # Even when travel surveys contains geographical information,
 # sample sizes are generally comparatively small, less than 1% of the population,
 # making them inappropriate as the sole source of input data for
-# geographical modelling at the local level. 
+# geographical modelling at the local level.
 # Flows inferred from mobile phones are a promising new dataset for inferring
 # travel behaviour. Recent
 # work has been able to accurately reconstruct travel flow patterns from millions
@@ -508,8 +491,6 @@ using more than one regional geographical system.
 A modified version of the model could be run at the national level.
 Another solution to the problem of 'edge zones'
 is to create buffers around the regions (as discussed below).
-We plan to test each of these options in future work, and ask
-practitioners for feedback on the advantages and disadvantages of each.
 
 ```{r, echo=FALSE}
 # The wider national policy context should be considered when selecting
@@ -535,14 +516,14 @@ Authorities and LADs will coincide in places where there are ‘unitary authorit
 # the nation and for selected LEPs and CAs where strategic
 # cycling plans are being planned. These suggestions may change based on
 # feedback from the Department for Transport.
-# 
+#
 # We will also explore the possibility of
 # running the model at the national level. This would involve setting
 # appropriate selection criteria to filter-out the majority of
 # origin-destination pairs to avoid exceeding computational resources.
 # The demarcation of regional boundaries is deemed useful for focusing
 # on one region at a time.
-# 
+#
 # Phase I of the PCT project focused instead on smaller administrative units:
 # Local Authority Districts (LADs). There are 324 LADs across England.
 # For the case study towns of Manchester and Coventry, the choice between
@@ -557,7 +538,7 @@ Authorities and LADs will coincide in places where there are ‘unitary authorit
 # of the other regional geographies that could be used: Travel to Work Areas (TTWAs),
 # which could be applicable in many contexts and Local Enterprise Partnerships
 # (LEPs) which are specific to the UK context.
-# 
+#
 # TTWAs are 'commuting watersheds' that correspond to
 # cohesive regions, the centres of which are known employment centres [@Coombes2008].
 # Versions of the PCT model developed for more scientific purposes would benefit
@@ -574,7 +555,7 @@ grid.raster(readPNG("../figures/cuas-las.png"))
 Flows assigned to the transport network were generated when OD pairs were
 mapped onto the current
 travel network.
-This network-level data generation 
+This network-level data generation
 was undertaken by CycleStreets.net (a routing service for
 planning cycle trips), constituting the most computationally intensive part of the model.
 
@@ -604,7 +585,7 @@ in Britain exceed this distance.
 
 Once the input data (discussed in the previous section)
 has been processed and sub-setted to the area of interest,
-it is passed to a regression model. 
+it is passed to a regression model.
 
 For all scenarios except *gender equality*, a regression model was used
 to estimate the potential rate of cycling at the OD level.
@@ -650,11 +631,10 @@ ignoring all the MSOA zones outside the region. If the region is a
 self-contained transport system this will not create problems.
 If the region is part
 of a larger conurbation, however, the clipping could be problematic.
-To solve this problem we created buffers around each region,
+To solve this problem we created buffer zones around each region,
 from which additional zones were sampled in regions in which
-the number of MSOA zones fell below some threshold.
-We set this threshold to 60.
-This meant that additional zones were
+the number of MSOA zones fell below some threshold, chosen to be 60.
+For example, this meant that additional zones were
 selected outside the City of Manchester, which has 57 MSOAs
 (see Fig. 7 below).
 This protocol increased the sample size by including all
@@ -664,8 +644,6 @@ buffer, the width of which can also be pre-specified.
 ## The Model Output tab
 
 Users can view a summary of the model via the 'Model Output' tab (Fig. 3).
-This serves three purposes: to show the underlying model;
-to ensure transparency; and to provide further information.
 The tab was added in response to feedback during the user testing sessions.
 The output tab communicates the results of the model,
 including key statistics, diagnostic plots and model-results on a per-region
@@ -687,13 +665,8 @@ grid.raster(readPNG("../figures/model-outpute.png"))
 # Model scenarios
 
 Scenarios were developed to indicate how local cycle use
-could increase following the removal of various constraints that
-currently inhibit cycling in England below its long-term potential.
-These constraints include a mix of infrastructural and cultural factors.
-Note that the impact of poor cycling conditions and the
-cultural resistance of certain groups to cycle may well be
-inter-related. More fundamental constraints to cycling include the
-aforementioned factors of distance and hilliness, which can to some degree
+could increase.  Current constraints to cycling, including the
+aforementioned factors of distance and hilliness, can to some degree
 be overcome by new technology (see the *ebike* scenario below).
 
 The four scenarios developed for the case study cities were developed to
@@ -786,13 +759,13 @@ develop new scenarios relevant to new contexts.
 # - Weather. It rains in some places more than others and there is evidence
 # to suggest that this is a deterrent to cycling. This could be included with
 # reference to interpolated rasters of estimated rainfall.
-# 
+#
 # - Age/occupational status. There is evidence that much of the uptake
 # in cycling in some
 # areas has been due to students and other mobile groups taking up cycling
 # when they move away from home. This could be represented in the model as
 # % of students or % of people between 16 and 30 in each area.
-# 
+#
 # - Infrastructure quality. Preliminary tests with the commuting data suggest that
 # having a direct off-road path along the flow-line is a strong predictor of the
 # rate of cycling. This can be quantified in various ways, for example
