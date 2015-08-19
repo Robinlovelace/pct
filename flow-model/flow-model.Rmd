@@ -1401,27 +1401,25 @@ Thanks to developers of open source software we have been able to make
 the PCT free and open to the world.
 We would also like to thank Brook Lyndhurst for assistance with the user testing,
 and all participants in the user testing sessions.
+We thanks DfT staff for contributing to the design of the
+PCT by offering feedback on early versions of the tool.
 
 # Funding
 
 The work presented was funded by the Department for
 Transport (contract no. RM5019SO7766: "Provision of Research Programme into
-Cycling: Propensity to Cycle").
+Cycling: Propensity to Cycle"), with project management by Brook Lyndhurst. 
 RL's contribution was supported by the Consumer Data Research Centre
 (Economic and Social Research Council grant number ES/L011891/1).
 JW’s contribution was supported by the Centre for Diet and
 Activity Research (CEDAR), a UKCRC Public Health Research Centre of Excellence
 funded by the British Heart Foundation, Cancer Research UK, Economic
 and Social Research Council, Medical Research Council, the National Institute
-for Health Research, and the Wellcome Trust. AG’s contribution was
-supported by a National Institute for Health Research (NIHR) post-doctoral
+for Health Research (NIHR), and the Wellcome Trust. AG’s contribution was
+supported by an NIHR post-doctoral
 fellowship. The views reported in this paper are those of the authors and do not
 necessarily represent those of the DfT, Brook Lyndhurst, the NIHR, the NHS or
-the Department for Health.  DfT staff contributed to the design of the
-PCT by offering feedback during user testing sessions.  Otherwise, none of
-the funders played any role in the design and development of the PCT, in
-the interpretation of its outputs, in the writing or this report, or the
-decision to submit this article for publication.
+the Department for Health.
 
 ```{r, echo=FALSE}
 # # Using the tool
