@@ -4,10 +4,10 @@ title: 'The Propensity to Cycle Tool: An open source online system for sustainab
 csl: elsevier-harvard.csl
 header-includes: \usepackage{amsmath} \usepackage{longtable} \usepackage{booktabs}
 output:
-  word_document: default
   pdf_document:
     fig_caption: yes
     number_sections: yes
+  word_document: default
 bibliography: ../documents/Transport.bib
 ---
 
@@ -243,8 +243,10 @@ high numbers of 'potentially cyclable trips' in London [@TfL2010].
 However, neither analysis identified the travel corridors along which
 these simulated cycle trips would be made.
 
-Regression models such as that presented by @Parkin2008 have great potential
-for creating an evidence-base for prioritising investment in cycle paths.
+More localised approaches, which use information about the route network
+and the trajectories of cyclists using GPS data, also have great potential
+for creating an evidence-base for prioritising investment in cycle paths locally
+[@Ehrgott2012;@Broach2012].
 However, a key limitation of many models is that the results are not presented
 in a form that is dynamic or accessible to transport planners.
 By allocating the results of an individual-level regression model to the
@@ -1441,7 +1443,7 @@ the Department for Health.
 
 # file.copy("documents/flow-model.docx", "~/Dropbox/DfT bid/Draft Writeups/Robin/flow-model.docx", overwrite = T)
 file.copy("flow-model/flow-model.docx", "~/Dropbox/DfT bid/Draft Writeups/Robin/flow-model.docx", overwrite = T)
-file.copy("documents/flow-model.pdf", "~/Dropbox/DfT bid/Draft Writeups/Robin/flow-model.pdf", overwrite = T)
+file.copy("flow-model/flow-model.pdf", "~/Dropbox/DfT bid/Draft Writeups/Robin/flow-model.pdf", overwrite = T)
 
 ```
 
