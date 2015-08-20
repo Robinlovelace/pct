@@ -756,6 +756,7 @@ to convert the proportion into a number of cyclists, i.e.:
 
 (@) $$ SLC(govtarget)_{ij} = (pcycle_{ij} + pcycle(natmod)_d) * tflow_{ij} $$
 
+where $SLC(govtarget)_{ij}$ is the *Scenario-based Level of Cycling* for this scenario for the $ij$ OD pair.
 An example of this scenario for an imaginary OD pair $ab$ with Euclidean
 distance 4.5 km is as follows.
 Based on a representative sample of OD pairs in the UK
@@ -789,36 +790,30 @@ This is modelled in the Go Dutch scenario (described after the *gendereq* scenar
 
 The next scenario to be discussed is Gender Equality (*gendereq*). In this
 scenario cycling tends to grow more in areas that already have a high
-rate of cycling. *gendereq* is more about immediate propensity than longer-term
-potential levels of cycling. The scenario
+rate of cycling. The scenario
 recognizes that this disparity is reduced or absent in
 countries with a high rate of cycling [@Fishman2015].
 The Gender Equality scenario (*gendereq*) builds on such insights
 and is based *observed level of cycling* (*OLC*) from the 2011 Census.
 
-On average in England around  3/4 of cycle commuters
+On average in England around 3/4 of cycle commuters
 are male, although this varies geographically [@Aldred2015].
 *gendereq* assumes that gender equality is reached in cycling.
-Specifically, the scenario assumes that in each OD pair the proportion
-of female cycle commuters is the same as the proportion of males.
 A prerequisite is a model-based estimate of the number of male
 and female cyclists between origin and destinations for
 the observed data.
 This involves splitting the number of cyclists project by the model,
 the *Scenario-based Level of Cycling*, into
-male ($SLC_m$) and female ($SLC_f$) components:
+male ($SLC(gendereq)_m$) and female ($SLC(gendereq)_f$) components:
 
-(@) $$ SLC = SLC_m + SLC_f $$
+(@) $$ SLC(gendereq) = SLC(gendereq)_m + SLC(gendereq)_f $$
 
 More males cycle to work than females in every Local Authority in England
 (Fig. 4). For this reason, the *gendereq* scenario
 is based on the assumption that the rate of cycling amongst
 females increases to match the rate of cycling amongst males.
-Under *gendereq* $SLC_m$ remains constant. The challenge is to
-find the value of $SLC_f$ such that the proportion of
-female cycle commuters under the gender equity scenario ('$pcycle(gendereq)_f$')
-becomes equal to the observed proportion of male cycle commuters ($pmale_{cyclist}$).
-Note that this is not as simple as $SLC_f = SLC_m$,
+Under *gendereq* $SLC(gendereq)_m = OLC_m$, there are no additional male cyclists.
+Note that this is not as simple as $SLC(gendereq)_f = SLC(gendereq)_m$,
 as the absolute number of female and male cyclists will also depend on the gender split of the total commuting population within each OD pair.^[To
 illustrate this point, consider an OD pair in which the total number of female
 commuters is larger than the total number of male commuters.
@@ -842,8 +837,7 @@ and females in the OD pair respectively.
 
 $tflow_m$ and $tflow_f$  are both available at the OD level in the 2011 Census,
 as is the total number of cyclists ($OLC$).  The proportion of cyclists who are male
-in each OD pair ($pmale_(cyclist)$) is not, however, available in the published 2011 datasets
-(although we intend to commission such tables for future work).
+in each OD pair ($pmale_(cyclist)$) is not available in the published 2011 datasets.
 The smallest level at which the gender breakdown of cyclists is currently available
 is the zone level ('$pmale_{cyclist}(zone)$'), and we assume that all OD pairs have
 this same proportion of male cyclists. This allows the estimation
@@ -862,25 +856,23 @@ grid.raster(readPNG("../figures/las-gender-pcycle.png"))
 ```
 
 To illustrate how this method works in practice, imagine an OD pair in which
-5 from a total of 50 people commute by cycle ($tflow = 50; OLC = 5$).
-30 of the total trips in the OD pair are made by males
-($tflow_m = 30$) and 20 by females ($tflow_f = 20$).
+50 from a total of 500 people commute by cycle ($tflow = 500; OLC = 50$).
+300 of the total trips in the OD pair are made by males
+($tflow_m = 300$) and 200 by females ($tflow_f = 200$).
 In addition, 70% of commuter cycling in the wider zone is by
 males ($pmale_{cyclist}(zone) = 0.70$). This means that
-an estimated $5 * 0.70 = 3.5$ cycle commuters are male ($OLC_m = 3.5$) and
-1.5 are female ($OLC_f = 1.5$).
-These are not whole numbers but represent the average
-number expected in many OD pairs with the same characteristics.
+an estimated $50 * 0.70 = 35$ cycle commuters are male ($OLC_m = 35$) and
+15 are female ($OLC_f = 15$).
 
-Applying the formulae presented on the previous page:
+Applying the formulae presented previously:
 
 (@) $$ SLC(gendereq)_f = OLC * pmale_{cyclists}zone * (1 + \frac{tflow_f}{tflow_m}) $$
 
-(@) $$ SLC(gendereq) = 5 * 0.70 * (1 + \frac{20}{30} ) = 5.83 $$
+(@) $$ SLC(gendereq) = 50 * 0.70 * (1 + \frac{200}{300} ) = 58.3 $$
 
 ```{r, echo=FALSE}
-tflow <- 50
-olc <- 5 #  the currect rate of cycling between origin (o) and destination (d)
+tflow <- 500
+olc <- 50 #  the currect rate of cycling between origin (o) and destination (d)
 tflow_m <- 0.6 # the proportion of all trips o and d by males
 pcyclez_m <- 0.75 # the proportion of cycle trips in the zone/region made by males
 tflow_m <- tflow * tflow_m
@@ -893,14 +885,14 @@ slc_gendereq_f <- tflow_f * pmale_c
 # print(slc_gendereq_f)
 ```
 
-The increase from 5 cyclists to 5.83 represents an increase
+The increase from 50 cyclists to 58.3 represents an increase
 of 17% from the observed rate of cycling
-in total numbers of cyclists.  All of these extra 0.83
-cyclists are female, giving a new total of 1.5 + 0.83 = 2.33 female cyclists
-(and still 3.5 male cyclists).
-Gender equality in cycling has been reached, such that an estimated 11.7
-% of commute trips are made by cycling among both men (3.5/30)
-and women (2.33 / 20).
+in total numbers of cyclists.  All of these extra 8.3
+cyclists are female, giving a new total of 15 + 8.3 = 23.3 female cyclists
+(and still 35 male cyclists).
+Gender equality in cycling has been reached, such that an estimated 11.7%
+of commute trips are made by cycling among both men (35/300)
+and women (23.3 / 200).
 
 ## Go Dutch
 
