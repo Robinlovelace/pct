@@ -913,16 +913,16 @@ Based on these insights, the essence of the 'Go Dutch' scenario
 found in the Netherlands to each OD pair in the study area.
 
 In contrast to *govtarget* and *gendereq* scenarios,
-Go Dutch is unrelated to the current rate of cycling. The scenario
+*dutch* is unrelated to the current rate of cycling. The scenario
 thus represents the elimination of localised
 constraints which inhibit cycle use more in some area than others.
-Local cycle use in Go Dutch is therefore constrained
+Local cycle use in *dutch* is therefore constrained
 only by trip distances and hilliness.
 
 ## E-bikes
 
-The aim of this scenario was to provide an indication of the increased rate of cycling
-be possible due the uptake new technology, specifically electric cycles ('E-bikes').
+The aim of this scenario was to provide an indication of the rate of cycling increase
+possible due the uptake of electric cycles ('E-bikes').
 The scenario represents a reduction in the degree to which cycle use is
 constrained by trip distances.
 This is the most ambitious and speculative
