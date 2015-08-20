@@ -654,14 +654,6 @@ which local authority the user is currently exploring.
 grid.raster(readPNG("../figures/model-outpute.png"))
 ```
 
-```{r, echo=FALSE}
-# Some of the outputs of
-# the Model Output tab are illustrated in Fig. xx to Fig. xx below.
-# ```{r, echo=FALSE, fig.cap="The distance decay curve resulting from the log-square-root function. The green lines represent increases of 0.25 times original parameter values (obtained by running the model on data from the 2011 Census for Manchester) and the red lines represent -0.1 times the original value."}
-# grid.raster(readPNG("../figures/log-sqrt-params.png"))
-# ```
-```
-
 # Model scenarios
 
 Scenarios were developed to indicate how local cycle use
@@ -672,10 +664,10 @@ be overcome by new technology (see the *ebike* scenario below).
 The four scenarios developed for the case study cities were developed to
 explore different cycling futures in England.
 Because timescales are not specified, they are not
-necesarily mutually exclusive. 
+necesarily mutually exclusive.
 
 - Government target (*govtarget*). This scenario represents a doubling of
-the number of cycling trips in England. 
+the number of cycling trips in England.
 Although this is a substantial increase in relative terms, cycle use still
 remains low in this scenario compared with countries such as the Netherlands,
 rising from 3% to 6% of commutes.
@@ -731,74 +723,7 @@ They are not intended to be definitive scenarios of cycling futures
 in England or anywhere else; we encourage users of the PCT to
 develop new scenarios relevant to new contexts.
 
-```{r, echo=FALSE}
-# We have data on the following variables and the impact of each on model
-# fit will be explored (we will also explore additional variables for which we do
-# not yet have data in a suitable form for the model such as weather):
-
-# - Gender balance. The remit for including this variable is that the male:female
-# ratio of cycle commuters is around 3:1 in the
-# UK;^[The mean proportion of male cycle commuters from the 2011 census
-# across Local Authorities
-# in England is 0.77. This corresponds to a ratio of 3.3:1.]
-# thus including the
-# proportion of short (5km and less) trips made by females can
-# greatly improve model fit. Note that this variable was used at the areal
-# unit level (per zone, as opposed to per origin-destination pair) due to
-# data limitations. Critically, this variable can be used as the basis of
-# scenarios estimating the impact of a 'gender equality' scenario for cycling
-# increase at the local level.
-
-# - Age.
-```
-
-```{r, echo=FALSE}
-# - Gender. There is evidence that women are more put-off cycling
-# by poor transport infrastructure and heavy traffic than men, so this could be
-# linked to a measure of transport infrastructure quality.
-# - Weather. It rains in some places more than others and there is evidence
-# to suggest that this is a deterrent to cycling. This could be included with
-# reference to interpolated rasters of estimated rainfall.
-#
-# - Age/occupational status. There is evidence that much of the uptake
-# in cycling in some
-# areas has been due to students and other mobile groups taking up cycling
-# when they move away from home. This could be represented in the model as
-# % of students or % of people between 16 and 30 in each area.
-#
-# - Infrastructure quality. Preliminary tests with the commuting data suggest that
-# having a direct off-road path along the flow-line is a strong predictor of the
-# rate of cycling. This can be quantified in various ways, for example
-# via the 'quietness diversion factor' ($qdf$), the ratio
-# between the 'quietest' and the 'fastest' route calculated by CycleStreets.net ($qdf = d_{fast} / d_{quiet}$).
-# The inclusion of this variable per OD pair creates an opportunity
-# to estimate the short-term impacts of new or improved cycle provision,
-# up to the standard of a current average quieter route but along
-# a more direct route.
-# By setting $qdf$ to 1 (i.e. setting $d_{quiet} = d_{fast}$), the
-# increase in the number of cyclists using upgraded routes can be estimated.
-# An example in which the length of a quiet route is much further than
-# the fastest route (i.e. $qdf > 1.2$) is provided at the end of this
-# paper, in Fig. 9. Note that $qdf$ is different than
-# circuity ($q$), the diversion
-# from straight-line (Euclidean) distance as it approximates
-# represents *how much further* one must travel to use a quiet path.
-# Where $qdf$ is low, this means that the quiet routes are also the
-# most direct, which will likely encourage new cyclists.
-```
-
-```{r, echo=FALSE}
-# ## Baseline
-#
-# The baseline scenario (*baseline*)
-```
-
 ## Government Target
-
-```{r, echo=FALSE}
-# Taking population increases and trip rate decreases into account,
-# the target implies a doubling in the proportion of trips made by cycling nationwide [@Crawford2014].
-```
 
 The Government Target scenario (*govtarget*)
 is based on the UK government's proposed target
@@ -806,65 +731,13 @@ is based on the UK government's proposed target
 to double cycling in England, from 0.8 billion stages currently to 1.6 billion stages by 2025.
 However @DepartmentforTransport2014 says nothing about where these additional
 trips would come from. The *govtarget* scenario is therefore based on our own
-assumptions about this --- see the next paragraph. It aims to assist transport
+assumptions about this. It aims to assist transport
 planners in identifying where new demand for cycling is likely to be greatest in
 the near term.
 
 The key point about this scenario is that cycling does not simply double in all
-areas. Instead, the increase depends on the proportion of
-commuter trips in each area that are cyclable (i.e. typically less
-than around 5 miles).
-
-```{r, echo=FALSE}
-# The *govtarget* scenario therefore projects above
-# average growth (i.e. more than a doubling)
-# in areas with many cyclable length but a
-# low current rate of cycling. Lower relative increases in cycling
-# are projected in areas where a relatively low proportion of trips are
-# cyclable and high current cycling rates.
-# Old description of govtarget
-# The *govtarget* scenario also relates to the *distribution* of trips
-# in the study area compared with the data used for the model.
-# If the distribution of
-# all trips in the regression model
-# is flatter than the distribution of cycling trips in the study area,
-# a doubling in
-# propensity will not lead to a doubling in cycling. If, on the other hand,
-# the distribution of cycling trips in the study area mirrors high
-# volume OD pairs for which cycling is currently rare,  a doubling in propensity
-# will more-than-double the rate of cycling. If the study OD pairs are the same
-# as the data used to train the model, *govtarget* always results in a doubling in
-# cycling. These concepts are illustrated in
-# Fig. x below.
-
-
-# ```{r, echo=FALSE, warning=FALSE, fig.cap="The rate of cycling under the govtarget scenario for a case study Local Authority (Coventry). OLC is represented in blue, SLC(govtarget) is represented by the white lines."}
-# l <- readRDS("../pct-data/coventry/l.Rds")
-# flow <- l@data
-# mod_logsqr <- glm(clc ~ dist + I(dist^0.5), data = flow, weights = All, family = "quasipoisson")
-# flow$fitted <- mod_logsqr$fitted.values * flow$All
-# coefs <- coef(mod_logsqr)
-# ff <- stplanr::dd_logsqrt(x = flow$dist, a = exp(coefs[1]), b1 = coefs[2], b2 = coefs[3])
-# # plot(ff, mod_logsqr$fitted.values) # perfect fit - function works
-# flow$govtarget <- ff * 2 * flow$All
-#
-# l2 <- rep(l$dist, l$All)
-# l3 <- rep(l$dist, l$Bicycle)
-# l4 <- rep(flow$dist, flow$govtarget)
-# # hist(l2)
-# p2 <- ggplot() + geom_histogram(aes(l2), binwidth = 0.5) +
-#   geom_histogram(aes(l3), binwidth = 0.5, fill = "blue") +
-#   geom_histogram(aes(l4), binwidth = 0.5, col = "white", fill = NA, linewidth = 5) +
-#   scale_y_log10() + xlab("Distance (km)")
-#
-# p1 <- ggplot() + geom_histogram(aes(l2), binwidth = 0.5) +
-#   geom_histogram(aes(l3), binwidth = 0.5, fill = "blue") +
-#   geom_histogram(aes(l4), binwidth = 0.5, col = "white", fill = NA, linewidth = 5) + coord_cartesian(ylim = c(0, 2000)) + xlab("Distance (km)")
-#
-# library(gridExtra)
-# grid.arrange(p1, p2)
-# ```
-```
+areas. Instead, the increase is related to the current
+commuter trips and the trip distance.
 
 At the heart of the *govtarget* scenario is the previously discussed
 regression model (labelled $natmod$) estimating
@@ -872,54 +745,34 @@ the dependent variable (*pcycle*).
 The new rate of cycling ($pcycle(govtarget)$) is the current rate of
 cycling plus this model-based estimate:
 
-(@) $$ pcycle(govtarget) = (pcycle + pcycle(natmod)) $$
+(@) $$ pcycle(govtarget)_{ij} = (pcycle_{ij} + pcycle(natmod)_d) $$
 
-where $pcycle$ is the proportion of commuters who cycle per OD pair
-in the 2011 Census and $pcycle(natmod)$ is the proportion of commuters expected to
-cycle based on the national-level regression model.
+where $pcycle_{ij}$ is the 2011 Census proportion of commuters who cycle for an OD pair $ij$
+of distance $d$ apart and $pcycle(natmod)_d$ is the proportion of commuters expected to
+cycle the distance $d$ based on the national-level regression model.
 The sum of these values
-is multiplied by $tflow$, the total number of commuters for all modes,
-to convert the proportion into
-a number of cyclists, i.e.:
+can be multiplied by the total number of commuters for all modes $tflow_{ij}$
+to convert the proportion into a number of cyclists, i.e.:
 
-(@) $$ SLC(govtarget) = (pcycle + pcycle(natmod)) * tflow $$
+(@) $$ SLC(govtarget)_{ij} = (pcycle_{ij} + pcycle(natmod)_d) * tflow_{ij} $$
 
-An example of this scenario for illustrative purposes is as follows.
-Based on a representative sample of OD pairs in the UK,
-among those making trips with a 'fastest route' distance of between 4 and 5 km,
-the proportion who used a cycle as their main mode is 5.0%.
-Under the 'national doubling' assumption of the *govtarget* scenario,
-assume the total increase in the proportion of cyclists in this distance band is
-around 5.0% --- i.e. $pcycle(natmod) = 0.05$ for trips of 4 to 5 km.
-In the City of Manchester the proportion of commuters
-travelling 4 to 5 km to work,
-who used a cycle as their main mode, was 4.6% ($pcycle = 4.6$).
-
-All else being equal (specifically, assuming average hilliness in
-Manchester is equal to the national average), the percent of
-commuters cycling to work in this case under the Government Target
-scenario ($SLC(govtarget)$) would be 4.6% + 5.0% = 9.6%.
-The number of commuters cycling to work along this OD pair
-($SLC(govtarget)$) would thus be 9.6% multiplied by $tflow$,
-i.e. the proportion cycling multiplied by the total number of commuters.
-
-Note that this does not mean
-that $SLC(govtarget) = 9.6% $ in *all* OD pairs in Manchester between 4 and 5 km
-because initial levels of cycling
-vary widely. An OD pair with an exceptionally high initial rate
-of cycling, for example (e.g. *pcycle* = 30%), would end up with a projected
-rate of cycling of 35% (*pcycle(govtarget)* = 35%). Likewise, an OD pair
-with a Euclidean distance of 4.5 km and average hilliness,
-that has no cycling currently, would be projected to reach 5%. The same methodology
-is applied to all distances represented in the OD matrix, allowing the total
-rate of cycling in the city to be estimated.
+An example of this scenario for an imaginary OD pair $ab$ with Euclidean
+distance 4.5 km is as follows.
+Based on a representative sample of OD pairs in the UK
+and under the 'national doubling',
+assume an additional 5% of commuters now cycle for all
+trips of 4.5km --- i.e. $pcycle(natmod)_{4.5} = 0.05$.
+For our OD pair $ab$ in the Census there are
+200 commuters of which 2 are cyclists, $pcycle_{ab} = 0.01$.  Applying the scenario
+adds an additional 5% of commuters which represents an
+additional 10 cyclists, far more than doubling.
+The same methodology is applied to all distances represented in the OD matrix.
 
 The approach assumes that cycling potential against a given national
 increase is always a positive number.
-The larger the increase in cycling for the scenario, the less the baseline matters
-influences the projected rate.
+The larger the increase in cycling for the scenario, the less the current level matters.
 By contrast, the larger the current rate of cycling, the lower the
-impact of the scenario on the future rate of cycling.
+impact this scenario has on the future rate of cycling.
 
 Our implementation of the *govtarget* scenario is thus in line with findings from
 @Sloman2014 and @Heinen2015, who found that it is initially
@@ -929,13 +782,7 @@ However, with sustained investment in overcoming the infrastructural and
 cultural constraints which limit cycle use,
 there is great long-term potential for
 increased cycling in many areas that currently have a low rate of cycling.
-This is modelled in the Go Dutch scenario (described after the *gendereq* scenario).  
-
-```{r, echo=FALSE}
-# Although the *govtarget* and gender equality (described below)
-# scenarios take the current rate of cycling
-# into account, the method currently does not accoun
-```
+This is modelled in the Go Dutch scenario (described after the *gendereq* scenario).
 
 
 ## Gender equality
@@ -1084,7 +931,7 @@ only by trip distances and hilliness.
 
 The aim of this scenario was to provide an indication of the increased rate of cycling
 be possible due the uptake new technology, specifically electric cycles ('E-bikes').
-The scenario represents a reduction in the degree to which cycle use is 
+The scenario represents a reduction in the degree to which cycle use is
 constrained by trip distances.
 This is the most ambitious and speculative
 scenario presented in this paper; it
@@ -1102,7 +949,7 @@ update this scenario, basing the changes to the distance decay
 parameters on real data from the Dutch National Travel Survey.
 This will build on analysis of the influence of E-bikes on propensity to cycle
 in the Netherlands that is being undertaken in parallel to the work
-presented in this paper. 
+presented in this paper.
 
 # Results
 
@@ -1231,7 +1078,7 @@ Demographics should therefore play less of a
 role in estimating cycling potential for strategic purposes
 than for identifying 'quick-win' policies based on current propensities.
 Based on this understanding, the PCT has the ability to represent different
-scenarios of change. Illustrations of how the 
+scenarios of change. Illustrations of how the
 pattern of cycling could shift to new transport corridors in the
 hypothetical future represented by 'Go Dutch' were
 described as 'very useful' by transport planners during user testing.
@@ -1245,7 +1092,7 @@ travel said that the tool
 could be useful for setting local targets or implementing
 locally-specific policies. To follow-up on such feedback, modifications of the methods
 described in this paper are planned, to help determine the suitability of localised
-cycling targets in relation to investment 
+cycling targets in relation to investment
 options.^[Targets have proliferated in recent years. For instance, an official
 target to reach 10% of trips made by bicycle has been
 made by authorities in Dublin, Leicester and across
@@ -1320,7 +1167,7 @@ path), which could help planners assess the scale of
 changes needed to enable substantial uptake.  Future versions of the tool could
 make use of
 data derived from new network assessment technologies
-[@Joo2013]. 
+[@Joo2013].
 
 ```{r, echo=FALSE}
 # However, we would argue that cycle path quality is not something
@@ -1383,7 +1230,7 @@ PCT by offering feedback on early versions of the tool.
 
 The work presented was funded by the Department for
 Transport (contract no. RM5019SO7766: "Provision of Research Programme into
-Cycling: Propensity to Cycle"), with project management by Brook Lyndhurst. 
+Cycling: Propensity to Cycle"), with project management by Brook Lyndhurst.
 RL's contribution was supported by the Consumer Data Research Centre
 (Economic and Social Research Council grant number ES/L011891/1).
 JW’s contribution was supported by the Centre for Diet and
@@ -1403,7 +1250,7 @@ the Department for Health.
 # by describing how the PCT may be used to inform the decision-making process.
 
 # My affiliation: UKCRC Centre for Diet and Activity Research (CEDAR), MRC Epidemiology Unit, University of Cambridge, School of Clinical Medicine, Institute of Metabolic Science, Cambridge Biomedical Campus, Box 285, Cambridge CB2 0QQ, UK
-# 
+#
 # I also need institutional acknowledgement: Dr Woodcock’s contribution was undertaken under the auspices of the Centre for Diet and Activity Research (CEDAR), a UKCRC Public Health Research Centre of Excellence which is funded by the British Heart Foundation, Cancer Research UK, Economic and Social Research Council, Medical Research Council, the National Institute for Health Research, and the Wellcome Trust”
 ```
 
