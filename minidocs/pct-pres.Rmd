@@ -1,16 +1,16 @@
 ---
 title: "Open online planning tools for sustainable transport"
-author: "Robin Lovelace, University of Leeds"
-date: "April 14, 2015"
+author: "Robin Lovelace for GEOSTAT"
+date: "21st August 2015"
 output:
   ioslides_presentation:
     transition: slower
 runtime: shiny
-logo: ~/Dropbox/Public/img/logos/cdrc-square.png
+logo: /home/robin/Dropbox/Public/img/logos/cdrc-square.png
 ---
 
 ```{r, echo=FALSE, include=FALSE}
-pkgs <- c("grid", "png")
+pkgs <- c("grid", "png", "knitr")
 lapply(pkgs, library, character.only = T)
 # bibliography: "~/Documents/R.bib"
 ```
@@ -20,7 +20,7 @@ lapply(pkgs, library, character.only = T)
 > - The software (tools of the trade)
 > - Context (motivations)
 > - Building the National Propensity to Cycle Tool (NPCT)
-> - Sustainable transport planning with R (stplanr)
+> - Sustainable transport planning with R 
 > - Esperanzas y sueños
 
 # I: The software
@@ -224,21 +224,71 @@ grid.raster(readPNG("~/Pictures/Selection_157.png"))
 
 ## Saving routes on the network
 
+```{r, echo=FALSE}
+library(stplanr)
+library(rgdal)
+data("cents")
+data("flow")
+plot(cents)
+```
+
+## OD data: tricky
+
+```{r}
+kable(head(flow[1:3]))
+```
+
+## Converting OD data into 'flowlines'
+
+```{r}
+library(stplanr)
+flowlines <- gFlow2line(flow = flow, zones = cents)
+plot(flowlines)
+```
+
+## Route allocation
+
+This code is not run - you need your own API key
+
 ```{r, eval=FALSE}
 example(gLines2CyclePath)
-data(package = "stplanr", "l")
+data(package = "stplanr", "flowlines")
+?route_cyclestreet
 plot(flowlines)
-cckey <- Sys.getenv('CYCLESTREET')
+Sys.setenv(CYCLESTREET = 'eccbf612-214e-437d-8b73-06bdf9e68731')
 routes_fast <- gLines2CyclePath(flowlines)
 routes_slow <- gLines2CyclePath(flowlines, "quietest")
 lines(routes_fast, col = "red")
 lines(routes_slow, col = "green")
 ```
 
-```{r, echo=FALSE}
-library(stplanr)
-library(rgdal)
-data("flowlines", "routes_fast","routes_slow")
+## Routes allocated to the travel network
+
+```{r}
+lanc_2_lds <- route_graphhopper(from = "University of Lancaster", to = "Leeds")
+# nominatim::address_lookup("University of Lancaster")
+
+# for online mapping
+# leaflet() %>% addTiles() %>% addPolylines(data = lanc_2_lds)
+```
+
+## Which path to take
+
+```{r}
+plot(lanc_2_lds)
+```
+
+
+## Extracting route info
+
+```{r}
+lanc_2_lds@data
+```
+
+## Generating many flowlines
+
+```{r}
+data("routes_fast","routes_slow")
 flowlines <- spTransform(flowlines, CRS("+init=epsg:4326"))
 plot(flowlines)
 lines(routes_fast, col = "red")
@@ -247,9 +297,21 @@ lines(routes_slow, col = "green")
 
 ## gLines2CyclePath
 
-```{r}
-gLines2CyclePath
+```{r, eval=FALSE}
+gLines2CyclePath(l, plan = "fastest")
 ```
+
+## gOverline
+
+This problem was solved by Barry Rowlingson on
+[gis.stackexchange](https://gis.stackexchange.com/questions/139681/overlaying-lines-and-aggregating-their-values-for-overlapping-segments):
+
+![](http://i.stack.imgur.com/LDy7j.png)
+
+## gOverline II
+
+![](http://i.stack.imgur.com/mROnK.png)
+
 
 # V: Esperanzas y sueños
 
