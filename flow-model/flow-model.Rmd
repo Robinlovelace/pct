@@ -4,10 +4,10 @@ title: 'The Propensity to Cycle Tool: An open source online system for sustainab
 csl: elsevier-harvard.csl
 header-includes: \usepackage{amsmath} \usepackage{longtable} \usepackage{booktabs}
 output:
-  word_document: default
   pdf_document:
     fig_caption: yes
     number_sections: yes
+  word_document: default
 bibliography: ../documents/Transport.bib
 ---
 
@@ -101,6 +101,8 @@ We conclude that the method presented has potential to assist
 with planning for cycling-dominated cities worldwide, which can in turn
 assist with the global transition away from fossil fuels.
 
+\newpage
+
 # Introduction
 
 Cycling can play an important role in making transport systems more
@@ -191,8 +193,7 @@ models such as SUMO and PTV VISSIM, which simulate vehicular traffic in
 real time [@Behrisch2014;@Krajzewicz2014], the PCT is scalable
 to the national level.
 The PCT is also able to estimate cycling potential at
-relatively fine-grained (and flexible) levels of geographic resolution
-in contrast to 'macroscopic' transport models [e.g. @Kolosz2013].
+relatively fine-grained (and flexible) levels of geographic resolution.
 
 Unlike @McCollum2009 and other national-level scenario-based approaches,
 the PCT allows estimation of where new cycling trips are most likely to
@@ -427,11 +428,12 @@ Table: Sample of the 'cents' input dataset, representing the geographical locati
 kable(as.data.frame(cents[1:3,-c(3,4)]))
 ```
 
-```{r, echo=FALSE, fig.cap="Illustration of the OD data converted into geographical lines between origin and destination pairs for Coventry. Width represents the total number of trips. Note the use of population-weighted (as opposed to geographic) centroids used for the point of departure and destination."}
+```{r, echo=FALSE, fig.cap="Overview of the PCT map interface. The lines represent trips between origin and destination pairs for Coventry. Width represents the total number of trips. Note the use of population-weighted (as opposed to geographic) centroids used for the point of departure and destination."}
 # data("flowlines")
 # plot(flowlines, lwd = flowlines$All / 10)
 grid.raster(readPNG("../figures/coventry-centroids.png"))
 ```
+
 We used the Census 2011 travel to work dataset
 for its comprehensive coverage of the population,
 high geographic resolution and assurances surrounding
@@ -866,7 +868,7 @@ an estimated $50 * 0.70 = 35$ cycle commuters are male ($OLC_m = 35$) and
 
 Applying the formulae presented previously:
 
-(@) $$ SLC(gendereq)_f = OLC * pmale_{cyclists}zone * (1 + \frac{tflow_f}{tflow_m}) $$
+(@) $$ SLC(gendereq)_f = OLC * pmale_{cyclists}(zone) * (1 + \frac{tflow_f}{tflow_m}) $$
 
 (@) $$ SLC(gendereq) = 50 * 0.70 * (1 + \frac{200}{300} ) = 58.3 $$
 
