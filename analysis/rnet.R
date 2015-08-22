@@ -23,9 +23,10 @@ plot(l@data$dist, rfall@data$length) # shows its the same data
 
 plot(rfall)
 rg <- gOverline(rfall, attrib = "gov_target")
+rg <- readRDS("~/repos/pct/pct-data/leeds/rnet.RData")
 
 leaflet() %>% addTiles() %>% addPolylines(data = rg, weight = rg@data$gov_target / 80)
 
 
 plot(rg, lwd = rg@data$gov_target / 500)
-saveRDS(rg, "~/repos/pct/pct-data/leeds/rnet.RData")
+# saveRDS(rg, "~/repos/pct/pct-data/leeds/rnet.RData")

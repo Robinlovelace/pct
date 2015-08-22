@@ -4,10 +4,10 @@ title: 'The Propensity to Cycle Tool: An open source online system for sustainab
 csl: elsevier-harvard.csl
 header-includes: \usepackage{amsmath} \usepackage{longtable} \usepackage{booktabs}
 output:
+  word_document: default
   pdf_document:
     fig_caption: yes
     number_sections: yes
-  word_document: default
 bibliography: ../documents/Transport.bib
 ---
 

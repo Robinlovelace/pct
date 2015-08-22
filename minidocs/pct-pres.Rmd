@@ -1,11 +1,10 @@
 ---
-title: "Open online planning tools for sustainable transport"
-author: "Robin Lovelace for GEOSTAT"
-date: "21st August 2015"
+title: "PCT: An open online planning tool for sustainable transport"
+author: "Robin Lovelace for GEOSTAT 2015. Slides: github.com/Robinlovelace/pct"
+date: " University of Lancaster 21st August 2015"
 output:
   ioslides_presentation:
     transition: slower
-runtime: shiny
 logo: /home/robin/Dropbox/Public/img/logos/cdrc-square.png
 ---
 
@@ -103,15 +102,25 @@ Not so good for
 
 ## What do shiny apps look like?
 
+```{r}
+# type this to find out!
+runExample()
+```
+
+
 ```{r, echo=FALSE}
-shinyAppDir("~/repos/learning-shiny/himod/")
+# shinyAppDir("~/repos/learning-shiny/himod/")
+grid.raster(readPNG("~/repos/learning-shiny/images/Selection_303.png"))
 ```
 
 ## A second example
 
 ```{r, echo=FALSE}
-shinyAppDir("~/repos/learning-shiny/rentSplit/")
+# shinyAppDir("~/repos/learning-shiny/rentSplit/")
+# grid.raster(readPNG("~/repos/learning-shiny/images/Selection_304.png"))
 ```
+
+[![](~/repos/learning-shiny/images/Selection_304.png)](http://geo8.webarch.net/robin/rentSplit/)
 
 ## Leaflet
 
