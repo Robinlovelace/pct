@@ -114,8 +114,18 @@ transport systems [@Newman1999;@Han2008;@Mizutani2011;@Shergold2012]
 and the benefits of cycling [@Oja2011;@Woodcock2013;@DeNazelle2011]
 has pushed cycling up the
 transport agenda.
-Cycling is no longer regarded as a fringe mode of transport, as
-illustrated, for example, by the global
+Cycling is increasingly central to sustainable transport strategies, as
+illustrated, for example, by funding for cycling
+policies^[Several examples
+of multi-million Euro projects are provided by the
+[European Cyclist' Federation](http://www.ecf.com/advocary/eu-funding-2/examples-of-cycling-projects-co-funded-by-the-eu/), the
+[FIA Foundation](http://www.unep.org/transport/sharetheroad/PDF/SharetheRoadReportweb.pdf) and the
+[World Cycling Atlas](http://www.worldwidecyclingatlas.com/).
+There has been little academic research on the proportion of transport budgets
+allocated to cycling worldwide, hence the use of resources from
+NGOs here.
+]
+and the global
 proliferation of publicly subsidized 'bike share' schemes
 [@OBrien2014a].^[An
 interactive web map associated with @OBrien2014a
@@ -166,7 +176,7 @@ The PCT was commissioned by the UK's Department for Transport to identify
 "parts of the country [England] with the greatest propensity to cycle" to help
 prioritise strategic investment in active travel [@DepartmentforTransport2015].
 Part of the contract involved user testing sessions.
-Over 70 practitioners and policy-makers provided feedback which provided
+Feedback from over 70 practitioners and policy-makers provided:
 (i) confirmation of the tool's utility for decision-making;
 (ii) input into the tool's user interface; and
 (iii) ideas for future development.
@@ -229,12 +239,10 @@ An 'OD pair' in this context can be represented visually as a
 $T_{ij}$ matrix notation in transport modelling, which represent the number
 of trips between OD pairs
 [@Ortuzar2001;@Simini2012].
-The model takes OD level data and uses this to
-simulate the proportion trips made by cycle
-between OD pairs.
-By aggregating data from the OD level to geographic zones, the PCT
-model also enables area-based planning (encouraging users to focus on
-particular zones rather than OD pairs). @Parkin2008, for example, used
+The model simulates the proportion trips made by cycle
+between OD pairs, enabling visualisation of cycling 'desire lines',
+wheras previous approaches to modelling cycling potential have tended to focus only
+on area-based measures. @Parkin2008, for example, used
 a multiple regression model to estimate levels of commuter cycling at an
 area level. Similarly local, survey data has been used to identify areas with
 high numbers of 'potentially cyclable trips' in London [@TfL2010].
@@ -307,20 +315,20 @@ for scalability.
 # Google Maps, which many users will have experience with).
 ```
 
-The results for each scenario are pre-calculated,
-rather than being computed 'on the fly' to create a responsive
-user interface.  To ensure the model is accessible, the
-user is not required to specify any numerical model parameters to interact with
-the PCT. Furthermore, the PCT's open source approach reduces two additional barriers to
+Results for each scenario are pre-calculated,
+enabling the outcome displayed quickly rapidly; calculating
+the results 'on-fly' would lead to an unresponsive interface.
+The user is not required to specify any numerical parameters to interact with
+the PCT. The only software needed for users to run the PCT is a web
+browser, reducing a key technological barrier to transport planning.
+The PCT's open source approach reduces two additional barriers to
 effective use of transport planning software: cost and access to source code.
 The PCT is part of a wider trend in transport research towards
-greater transparency in software development and collaboration [@Tamminga2012;@novosel2015agent].
-The transferability of the PCT to new settings is likewise enhanced
-by its use of aggregate OD data,
-which is more readily available than individual level data.
-The use of aggregate OD data also makes the model highly scalable.
-The PCT thus has the potential to provide a basis for the creation of new
-cycling planning tools in new contexts.
+greater transparency in software development and collaboration
+[@Tamminga2012;@novosel2015agent].
+This open source approach, combined with the
+widespread availability of OD data (as discussed in the next section),
+should make the PCT easy to deploy in new contexts.
 
 ```{r, echo=FALSE}
 # We plan to encourage a user community to
@@ -384,12 +392,11 @@ We used the file `wu03ew_v2.csv`, obtained from the UK Data Service
 are the same, indicating *intra-zone* travel.
 
 - The population-weighted centroids of local
-administrative zones (see Table 1). We used the official UK 'Medium Super
-Output Areas' (MSOAs) zonal system for both origins and destinations.
-MSOAs are a geographic unit used for the release of UK
-statistical data (average population around 7,800 people).
-This file was originally downloaded as a Shapefile
-under the UK's Open Government
+administrative zones (see Table 1). We used 'Medium Super
+Output Areas' (MSOAs), with an average population of around 7,800 people,
+as the zonal system for both origins and destinations. MSOAs were the highest
+geographical resolution at which the mode-specific OD data were available.
+MSOA zone boundaries were provided under the UK's Open Government
 Licence.^[See [data.gov.uk/dataset/lower-layer-super-output-areas-ew-2011-population-weighted-centroids](http://data.gov.uk/dataset/lower-layer-super-output-areas-ew-2011-population-weighted-centroids).]
 
 - Route distance, assigned to each desire line
@@ -398,18 +405,22 @@ API.^[To implement this functionality in a generalisable way
 a custom function, `route_cyclestreet()`, was
 written for the R package **stplanr**.]
 
-- Hilliness of zones and routes.
-There are various ways to generate this data, ranging from the simple
-(e.g. vertical displacement between origin and destination) to the
-complex (e.g. total amount of climb along the route network in both directions).
-We calculated gradient per MSOA zone using digital elevation model (DEM)
-data supplied by NASA.^[See
-[srtm.csi.cgiar.org/](http://srtm.csi.cgiar.org/). "Version 4" of the dataset was used.
-To allocate this area-based hilliness metric to OD pairs, we calculated the average
-hilliness of origin and destination zones. This method has the disadvantage that
-accuracy decreases with increased trip distance.]
+- Hilliness of zones and routes. There are various ways to generate this data,
+ranging from the simple (e.g. vertical displacement between origin and
+destination) to the complex (e.g. total amount of climb along the route network
+in both directions). We calculated mean gradient per MSOA zone using publicly available
+digital
+elevation model (DEM) data supplied by NASA.^[See 
+[srtm.csi.cgiar.org/](http://srtm.csi.cgiar.org/) for the data and the
+[steepness.R](https://github.com/Robinlovelace/pct/blob/master/loading-data/steepness.R)
+file in the project's repository for the processing algorithm used. "Version 4"
+of the dataset was used. To allocate this area-based hilliness metric to OD
+pairs, we calculated the average hilliness of origin and destination zones. This
+method has the disadvantage that accuracy decreases with increased trip
+distance.]
 
-Table: Sample of the OD input dataset, representing the number of people who commute from locations within and between administrative zones (MSOAs)
+Table: Sample of the OD input dataset, representing the number of people who
+commute from locations within and between administrative zones (MSOAs)
 
 ```{r tflow, echo=FALSE, results='asis'}
 # For latex version: use xtable:
@@ -417,7 +428,8 @@ Table: Sample of the OD input dataset, representing the number of people who com
 # print(t1, type = "latex", comment = FALSE, caption.placement = "top")
 
 # For docx and latex: use kable
-kable(head(flow[c(1:3, 12)]))
+flow <- cbind(id = rownames(flow), flow)
+kable(head(flow[c(1:4, 13)]), row.names = F)
 ```
 
 Table: Sample of the 'cents' input dataset, representing the geographical location of the population-weighted centroids of MSOA zones described in Table 1.
@@ -434,19 +446,15 @@ kable(as.data.frame(cents[1:3,-c(3,4)]))
 grid.raster(readPNG("../figures/coventry-centroids.png"))
 ```
 
-We used the Census 2011 travel to work dataset
-for its comprehensive coverage of the population,
-high geographic resolution and assurances surrounding
-data quality.
+We used the Census 2011 travel to work dataset for its comprehensive coverage of
+the population, high geographic resolution and assurances surrounding data
+quality.
 
-A variety of emerging sources can also provide OD data,
-including 'Big Data' from commercial companies.
-These alternative sources of OD data include:
-mobile telephone service providers
-[@smoreda2013spatiotemporal];
-public transport data [@Kitchin2013]; household
-travel surveys [@TransportforNSW2014];
-geolocated social media [@Stefanidis2013].
+A variety of emerging sources can also provide OD data, including 'Big Data'
+from commercial companies. These alternative sources of OD data include: mobile
+telephone service providers [@smoreda2013spatiotemporal]; public transport data
+[@Kitchin2013]; household travel surveys [@TransportforNSW2014]; geolocated
+social media [@Stefanidis2013].
 
 ```{r, echo=FALSE}
 # In practice using multiple datasets may be the most appropriate option.
@@ -468,7 +476,7 @@ geolocated social media [@Stefanidis2013].
 
 # Data manipulation and modelling
 
-## Loading data geographic data
+## Geographic data
 
 To ensure reproducibility and enable deployment of the model outside the
 original case study cities, a systematic data loading method was
@@ -500,16 +508,21 @@ is to create buffers around the regions (as discussed below).
 # In Phase I of the work to implement the PCT for the UK we used LADs, then switched to CUAs after user testing.  TTWs also possible, and in the long term perhaps LEPS.  Our recommendation is to build it at the CUA level
 ```
 
-Many transport decisions (such as where to build new cycle routes)
-are made at the local level [@Gaffron2003]. In England however, there is
-sometimes a difference between the areas covered by Highway Authorities and
-the more commonly used Local Authority District (LAD) divisions
-(Fig. 2).^[Highway
-Authorities and LADs will coincide in places where there are ‘unitary authorities’ (e.g. in England’s large conurbations, and the whole of Scotland and Wales). However in many parts of rural England, the Highway Authority will cover several District Authority areas. in any event though, the regions used as the building blocks of the PCT can adapt to reflect either, or alternative, funding structures (e.g. England’s Combined Authorities or Local Enterprise Partnerships
-(LEPs)).
-]
+The data above were loaded on a region-by-region basis, not for the entire country at once.
+This was partly because transport decisions (such as where to build new cycle routes)
+tend to be made at the local level [@Gaffron2003] and partly to reduce the computational
+requirements (particularly use of RAM) for scalability.
+In many cases the choice of region to use is not straightforward, however.
+This is shown in Fig. 2, which illustrates the decision that must be made
+between larger and smaller regional
+units.
 
 ```{r, echo=FALSE}
+# ^[Highway
+# Authorities and LADs will coincide in places where there are ‘unitary authorities’ (e.g. in England’s large conurbations, and the whole of Scotland and Wales). However in many parts of rural England, the Highway Authority will cover several District Authority areas. in any event though, the regions used as the building blocks of the PCT can adapt to reflect either, or alternative, funding structures (e.g. England’s Combined Authorities or Local Enterprise Partnerships
+# (LEPs)).
+# ]
+
 # As well as CUA level an increasing proportion of transport funding in
 # England is also being allocated to Local Enterprise Partnerships (LEPs)
 # and Combined Authorities (CAs) which are larger than, and often overlapping with, CUAs.
@@ -548,7 +561,7 @@ Authorities and LADs will coincide in places where there are ‘unitary authorit
 # visualisation.
 ```
 
-```{r cuas-lads, echo=FALSE, fig.cap="Local Authority District (LAD, above) and County and Unitary Authority (CUA, below) levels of transport planning. These are potential regional units for the Propensity to Cycle Tool"}
+```{r cuas-lads, echo=FALSE, fig.cap="The regional units used to iteratively load the geographical data. These were English Local Authority Districts (LADs, above) and County and Unitary Authorities (CUAs, below) levels of transport planning."}
 grid.raster(readPNG("../figures/cuas-las.png"))
 ```
 
