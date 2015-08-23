@@ -4,10 +4,10 @@ title: 'The Propensity to Cycle Tool: An open source online system for sustainab
 csl: elsevier-harvard.csl
 header-includes: \usepackage{amsmath} \usepackage{longtable} \usepackage{booktabs}
 output:
+  word_document: default
   pdf_document:
     fig_caption: yes
     number_sections: yes
-  word_document: default
 bibliography: ../documents/Transport.bib
 ---
 
@@ -100,8 +100,6 @@ allows the PCT approach to be deployed in new contexts.
 We conclude that the method presented has potential to assist
 with planning for cycling-dominated cities worldwide, which can in turn
 assist with the global transition away from fossil fuels.
-
-\newpage
 
 # Introduction
 
@@ -241,7 +239,7 @@ of trips between OD pairs
 [@Ortuzar2001;@Simini2012].
 The model simulates the proportion trips made by cycle
 between OD pairs, enabling visualisation of cycling 'desire lines',
-wheras previous approaches to modelling cycling potential have tended to focus only
+whereas previous approaches to modelling cycling potential have tended to focus only
 on area-based measures. @Parkin2008, for example, used
 a multiple regression model to estimate levels of commuter cycling at an
 area level. Similarly local, survey data has been used to identify areas with
@@ -678,8 +676,8 @@ be overcome by new technology (see the *ebike* scenario below).
 
 The four scenarios developed for the case study cities were developed to
 explore different cycling futures in England.
-Because timescales are not specified, they are not
-necesarily mutually exclusive.
+Because time-scales are not specified, they are not
+necessarily mutually exclusive.
 
 - Government target (*govtarget*). This scenario represents a doubling of
 the number of cycling trips in England.
@@ -1210,7 +1208,7 @@ The PCT is highly policy relevant.
 By identifying specific routes where intervention is expected to be most effective,
 it can help to build business cases for further investment and policy change.
 Moreover, by highlighting the importance of 'arterial' routes to key destinations,
-the PCT can help rejuvenate longstanding debates
+the PCT can help rejuvenate long-standing debates
 such as the re-allocation of road space away from
 private cars [@Jones2014;@Sharples2009;@Black1992].
 In conclusion, new tools such as the PCT can inform the decision of where to construct
