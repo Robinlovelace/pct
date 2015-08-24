@@ -1,0 +1,14 @@
+---
+title: "Highlights"
+output: word_document
+---
+
+The Propensity to Cycle Tool (PCT) is a new open source transport planning tool
+
+The PCT provides an evidence base for prioritising cycling infrastructure
+
+Cycling 'desire lines' are modelled and allocated to the network in English cities
+
+Future scenarios such as 'Go Dutch' show shifting pattern of cycling uptake
+
+The PCT can be readily deployed in new settings, at city to national scales
