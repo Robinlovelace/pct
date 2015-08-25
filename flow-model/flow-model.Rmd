@@ -163,7 +163,7 @@ an interactive map-based 'planning support system'
 the PCT
 provides a range of information to the user to inform evidence-based policy
 [@Pettit2013]. The PCT differs from previous planning support systems, in its:
-
+<!-- I would redefine what OD means --> 
 - Focus on future scenarios of cycling.
 - Estimation and visualisation of information at
 the zone and 'desire line' level.
@@ -935,7 +935,7 @@ only by trip distances and hilliness.
 ## E-bikes
 
 The aim of this scenario was to provide an indication of the rate of cycling increase
-possible due the uptake of electric cycles ('E-bikes').
+possible due to the uptake of electric cycles ('E-bikes').
 The scenario represents a reduction in the degree to which cycle use is
 constrained by trip distances.
 This is the most ambitious and speculative
@@ -972,7 +972,7 @@ comparatively rare.
 
 Note that although Manchester and Norwich have very
 different initial levels of cycling, the final level estimated from the
-*dutch* and *ebike* scenarios there are similar. This because
+*dutch* and *ebike* scenarios there are similar. This is because
 trip distance distributions in the two cities are comparable --- these long-term
 scenarios are not influenced by the current rate of cycling.
 Note also that the *govtarget* scenario
@@ -998,7 +998,7 @@ the city (this can be explained by the location of the University of
 East Anglia to the east of the city).
 Under *dutch* assumptions, by contrast,
 the pattern of cycling shifts substantially to the west.
-The cycling pattern under the *dutch* scenario
+The cycling patterns under the *dutch* scenario
 are more representative of short-distance trips across the city overall.
 In both cases the desire lines are focused around Norwich city centre: the region
 has a mono-centric regional economy, making trips beyond around 5 km from the
@@ -1011,7 +1011,7 @@ grid.raster(readPNG("../figures/nor-cdp-dutch.png"))
 The equivalent results are shown for the city of Manchester in Fig. 7. This shows that
 Manchester has a poly-centric structure, favouring the construction of cycle
 routes between the various sub-centres, not just in radial routes to a single
-centre. Note in both scenarios the large increase in the level of cycling in
+centre. Note in both scenarios the large increase in the level of cycling is 
 between *govtarget* (which represents only a doubling nationwide) and *dutch*
 scenarios (which represents a more ambitious plan for cycling uptake).
 
@@ -1152,8 +1152,7 @@ local contexts. This could, for example, help to visualise city-level targets fo
 the proportion cycling by a certain year and
 which will vary considerably from place to place in ways not yet well understood.
 Modifying the code base would also allow transport planners
-to decide on and create the precise set of online tools that are
-that are most useful for their work.
+to decide on and create the precise set of online tools that are most useful for their work.
 Building on participatory models at the macro-level [@Macmillan2014], extensions
 to the model could include using the PCT methodology to
 enable public engagement in the strategic planning process around
@@ -1228,7 +1227,7 @@ Thanks to developers of open source software we have been able to make
 the PCT free and open to the world.
 We would also like to thank Brook Lyndhurst for assistance with the user testing,
 and all participants in the user testing sessions.
-We thanks DfT staff for contributing to the design of the
+We thank DfT staff for contributing to the design of the
 PCT by offering feedback on early versions of the tool.
 
 # Funding
@@ -1254,9 +1253,9 @@ the Department for Health.
 # This Appendix summarises the work from the perspective of practitioners
 # by describing how the PCT may be used to inform the decision-making process.
 
-# My affiliation: UKCRC Centre for Diet and Activity Research (CEDAR), MRC Epidemiology Unit, University of Cambridge, School of Clinical Medicine, Institute of Metabolic Science, Cambridge Biomedical Campus, Box 285, Cambridge CB2 0QQ, UK
+# My affiliation: UKCRC Centre for Diet and Activity Research (CEDAR), MRC Epidemiology Unit, University of Cambridge, School of Clinical Medicine, Institute of Metabolic Science, Cambridge Biomedical Campus, Box 285, Cambridge CB2 0QQ, UK
 #
-# I also need institutional acknowledgement: Dr Woodcock’s contribution was undertaken under the auspices of the Centre for Diet and Activity Research (CEDAR), a UKCRC Public Health Research Centre of Excellence which is funded by the British Heart Foundation, Cancer Research UK, Economic and Social Research Council, Medical Research Council, the National Institute for Health Research, and the Wellcome Trust”
+# I also need institutional acknowledgement: Dr Woodcock’s contribution was undertaken under the auspices of the Centre for Diet and Activity Research (CEDAR), a UKCRC Public Health Research Centre of Excellence which is funded by the British Heart Foundation, Cancer Research UK, Economic and Social Research Council, Medical Research Council, the National Institute for Health Research, and the Wellcome Trust”
 ```
 
 # References
@@ -1271,4 +1270,3 @@ file.copy("flow-model/flow-model.docx", "~/Dropbox/DfT bid/Draft Writeups/Robin/
 file.copy("flow-model/flow-model.pdf", "~/Dropbox/DfT bid/Draft Writeups/Robin/flow-model.pdf", overwrite = T)
 
 ```
-
