@@ -161,11 +161,12 @@ an interactive map-based 'planning support system'
 the PCT
 provides a range of information to the user to inform evidence-based policy
 [@Pettit2013]. The PCT differs from previous planning support systems, in its:
-<!-- I would redefine what OD means --> 
+
 - Focus on future scenarios of cycling.
 - Estimation and visualisation of information at
 the zone and 'desire line' level.
-- Route-allocation of OD pairs, enabling specific routes to be identified
+- Route-allocation of cycling 'desire lines' from origin destination data
+('OD pairs'), enabling specific routes to be identified
 for improvement.
 
 The PCT was commissioned by the UK's Department for Transport to identify
@@ -983,7 +984,7 @@ national average, so the *govtarget* scenario represents less than a doubling in
 cycling.
 
 ```{r, echo=FALSE, fig.cap="Results of observed and scenario-based levels of cycling from PCT model runs for the city of Manchester (left) and Norwich (right)."}
-grid.raster(readPNG("../figures/man-nor-output.png"))
+grid.raster(readPNG("../figures/man-nor-output-2.png"))
 ```
 
 The difference between the spatial distribution in cycling potential between
@@ -1009,7 +1010,7 @@ grid.raster(readPNG("../figures/nor-cdp-dutch.png"))
 The equivalent results are shown for the city of Manchester in Fig. 7. This shows that
 Manchester has a poly-centric structure, favouring the construction of cycle
 routes between the various sub-centres, not just in radial routes to a single
-centre. Note in both scenarios the large increase in the level of cycling is 
+centre. Note in both scenarios the large increase in the level of cycling 
 between *govtarget* (which represents only a doubling nationwide) and *dutch*
 scenarios (which represents a more ambitious plan for cycling uptake).
 
@@ -1029,7 +1030,9 @@ route is more direct (with a route distance of 2.3 km) but passes
 along Trinity Way (the A6042), a busy dual carriage way.
 The PCT (with the 'Straight Lines' option) tells us that Euclidean distance
 associated with this OD pair is 1.6 km, resulting in circuity values of
-1.44 and 1.75 respectively.
+1.44 and 1.75 respectively. We refer to the difference between the 'fastest'
+and 'quietest' routes as the 'quietness diversion factor' ($qdf = 1.2$
+in this case).
 
 Dutch evidence suggests that cyclists are generally unwilling to
 take a path that is more than around 1.3 to 1.5 times the length of the
@@ -1044,19 +1047,19 @@ preference for protected infrastructure, highlights the importance of
 providing direct and safe routes to encourage cycling amongst
 groups who currently cycle the least.
 
-```{r, echo=FALSE, fig.cap="Close-up of the 'fastest' and 'quietest' routes from CycleStreets.net of the OD pair with highest cycling potential under the *govtarget* scenario in Manchester."}
+```{r, echo=FALSE, fig.cap="Close-up of the 'fastest' and 'quietest' routes from CycleStreets.net of the OD pair with highest cycling potential under the *govtarget* scenario in Manchester. This provides an indication of the local 'quietness diversion factor'"}
 grid.raster(readPNG("../figures/fast-quiet-man.png"))
 ```
 
 # Discussion
 
 The flexibility of the PCT methodology
-enables it to be used for applications that go far beyond those described
+enables its use for applications that go beyond those described
 in this paper. Because the underlying
 methods and computer code are transparent and open source, it is
 possible to use the PCT as a platform for further research and planning
 applications. This flexibility
-has so far been demonstrated by the tool's ability to be deployed in any
+has been demonstrated by the tool's ability to be deployed in any
 Local Authority (or other administrative area)
 in England. Extensibility has been demonstrated by the addition of
 new scenarios. Three user testing sessions have helped identify shorter-term
@@ -1081,11 +1084,14 @@ Demographics should therefore play less of a
 role in estimating cycling potential for strategic purposes
 than for identifying 'quick-win' policies based on current propensities.
 Based on this understanding, the PCT has the ability to represent different
-scenarios of change. Illustrations of how the
+scenarios of change. An indication of how the
 pattern of cycling could shift to new transport corridors in the
-hypothetical future represented by 'Go Dutch' were
-described as 'very useful' by transport planners during user testing.
-This finding coincides with 'visioning' work, which has great potential
+hypothetical future represented by 'Go Dutch' was illustrated with examples
+from Norwich and Manchester. These show that as cycling grows, its
+spatial distribution will shift, to areas with high latent demand.
+This feature of the PCT was
+described as 'very useful' by transport planners during user testing,
+coinciding with the finding that 'visioning' has great potential
 to improve transport planning for the long-term [@Tight2011].
 
 The results of user testing indicated the utility of online, interactive and open source
@@ -1104,9 +1110,16 @@ all of Scotland over various time-scales [@Beatley2012]. A mode share of
 Orlando.]
 Moreover, as illustrated by the *govtarget* scenario, the method can be used to
 translate national targets into local aspirations.
-
-Potential applications go far beyond these policy relevant near-term
-applications. Wider extensions of the model that could build on the framework
+However, the implementation of the PCT presented in this paper does have
+some limitations: the reliance on Census OD data means that the results are
+not up-to-date; there are no scenarios representing specific infrastructure
+interventios; and the user interface is constrained to a few discrete scenarios.
+These limitations open-up the potential for future work, including:
+using more up-to-date sources of OD data; creating a version of the model
+to represent the impact of specific improvements to the route network
+(e.g. by modifying the 'quietness diversion factor', described above);
+and the implementation of continuous variables to define future scenarios.
+Wider extensions of the model that could build on the framework
 presented here include:
 
 - Additional 'output tabs' in the PCT's user interface, to estimate the
