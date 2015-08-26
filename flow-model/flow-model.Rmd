@@ -32,6 +32,8 @@ bibliography: ../documents/Transport.bib
 #     affiliation: '3'
 #   - name: James Woodcock
 #     affiliation: '4'
+#   - name: Ali Abbas
+#     affiliation: '4'
 #
 # affiliation:
 #   - id: '1'
@@ -135,7 +137,7 @@ as a safe, accessible and convenient
 transport option for people of all ages and abilities [@Heinen2015].
 Thanks to various designs of modified cycles (e.g. quadricycles and handcycles),
 cycling can also provide an efficient means of self propulsion for people who
-would previously have depend on motorised modes or
+would previously have depended on motorised modes or
 other people [@Aldred2008].
 
 Within this fast-moving policy context,
@@ -230,7 +232,7 @@ cycle trips plausibly occur?
 This ability to model propensity to cycle at the OD level is one important,
 and novel, feature of the PCT.
 An 'OD pair' in this context can be represented visually as a
-'desire line'. This is the straight line connecting the origin
+'desire line'. This is a straight line connecting the origin
 (O) with the destination (D)
 [@Chan2003]. These concepts are related to the common
 $T_{ij}$ matrix notation in transport modelling, which represent the number
@@ -241,7 +243,7 @@ between OD pairs, enabling visualisation of cycling 'desire lines',
 whereas previous approaches to modelling cycling potential have tended to focus only
 on area-based measures. @Parkin2008, for example, used
 a multiple regression model to estimate levels of commuter cycling at an
-area level. Similarly local, survey data has been used to identify areas with
+area level. Similarly local survey data has been used to identify areas with
 high numbers of 'potentially cyclable trips' in London [@TfL2010].
 However, neither analysis identified the travel corridors along which
 these simulated cycle trips would be made.
@@ -313,7 +315,7 @@ for scalability.
 ```
 
 Results for each scenario are pre-calculated,
-enabling the outcome displayed quickly rapidly; calculating
+enabling the outcome displayed rapidly; calculating
 the results 'on-fly' would lead to an unresponsive interface.
 The user is not required to specify any numerical parameters to interact with
 the PCT. The only software needed for users to run the PCT is a web
@@ -437,7 +439,7 @@ Table: Sample of the 'cents' input dataset, representing the geographical locati
 kable(as.data.frame(cents[1:3,-c(3,4)]))
 ```
 
-```{r, echo=FALSE, fig.cap="Overview of the PCT map interface. The lines represent trips between origin and destination pairs for Coventry. Width represents the total number of trips. Note the use of population-weighted (as opposed to geographic) centroids used for the point of departure and destination."}
+```{r, echo=FALSE, fig.cap="Overview of the PCT map interface. The lines represent trips between origin and destination pairs for Coventry. Width represents the total number of trips. Note the use of population-weighted (as opposed to geographic) centroids for the point of departure and destination."}
 # data("flowlines")
 # plot(flowlines, lwd = flowlines$All / 10)
 grid.raster(readPNG("../figures/coventry-centroids.png"))
@@ -614,7 +616,7 @@ It is well-known that
 $pcycle$ tends to decrease with increasing distance [@Iacono2010].
 Based on this work and exploratory analysis of the data we estimated
 the $log$ of $pcycle$ rather than $pcycle$ directly.
-Hilliness was included a continuous variable in our model
+Hilliness was included as a continuous variable in our model
 and was expected to have a linear impact on $pcycle$.
 The formula chosen was:
 
@@ -789,7 +791,7 @@ impact this scenario has on the future rate of cycling.
 
 Our implementation of the *govtarget* scenario is thus in line with findings from
 @Sloman2014 and @Heinen2015, who found that it is initially
-easier to achieve growth in cycle use in places where it cycling is
+easier to achieve growth in cycle use in places where cycling is
 already common.
 However, with sustained investment in overcoming the infrastructural and
 cultural constraints which limit cycle use,
@@ -1248,7 +1250,7 @@ Transport (contract no. RM5019SO7766: "Provision of Research Programme into
 Cycling: Propensity to Cycle"), with project management by Brook Lyndhurst.
 RL's contribution was supported by the Consumer Data Research Centre
 (Economic and Social Research Council grant number ES/L011891/1).
-JW’s contribution was supported by the Centre for Diet and
+JW’s and AA's contribution was supported by the Centre for Diet and
 Activity Research (CEDAR), a UKCRC Public Health Research Centre of Excellence
 funded by the British Heart Foundation, Cancer Research UK, Economic
 and Social Research Council, Medical Research Council, the National Institute
@@ -1264,9 +1266,9 @@ the Department for Health.
 # This Appendix summarises the work from the perspective of practitioners
 # by describing how the PCT may be used to inform the decision-making process.
 
-# My affiliation: UKCRC Centre for Diet and Activity Research (CEDAR), MRC Epidemiology Unit, University of Cambridge, School of Clinical Medicine, Institute of Metabolic Science, Cambridge Biomedical Campus, Box 285, Cambridge CB2 0QQ, UK
+# My affiliation: UKCRC Centre for Diet and Activity Research (CEDAR), MRC Epidemiology Unit, University of Cambridge, School of Clinical Medicine, Institute of Metabolic Science, Cambridge Biomedical Campus, Box 285, Cambridge CB2 0QQ, UK
 #
-# I also need institutional acknowledgement: Dr Woodcock’s contribution was undertaken under the auspices of the Centre for Diet and Activity Research (CEDAR), a UKCRC Public Health Research Centre of Excellence which is funded by the British Heart Foundation, Cancer Research UK, Economic and Social Research Council, Medical Research Council, the National Institute for Health Research, and the Wellcome Trust”
+# I also need institutional acknowledgement: Dr Woodcock’s contribution was undertaken under the auspices of the Centre for Diet and Activity Research (CEDAR), a UKCRC Public Health Research Centre of Excellence which is funded by the British Heart Foundation, Cancer Research UK, Economic and Social Research Council, Medical Research Council, the National Institute for Health Research, and the Wellcome Trust”
 ```
 
 # References
@@ -1281,3 +1283,4 @@ file.copy("flow-model/flow-model.docx", "~/Dropbox/DfT bid/Draft Writeups/Robin/
 file.copy("flow-model/flow-model.pdf", "~/Dropbox/DfT bid/Draft Writeups/Robin/flow-model.pdf", overwrite = T)
 
 ```
+
