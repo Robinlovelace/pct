@@ -18,15 +18,30 @@ nrow(l)
 nrow(rfall)
 
 rfall$gov_target <- l@data$cdp_slc
+rfall$current <- l@data$Bicycle
 
 plot(l@data$dist, rfall@data$length) # shows its the same data
 
 plot(rfall)
-rg <- gOverline(rfall, attrib = "gov_target")
+
+plot(rfall)
+
+t10 <- rfall[1:20,]
+plot(t10)
+head(t10@data)
+rg10 <- gOverline(t10, attrib = "gov_target")
+
+# rg <- gOverline(rfall, attrib = "gov_target")
 rg <- readRDS("~/repos/pct/pct-data/leeds/rnet.RData")
 
-leaflet() %>% addTiles() %>% addPolylines(data = rg, weight = rg@data$gov_target / 80)
+line_widths <- rg@data$gov_target / 100
+line_widths <- line_widths + 0.3
+summary(line_widths)
+line_widths[line_widths > 8] <- 8
 
+leaflet() %>% addTiles() %>% addPolylines(data = rg, weight = line_widths, popup = rg@data$gov_target)
+
+rg <-
 
 plot(rg, lwd = rg@data$gov_target / 500)
 # saveRDS(rg, "~/repos/pct/pct-data/leeds/rnet.RData")

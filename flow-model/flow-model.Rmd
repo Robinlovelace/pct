@@ -6,6 +6,7 @@ header-includes: \usepackage{amsmath} \usepackage{longtable} \usepackage{booktab
 output:
   pdf_document:
     fig_caption: yes
+    keep_tex: yes
     number_sections: yes
   word_document: default
 bibliography: ../documents/Transport.bib
