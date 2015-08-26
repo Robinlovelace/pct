@@ -96,8 +96,8 @@ the Netherlands; and 'E-bikes', an exploratory analysis of increasing the
 distance people are willing to cycle due to new technology. The model is freely
 available online and can be accessed at
 [geo8.webarch.net/master/](http://geo8.webarch.net/master/). This paper also
-explains how the model's open source code base allows the PCT approach to be
-deployed in new contexts. We conclude that the method presented has potential to
+explains how the PCT's open source approach allows it to be
+deployed in new cities and countries. We conclude that the method presented has potential to
 assist with planning for cycling-dominated cities worldwide, which can in turn 
 assist with the global transition away from fossil fuels.
 
@@ -137,8 +137,7 @@ as a safe, accessible and convenient
 transport option for people of all ages and abilities [@Heinen2015].
 Thanks to various designs of modified cycles (e.g. quadricycles and handcycles),
 cycling can also provide an efficient means of self propulsion for people who
-would previously have depended on motorised modes or
-other people [@Aldred2008].
+would have to depend on motorised modes or other people [@Aldred2008].
 
 Within this fast-moving policy context,
 the question of where to construct new cycle infrastructure
@@ -189,8 +188,8 @@ and R programming skills, the PCT can be deployed in new
 contexts. The codebase
 underlying the PCT is publicly available at
 [github.com/npct](https://github.com/npct) under the conditions of the MIT
-license. The aggregate level OD model underlying the PCT was written in R,
-a mature language for statistical computing [@RCoreTeam2015]. The
+license. The aggregate level OD model underlying the PCT was written in R
+[@RCoreTeam2015]. The
 interface was written in **shiny**, an R package for creating online
 web applications for data visualisation [@Chang2015].
 
@@ -212,7 +211,7 @@ the impacts of achieving a target level of cycling
 (typically measured as a proportion of all trips).
 For example, our 'Government target' scenario assumes a doubling in
 the level of cycling in England (DfT 2014).
-Thus the PCT provides a method to answer the question:
+The PCT provides a method to answer the question:
 if cycling increases by 'x' nationally or regionally,
 how much is cycling likely to increase locally?
 More specifically: along which routes would the new
@@ -315,7 +314,7 @@ for scalability.
 ```
 
 Results for each scenario are pre-calculated,
-enabling the outcome displayed rapidly; calculating
+enabling the outcome to be displayed rapidly; calculating
 the results 'on-fly' would lead to an unresponsive interface.
 The user is not required to specify any numerical parameters to interact with
 the PCT. The only software needed for users to run the PCT is a web
@@ -591,7 +590,7 @@ Another way to subset OD pairs is to set the maximum Euclidean
 (or "crow-flies") distance between OD pairs (labelled `mdist`).
 We tested various values for `mdist` and settled on
 15 km. This translates to around 20 km
-on the route network (assuming a circuity value of 1.3).
+on the route network assuming a *circuity* [@Iacono2010] value of 1.3.
 From the Great Britain National Travel Survey, only 1.1% of cycle commutes
 in Britain exceed this distance.
 
@@ -709,19 +708,18 @@ the rate of cycling is highly gender-unequal (Fig. 4).
 In absolute terms, cycling increases most in this scenario where cycling
 is already a common mode of transport.
 
-- Go Dutch (*dutch*).
+- Go Dutch (*godutch*).
 While *govtarget* and *gendereq* build on current cycling behaviour,
-the *dutch* scenario focuses on long-term potential.
-If English people were as likely to cycle for a given trip (i.e. of the same
-distance and hilliness) as Dutch people, then how would the rate and spatial
-distribution of cycling change?
-The Go Dutch scenario answers this question by applying Dutch
+the *godutch* scenario focuses on long-term potential.
+The 'Go Dutch' scenario models what would happen if
+English people were as likely to cycle for a given trip (i.e. of the same
+distance and hilliness) as Dutch people, by applying Dutch
 distance decay curves to English travel patterns.
-'Go Dutch' therefore represents the elimination of the
+The scenario represents the elimination of the
 infrastructural and cultural constraints which currently hold back cycle
 use in England, including all localised differences.
 So, unlike the *govtarget* and *gendereq* scenarios,
-the predicted levels of cycle use in *dutch*
+the predicted levels of cycle use in *godutch*
 are unrelated to current levels, and are constrained
 only by local trip distance distributions and hilliness.
 
@@ -749,7 +747,7 @@ assumptions about this. It aims to assist transport
 planners in identifying where new demand for cycling is likely to be greatest in
 the near term.
 
-The key point about this scenario is that cycling does not simply double in all
+The key point about this scenario is that cycling does not double in all
 areas. Instead, the increase is related to the current
 commuter trips and the trip distance.
 
@@ -923,14 +921,14 @@ English for short trips, their propensity to cycle still drops rapidly with
 distance, with relatively few utility trips being made beyond around 15 km.
 
 Based on these insights, the essence of the 'Go Dutch' scenario
-(henceforth simply *dutch*) is the application of distance decay parameters
+is the application of distance decay parameters
 found in the Netherlands to each OD pair in the study area.
 
 In contrast to *govtarget* and *gendereq* scenarios,
-*dutch* is unrelated to the current rate of cycling. The scenario
+*godutch* is unrelated to the current rate of cycling. The scenario
 thus represents the elimination of localised
 constraints which inhibit cycle use more in some area than others.
-Local cycle use in *dutch* is therefore constrained
+Local cycle use in *godutch* is therefore constrained
 only by trip distances and hilliness.
 
 ## E-bikes
@@ -973,7 +971,7 @@ comparatively rare.
 
 Note that although Manchester and Norwich have very
 different initial levels of cycling, the final level estimated from the
-*dutch* and *ebike* scenarios there are similar. This is because
+*godutch* and *ebike* scenarios there are similar. This is because
 trip distance distributions in the two cities are comparable --- these long-term
 scenarios are not influenced by the current rate of cycling.
 Note also that the *govtarget* scenario
@@ -991,15 +989,15 @@ grid.raster(readPNG("../figures/man-nor-output-2.png"))
 
 The difference between the spatial distribution in cycling potential between
 the Government Target (*govtarget*) and Go Dutch
-(*dutch*) scenarios is illustrated in Fig. 6 for Norwich.
+(*godutch*) scenarios is illustrated in Fig. 6 for Norwich.
 Note that the top 20 OD pairs
 in Norwich under *govtarget* assumptions are dominated by the current rate of cycling,
 with the most travelled desire lines projected to continue to be found towards the east of
 the city (this can be explained by the location of the University of
 East Anglia to the east of the city).
-Under *dutch* assumptions, by contrast,
+Under *godutch* assumptions, by contrast,
 the pattern of cycling shifts substantially to the west.
-The cycling patterns under the *dutch* scenario
+The cycling patterns under the *godutch* scenario
 are more representative of short-distance trips across the city overall.
 In both cases the desire lines are focused around Norwich city centre: the region
 has a mono-centric regional economy, making trips beyond around 5 km from the
@@ -1013,7 +1011,7 @@ The equivalent results are shown for the city of Manchester in Fig. 7. This show
 Manchester has a poly-centric structure, favouring the construction of cycle
 routes between the various sub-centres, not just in radial routes to a single
 centre. Note in both scenarios the large increase in the level of cycling 
-between *govtarget* (which represents only a doubling nationwide) and *dutch*
+between *govtarget* (which represents only a doubling nationwide) and *godutch*
 scenarios (which represents a more ambitious plan for cycling uptake).
 
 ```{r, echo=FALSE, fig.cap="Model output illustrating the top 20 most cycled OD pairs in Manchester under Government Target and Go Dutch scenarios."}
@@ -1240,25 +1238,26 @@ Thanks to developers of open source software we have been able to make
 the PCT free and open to the world.
 We would also like to thank Brook Lyndhurst for assistance with the user testing,
 and all participants in the user testing sessions.
-We thank DfT staff for contributing to the design of the
-PCT by offering feedback on early versions of the tool.
+We would also like to thank Shane Snow and other staff at the DfT for
+specifying the project's aims and providing
+feedback on early versions of the tool.
 
 # Funding
 
-The work presented was funded by the Department for
-Transport (contract no. RM5019SO7766: "Provision of Research Programme into
-Cycling: Propensity to Cycle"), with project management by Brook Lyndhurst.
-RL's contribution was supported by the Consumer Data Research Centre
-(Economic and Social Research Council grant number ES/L011891/1).
-JW’s and AA's contribution was supported by the Centre for Diet and
-Activity Research (CEDAR), a UKCRC Public Health Research Centre of Excellence
-funded by the British Heart Foundation, Cancer Research UK, Economic
-and Social Research Council, Medical Research Council, the National Institute
-for Health Research (NIHR), and the Wellcome Trust. AG’s contribution was
-supported by an NIHR post-doctoral
-fellowship. The views reported in this paper are those of the authors and do not
-necessarily represent those of the DfT, Brook Lyndhurst, the NIHR, the NHS or
-the Department for Health.
+The work presented was funded by the Department for Transport (contract no.
+RM5019SO7766: "Provision of Research Programme into Cycling: Propensity to
+Cycle"), with project management by Brook Lyndhurst. RL’s contribution was
+supported by the Consumer Data Research Centre (ESRC grant number ES/L011891/1).
+JW's contribution was supported by an MRC
+Population Health Scientist Fellowship. JW’s and AA’s contribution was supported
+by the Centre for Diet and Activity Research (CEDAR), a UKCRC Public Health
+Research Centre of Excellence funded by the British Heart Foundation, Cancer
+Research UK, Economic and Social Research Council, Medical Research Council, the
+National Institute for Health Research (NIHR), and the Wellcome Trust. AG’s
+contribution was supported by an NIHR post-doctoral fellowship. The views
+reported in this paper are those of the authors and do not necessarily represent
+those of the DfT, Brook Lyndhurst, the NIHR, the NHS or the Department for
+Health.
 
 ```{r, echo=FALSE}
 # # Using the tool
