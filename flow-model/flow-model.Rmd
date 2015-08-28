@@ -1114,7 +1114,7 @@ translate national targets into local aspirations.
 However, the implementation of the PCT presented in this paper does have
 some limitations: the reliance on Census OD data means that the results are
 not up-to-date; there are no scenarios representing specific infrastructure
-interventios; and the user interface is constrained to a few discrete scenarios.
+interventions; and the user interface is constrained to a few discrete scenarios.
 These limitations open-up the potential for future work, including:
 using more up-to-date sources of OD data; creating a version of the model
 to represent the impact of specific improvements to the route network
