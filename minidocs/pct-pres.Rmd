@@ -1,7 +1,7 @@
 ---
-title: "PCT: An open online planning tool for sustainable transport"
-author: "Robin Lovelace for GEOSTAT 2015. Slides: github.com/Robinlovelace/pct"
-date: " University of Lancaster 21st August 2015"
+title: "The National Propensity to Cycle Tool"
+author: "Robin Lovelace for Cycling and Society. Slides: speaderdeck/robinlovelace"
+date: "Manchester Town Hall 14th September 2015"
 output:
   ioslides_presentation:
     transition: slower
@@ -9,6 +9,7 @@ logo: /home/robin/Dropbox/Public/img/logos/cdrc-square.png
 ---
 
 ```{r, echo=FALSE, include=FALSE}
+# runtime: shiny
 pkgs <- c("grid", "png", "knitr")
 lapply(pkgs, library, character.only = T)
 # bibliography: "~/Documents/R.bib"
@@ -18,11 +19,16 @@ lapply(pkgs, library, character.only = T)
 
 > - The software (tools of the trade)
 > - Context (motivations)
-> - Building the National Propensity to Cycle Tool (NPCT)
-> - Sustainable transport planning with R 
-> - Esperanzas y sueños
+> - National Propensity to Cycle Tool (NPCT) in action
+> - Hopes and dreams
 
 # I: The software
+
+## Transport planning tools: pricey
+
+```{r, echo=FALSE}
+grid.raster(readPNG("~/Pictures/Selection_327.png"))
+```
 
 ## Why R?
 
@@ -102,7 +108,7 @@ Not so good for
 
 ## What do shiny apps look like?
 
-```{r}
+```{r, eval=FALSE}
 # type this to find out!
 runExample()
 ```
@@ -117,10 +123,10 @@ grid.raster(readPNG("~/repos/learning-shiny/images/Selection_303.png"))
 
 ```{r, echo=FALSE}
 # shinyAppDir("~/repos/learning-shiny/rentSplit/")
-# grid.raster(readPNG("~/repos/learning-shiny/images/Selection_304.png"))
+grid.raster(readPNG("~/repos/learning-shiny/images/Selection_304.png"))
 ```
 
-[![](~/repos/learning-shiny/images/Selection_304.png)](http://geo8.webarch.net/robin/rentSplit/)
+See [geo8.webarch.net/robin/rentSplit/](http://geo8.webarch.net/robin/rentSplit/)
 
 ## Leaflet
 
@@ -133,15 +139,19 @@ leaflet() %>%
   addCircleMarkers(data = cent)
 ```
 
-
 # II: Context
 
-## What motivated this work?
+## Joined-up strategic cycling **networks**
+
+![for recumbents](http://homepage.ntlworld.com/pete.meg/wcc/facility-of-the-month/prestonpipeline.jpg)
+
+## Policy context
 
 > - House of Commons Criticising the DfT for using closed models
 > - 'Impact' and 'engagement' increasingly important for research funding
 > - Complex data cannot be adequately summarised in a single static graphic
-> - We've been contracted by the DfT (£100,000+) to create a 'National Propensity to Cycle Tool' (NPCT)!
+> - Phase I: proof of concept (February - August 2015)
+> - Phase II: nationwide deployment (November 2015 - 2018)
 
 See: [cedar.iph.cam.ac.uk/research/modelling/npct-tool](http://www.cedar.iph.cam.ac.uk/research/modelling/npct-tool/)
 
@@ -152,8 +162,6 @@ See: [cedar.iph.cam.ac.uk/research/modelling/npct-tool](http://www.cedar.iph.cam
 > - DECC's 'Energy 2050' [planning tool](http://2050-calculator-tool.decc.gov.uk/)
 > - Walkability index site
 > - Interactive download of bicycle paths
-
-# III: Building the National Propensity to Cycle Tool (NPCT)
 
 ## Design criteria
 
@@ -173,163 +181,203 @@ grid.raster(readPNG("~/Pictures/Selection_114.png"))
 grid.raster(readPNG("~/Pictures/Selection_115.png"))
 ```
 
-## Genius additions: zoom dependent selection; freeze Scope
+# III: Features and capabilities
+
+## Live demo!
+
+See here: [geo8.webarch.net/master](http://geo8.webarch.net/manchester/)
+
+```{r, echo=FALSE}
+grid.raster(readPNG("~/Dropbox/DfT bid/figures/coventry-centroids.png"))
+```
+
+
+## Zoom-dependent selection and freeze Scope
 
 ```{r, echo=FALSE}
 grid.raster(readPNG("~/Pictures/Selection_156.png"))
 ```
 
-## The master app 
-
-```{r, eval=FALSE}
-runApp("~/repos/pct-shiny/master/", launch.browser = T)
-```
-
-Key components:
-
-```
-|-- master
-|   |-- master.R
-|   |-- server.R
-|   |-- ui.R
-|   `-- pct-shiny-funs.R 
-|-- manchester
-|   |-- server.R (links to ../master.R)
-|   `-- ui.R (links to ../ui.R)
-`-- README.Rmd
-
-```
-
-## Running the app for different cities
-
-```{r, eval=FALSE}
-runApp("~/repos/pct-shiny/norwich/", launch.browser = T)
-runApp("~/repos/pct-shiny/cambridge/", launch.browser = T)
-runApp("~/repos/pct-shiny/manchester/", launch.browser = T)
-```
-
-# IV: Sustainable transport planning with R (stplanr)
-
-## Location-dependent loading script
-
-```{r, eval=FALSE}
-start_time <- Sys.time() # for timing the script
-
-la <- "manchester" # Name of the local authority
-dir.create(paste0("pct-data/", la))
-
-# ... 200 + lines of code here!
-# ...
-
-end_time <- Sys.time()
-end_time - start_time
-```
-
-## Mid-script diagnostic plots
+## Model output tab I: Coventry
 
 ```{r, echo=FALSE}
-grid.raster(readPNG("~/Pictures/Selection_157.png"))
+grid.raster(readPNG("~/Dropbox/DfT bid/figures/coventry-output.png"))
 ```
 
-## Saving routes on the network
+
+## Model output tab II: Manchester
 
 ```{r, echo=FALSE}
-library(stplanr)
-library(rgdal)
-data("cents")
-data("flow")
-plot(cents)
+grid.raster(readPNG("~/Dropbox/DfT bid/figures/manchester-output.png"))
 ```
 
-## OD data: tricky
+## Planned feature: network tab
 
-```{r}
-kable(head(flow[1:3]))
-```
+<blockquote class="twitter-tweet" lang="en"><p lang="en" dir="ltr">Estimating cycling rate allocated to the road network with <a href="https://t.co/DuzyCQCA50">https://t.co/DuzyCQCA50</a>. Looks like streams + rivers! <a href="http://t.co/geaV0mVKdG">pic.twitter.com/geaV0mVKdG</a></p>&mdash; Robin Lovelace (@robinlovelace) <a href="https://twitter.com/robinlovelace/status/633152722926206976">August 17, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-## Converting OD data into 'flowlines'
+## Example: Trinity Way, Manchester
 
-```{r}
-library(stplanr)
-flowlines <- gFlow2line(flow = flow, zones = cents)
-plot(flowlines)
-```
-
-## Route allocation
-
-This code is not run - you need your own API key
-
-```{r, eval=FALSE}
-example(gLines2CyclePath)
-data(package = "stplanr", "flowlines")
-?route_cyclestreet
-plot(flowlines)
-Sys.setenv(CYCLESTREET = 'eccbf612-214e-437d-8b73-06bdf9e68731')
-routes_fast <- gLines2CyclePath(flowlines)
-routes_slow <- gLines2CyclePath(flowlines, "quietest")
-lines(routes_fast, col = "red")
-lines(routes_slow, col = "green")
-```
-
-## Routes allocated to the travel network
-
-```{r}
-lanc_2_lds <- route_graphhopper(from = "University of Lancaster", to = "Leeds")
-# nominatim::address_lookup("University of Lancaster")
-
-# for online mapping
-# leaflet() %>% addTiles() %>% addPolylines(data = lanc_2_lds)
-```
-
-## Which path to take
-
-```{r}
-plot(lanc_2_lds)
+```{r, echo=FALSE}
+grid.raster(readPNG("../figures/fast-quiet-man.png"))
 ```
 
 
-## Extracting route info
-
-```{r}
-lanc_2_lds@data
+```{r, echo=FALSE}
+# ## The master app 
+# 
+# ```{r, eval=FALSE}
+# runApp("~/repos/pct-shiny/master/", launch.browser = T)
+# ```
+# Key components:
+# 
+# ```
+# |-- master
+# |   |-- master.R
+# |   |-- server.R
+# |   |-- ui.R
+# |   `-- pct-shiny-funs.R 
+# |-- manchester
+# |   |-- server.R (links to ../master.R)
+# |   `-- ui.R (links to ../ui.R)
+# `-- README.Rmd
+# 
+# ```
 ```
 
-## Generating many flowlines
+## Hopes and dreams
 
-```{r}
-data("routes_fast","routes_slow")
-flowlines <- spTransform(flowlines, CRS("+init=epsg:4326"))
-plot(flowlines)
-lines(routes_fast, col = "red")
-lines(routes_slow, col = "green")
+> - The PCT will encourage long-term sustainable investment and planning for a 'post-carbon' future
+> - The PCT will be of use to researchers as well as policy makers
+> - One day strategic transport decisions will be made using open access data and open source software, ensuring transparency and encouraging citizen science
+> - The PCT will provide evidence-based guidance of cycle infrastructure worldwide
+
+> - Questions?
+
+```{r, echo=FALSE}
+# ## Running the app for different cities
+# 
+# ```{r, eval=FALSE}
+# runApp("~/repos/pct-shiny/norwich/", launch.browser = T)
+# runApp("~/repos/pct-shiny/cambridge/", launch.browser = T)
+# runApp("~/repos/pct-shiny/manchester/", launch.browser = T)
+# ```
+
+# # IV: Sustainable transport planning with R (stplanr)
+# 
+# ## Location-dependent loading script
+# 
+# ```{r, eval=FALSE}
+# start_time <- Sys.time() # for timing the script
+# 
+# la <- "manchester" # Name of the local authority
+# dir.create(paste0("pct-data/", la))
+# 
+# # ... 200 + lines of code here!
+# # ...
+# 
+# end_time <- Sys.time()
+# end_time - start_time
+# ```
+# 
+# ## Mid-script diagnostic plots
+# 
+# ```{r, echo=FALSE}
+# grid.raster(readPNG("~/Pictures/Selection_157.png"))
+# ```
+# 
+# ## Saving routes on the network
+# 
+# ```{r, echo=FALSE}
+# library(stplanr)
+# library(rgdal)
+# data("cents")
+# data("flow")
+# plot(cents)
+# ```
+# 
+# ## OD data: tricky
+# 
+# ```{r}
+# kable(head(flow[1:3]))
+# ```
+# 
+# ## Converting OD data into 'flowlines'
+# 
+# ```{r}
+# library(stplanr)
+# flowlines <- gFlow2line(flow = flow, zones = cents)
+# plot(flowlines)
+# ```
+# 
+# ## Route allocation
+# 
+# This code is not run - you need your own API key
+# 
+# ```{r, eval=FALSE}
+# example(gLines2CyclePath)
+# data(package = "stplanr", "flowlines")
+# ?route_cyclestreet
+# plot(flowlines)
+# Sys.setenv(CYCLESTREET = 'eccbf612-214e-437d-8b73-06bdf9e68731')
+# routes_fast <- gLines2CyclePath(flowlines)
+# routes_slow <- gLines2CyclePath(flowlines, "quietest")
+# lines(routes_fast, col = "red")
+# lines(routes_slow, col = "green")
+# ```
+# 
+# ## Routes allocated to the travel network
+# 
+# ```{r}
+# lanc_2_lds <- route_graphhopper(from = "University of Lancaster", to = "Leeds")
+# # nominatim::address_lookup("University of Lancaster")
+# 
+# # for online mapping
+# # leaflet() %>% addTiles() %>% addPolylines(data = lanc_2_lds)
+# ```
+# 
+# ## Which path to take
+# 
+# ```{r}
+# plot(lanc_2_lds)
+# ```
+# 
+# 
+# ## Extracting route info
+# 
+# ```{r}
+# lanc_2_lds@data
+# ```
+# 
+# ## Generating many flowlines
+# 
+# ```{r}
+# data("routes_fast","routes_slow")
+# flowlines <- spTransform(flowlines, CRS("+init=epsg:4326"))
+# plot(flowlines)
+# lines(routes_fast, col = "red")
+# lines(routes_slow, col = "green")
+# ```
+# 
+# ## gLines2CyclePath
+# 
+# ```{r, eval=FALSE}
+# gLines2CyclePath(l, plan = "fastest")
+# ```
+# 
+# ## gOverline
+# 
+# This problem was solved by Barry Rowlingson on
+# [gis.stackexchange](https://gis.stackexchange.com/questions/139681/overlaying-lines-and-aggregating-their-values-for-overlapping-segments):
+# 
+# ![](http://i.stack.imgur.com/LDy7j.png)
+# 
+# ## gOverline II
+# 
+# ![](http://i.stack.imgur.com/mROnK.png)
+# 
+# 
+# # V: Esperanzas y sueños
+# 
 ```
 
-## gLines2CyclePath
-
-```{r, eval=FALSE}
-gLines2CyclePath(l, plan = "fastest")
-```
-
-## gOverline
-
-This problem was solved by Barry Rowlingson on
-[gis.stackexchange](https://gis.stackexchange.com/questions/139681/overlaying-lines-and-aggregating-their-values-for-overlapping-segments):
-
-![](http://i.stack.imgur.com/LDy7j.png)
-
-## gOverline II
-
-![](http://i.stack.imgur.com/mROnK.png)
-
-
-# V: Esperanzas y sueños
-
-## Un mundo mejor
-
-> - Espero que el Departamento de Transporte utilise nuestra herramienta para prioritisar *donde* y *como* invertir en sistemas de transporte 'post-carbon'
-> - Espero que el esfuerzo este util para otros investigadores que quieren un
-sistema de transporte mas saludable
->- Sueño que algun dia las decisiones estrategicas se haran usando datos, metodos y software libre
-> - Sueño que nuestra herremienta mejorara las decisiones estrategicas en muchos paises del mundo
-
-> - ¿Preguntas?
