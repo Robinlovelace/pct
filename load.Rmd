@@ -2,10 +2,11 @@
 title: "National Propensity to Cycle Tool - local results"
 author: "Created by the NPCT team"
 output:
-  word_document: 
-    fig_caption: yes
   html_document:
     fig_caption: yes
+    highlight: pygments
+    theme: null
+    toc: yes
 ---
 
 ```{r, include=FALSE}
@@ -17,22 +18,18 @@ This document was produced automatically at `r start_time`.
 
 ## Introduction
 
-The results of NPCT scenarios are based on a model.
+The results of the National Propensity to Cycle Tool (NPCT) scenarios are based on a model.
 This document presents information about the input data, model diagnostics,
-run time and information about its outputs.
+run time and the key outputs for each region.
+The aim is to inform users of the NPCT's interactive map how the results were generated.
+This document assumes some technical knowledge in the area of transport planning.
 
-The aim is to provide further information for transport planners and
-researchers on the origin of results presented in the NPCT's interactive map.
-This document is designed for use by advanced users: some technical knowledge
-is needed to understand all its outputs.
-
-The model driving the NPCT is licensed under the open source MIT License
-and can be modified by others provided attribution to the original.
+The code underlying the NPCT is open source, under the conditions of the MIT License.
+Both the [pct](https://github.com/npct/pct) and [pct-shiny](https://github.com/npct/pct-shiny) and be modified by others provided attribution to the original.
 
 ## Initial parameters
 
-The preset values used to select the study area and filter the flow data
-were as follows:
+The preset values used to select the study area and filter the origin destination data are described in this section.
 
 ```{r, echo=FALSE}
 if(!exists("la"))
@@ -42,10 +39,9 @@ if(!exists("la"))
 
 ```{r, warning=FALSE}
 # Set local authority and ttwa zone names
-la # print the name of the local authority
+la # name of the local authority
 la_path <- file.path("pct-data", la)
-
-if(!dir.exists(la_path)) dir.create(la_path) # on a unix machine
+if(!dir.exists(la_path)) dir.create(la_path) # create data directory
 
 # Minimum flow between od pairs, subsetting lines. High means fewer lines.
 mflow <- 30
@@ -112,7 +108,7 @@ The characteristics of zones are as follows:
 
 ```{r, echo=FALSE}
 nzones <- nrow(zones) # how many zones?
-mzarea <- round(median(gArea(zones, byid = T) / 10000), 2) # average area of zones, sq km
+mzarea <- round(median(gArea(zones, byid = T) / 10000), 1) # average area of zones, sq km
 ```
 
 - Number of zones: `r nzones`, compared with 6791 in England
@@ -137,26 +133,26 @@ flowsex$id <- paste(flowsex$Area.of.residence, flowsex$Area.of.workplace)
 # Subset by zones in the study area
 o <- flow$Area.of.residence %in% cents$geo_code
 d <- flow$Area.of.workplace %in% cents$geo_code
-flow <- flow[o & d, ] # subset flows with o and d in study area
-sel <- flow$All > mflow # subset flows by n. people using it
+flow <- flow[o & d, ] # subset OD pairs with o and d in study area
+sel <- flow$All > mflow # subset OD pairs by n. people using it
 ```
 
 ```{r, echo=FALSE}
 # nrow(flow) # how many OD pairs in the study area?
-# proportion of flows in min-flow based subset
-pmflow <- round(sum(sel) / nrow(flow) * 100, 2)
+# proportion of OD pairs in min-flow based subset
+pmflow <- round(sum(sel) / nrow(flow) * 100, 1)
 # % all trips covered
-pmflowa <- round(sum(flow$All[sel]) / sum(flow$All) * 100, 2)
+pmflowa <- round(sum(flow$All[sel]) / sum(flow$All) * 100, 1)
 ```
 
-There are **`r nrow(flow)`** flows with origins and destinations in the study
+There are **`r nrow(flow)`** OD pairs with origins and destinations in the study
 area. Of these, **`r sum(sel)`** meet the criteria that `r mflow` people 
 reported travelling between these two areas in the 2011 Census (a modifiable parameter used
 to reduce the computational requirements
-of the model). That is  **`r pmflow`%** of flows, accounting for
+of the model). That is  **`r pmflow`%** of OD pairs, accounting for
 **`r pmflowa`%** of commutes in the study area.
 
-```{r distance-dist, echo=FALSE, fig.cap="The study area (dark line), selected zones for training the model (grey) and the administrative zone of interest (red line). The black straight lines represent the most intensive commuting flows.", echo=FALSE, message=FALSE, warning=FALSE}
+```{r distance-dist, echo=FALSE, fig.cap="The study area (dark line), selected zones for training the model (grey) and the administrative zone of interest (red line). The black straight lines represent the most intensive commuting OD pairs.", echo=FALSE, message=FALSE, warning=FALSE}
 flow <- flow[sel, ]
 # nrow(flow) # new flow rate
 
@@ -178,16 +174,16 @@ l$dist <- gLength(l, byid = T) / 1000 # Euclidean distance
 dsel <- l$dist < mdist
 
 l <- l[dsel,]
-l <- l[l$dist > 0, ] # to remove flows of 0 length
+l <- l[l$dist > 0, ] # to remove OD pairs of 0 length
 ```
 
-## Hilliness of flows
+## Hilliness of OD pairs
 
 The average hilliness of zones in the study area is
-`r round(mean(zones$avslope), 2)`
+`r round(mean(zones$avslope), 1)`
 degrees,
 compared with the national average of 
-`r round(mean(ukmsoas$avslope, na.rm = T), 2)`. This data is displayed in the
+`r round(mean(ukmsoas$avslope, na.rm = T), 1)`. This data is displayed in the
 figure below.
 
 ```{r, echo = FALSE}
@@ -196,7 +192,7 @@ tm_shape(zones) +
 ```
 
 ```{r, echo=FALSE}
-# Hilliness of flows
+# Hilliness of OD pairs
 # (calculated as the average gradient of the zone
 # of the flow's origin and destination, in degrees)
 # is 
@@ -226,7 +222,7 @@ cents <- spTransform(cents, CRS("+init=epsg:4326"))
 l <- spTransform(l, CRS("+init=epsg:4326"))
 
 # # # # # # # # # # # # # # #
-# Allocate flows to network #
+# Allocate OD pairs to network #
 # Warning: time-consuming!  #
 # Needs CycleStreet.net API #
 # # # # # # # # # # # # # # #
@@ -270,7 +266,7 @@ if(length(grep("rf.Rds|rq.Rds", list.files(paste0("pct-data/", la)))) >= 2){
   }
 ```
 
-```{r plot-rlines, echo = FALSE, fig.cap="Sample of the straight and route-lines allocated to the travel network"}
+```{r plot-rlines, warning=FALSE, echo = FALSE, fig.cap="Sample of the straight and route-lines allocated to the travel network"}
 library(sp)
 plot(l[1:300,])
 lines(rf[1:300,], col = "red")
@@ -279,7 +275,7 @@ lines(rq[1:300,], col = "green")
 
 ```{r, echo=FALSE}
 
-# Allocate route factors to flows
+# Allocate route factors to OD pairs
 # nz <- which(l$dist > 0) # non-zero lengths = nz
 l$dist_quiet <- l$dist_fast <- l$cirquity <- l$distq_f <- NA
 if(nrow(rf) == nrow(l)) print("Warning, lines and routes are different lengths")
@@ -319,9 +315,9 @@ ggplot(histdf) +
   theme_bw()
 
 pl5kmuk <- round(sum(luk$All[luk$dist_fast < 5]) /
-    sum(luk$All) * 100, 2)
+    sum(luk$All) * 100, 1)
 pl5km <- round(sum(l$All[l$dist_fast < 5]) /
-    sum(l$All) * 100, 2)
+    sum(l$All) * 100, 1)
 ```
 
 From the nationwide sample of trips, `r pl5kmuk`% of trips are less than 5km.
@@ -330,8 +326,8 @@ In the case study area
 `r pl5km`% of sampled trips are less than 5km.
 
 Subsetting by distance (set
-to `r mdist` km) and removing inter-zone flows
-further reduces the number of flows from `r sum(sel)`
+to `r mdist` km) and removing inter-zone OD pairs
+further reduces the number of OD pairs from `r sum(sel)`
 to `r nrow(l)`.
 
 ```{r, echo=FALSE}
@@ -345,7 +341,7 @@ to `r nrow(l)`.
 # # # # # # # # # # # # # #
 
 l$clc <- l$Bicycle / l$All
-flow_ttwa <- flow # save flows for the ttwa
+flow_ttwa <- flow # save OD pairs for the ttwa
 flow <- l@data
 ```
 
@@ -371,9 +367,9 @@ rcycle <- round(100 * sum(l$Bicycle) / sum(l$All), 1)
 natcyc <- sum(luk$Bicycle) / sum(luk$All)
 ```
 
-The overall rate of cycling in the flows in the study area
+The overall rate of cycling in the OD pairs in the study area
 (after subsetting for distance) is `r rcycle`%, compared a
-rate from the national data (of equally short flows)
+rate from the national data (of equally short OD pairs)
 of 5.0%.
 
 ## Scenarios
@@ -452,17 +448,19 @@ dfsum <- summarise(group_by(dfsp, scenario, dist_band), Percent = sum(slc) / sum
 dfsum$Percent <- dfsum$Percent 
 dfspread <- spread(dfsum, scenario, Percent)
 dfspread$dist_band <- as.character(dfspread$dist_band)
-dfspreadf <- c("Total", round(colSums(dfspread[2:7])* 100, 2))
-dfspread[3:7] <- do.call(cbind, apply(dfspread[3:7], 2, function(x) round(x / dfspread[2] * 100, 2)))
+dfspreadf <- c("Total", round(colSums(dfspread[2:7])* 100, 1))
+dfspread[3:7] <- do.call(cbind, apply(dfspread[3:7], 2, function(x) round(x / dfspread[2] * 100, 1)))
 dfspread <- rbind(dfspread, dfspreadf)
 dfspread <- dfspread[c(1, 2, 7, 3, 4, 5, 6)]
 dfspread$All <- round(as.numeric(dfspread$All) * 100, 1)
 dfspread$All[nrow(dfspread)] <- dfspread$All[nrow(dfspread)] / 100
 ```
 
+The table below illustrates the same information by distance band.
 
 ```{r, echo=FALSE}
-kable(dfspread)
+# names(dfspread)[1:3] <- c("Distance band", 	"All modes", "Observed level (OLC)")
+kable(dfspread, format = "html", digits = 1, )
 ```
 
 
@@ -473,7 +471,7 @@ kable(dfspread)
 
 for(i in 1:nrow(cents)){
 
-  # all flows originating from centroid i
+  # all OD pairs originating from centroid i
   j <- which(l$Area.of.residence == cents$geo_code[i])
 
   cents$base_olc[i] <- sum(l$Bicycle[j])
@@ -498,7 +496,7 @@ for(i in 1:nrow(cents)){
   cents$distq_f[i] <- sum(l$distq_f[j] * l$All[j], na.rm = T )  / sum(l$All[j])
 }
 
-# names(l) # which line names can be added for non-directional flows?
+# names(l) # which line names can be added for non-directional OD pairs?
 # dput(c(names(l)[addids], c("cdp_slc", "cdp_sic")))
 addidsn <- c("All", "Work.mainly.at.or.from.home", "Underground..metro..light.rail..tram", 
 "Train", "Bus..minibus.or.coach", "Taxi", "Motorcycle..scooter.or.moped", 
@@ -511,13 +509,13 @@ addids <- which(names(l) %in% addidsn)
 # summary(l[addids])
 
 
-# Aggregate bi-directional flows
+# Aggregate bi-directional OD pairs
 
 # Subset by zone bounding box
 # l <- l[as.logical(gContains(zone, l, byid = T)),]
 # nrow(l)
 
-# 4: by aggregating 2 way flows
+# 4: by aggregating 2 way OD pairs
 l <- gOnewayid(l, attrib = c(addids))
 
 l$clc <- l$Bicycle / l$All
@@ -537,7 +535,7 @@ cents_ttwa <- cents # copy cents data (we'll overwrite cents)
 # zones <- zones[cents,]
 ```
 
-```{r, echo=FALSE, results='hide', fig.cap="Illustration of flows on travel network"}
+```{r, echo=FALSE, results='hide', fig.cap="Illustration of OD pairs on travel network"}
 zbuf <- spTransform(zbuf, CRS("+init=epsg:4326"))
 plot(zbuf)
 plot(zones, add = T)
