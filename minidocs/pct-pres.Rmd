@@ -216,6 +216,43 @@ grid.raster(readPNG("~/Dropbox/DfT bid/figures/manchester-output.png"))
 <blockquote class="twitter-tweet" lang="en"><p lang="en" dir="ltr">Estimating cycling rate allocated to the road network with <a href="https://t.co/DuzyCQCA50">https://t.co/DuzyCQCA50</a>. Looks like streams + rivers! <a href="http://t.co/geaV0mVKdG">pic.twitter.com/geaV0mVKdG</a></p>&mdash; Robin Lovelace (@robinlovelace) <a href="https://twitter.com/robinlovelace/status/633152722926206976">August 17, 2015</a></blockquote>
 <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
+## Other planned features
+
+**Beta**
+
+> - Network analysis (various options)
+> - Hilliness allocated to cycle network
+
+**Version 1 - nationwide (June 2016)**
+
+> - HEAT outputs
+> - Incorporation of user feedback
+> - Travel to school layer (data pending)
+
+**Version 2 - nationwide (June 2017)**
+
+> - Micro-level analysis
+> - Socio-demographic variables (new scenarios?)
+
+## Potential futures: e.g. community contributed
+
+> - Custom scenarios (e.g. 20% cycling by 2020 in Bristol)
+> - Custom scenarios (e.g. 10% cycling by 2020 in Manchester!)
+> - Scenarios estimating impacts from specific interventions
+> - International comparisons of propensity to cycle
+> - A global propensity to cycle map?
+
+## Fork my code!
+
+![](https://help.github.com/assets/images/site/fork-a-repo.gif)
+
+- The work is open source so can used as a foundation for further work by others
+
+> - E.g. councils with the technical know-how
+> - E.g. cycle campaigner 'hackers'
+
+- Check out the project's repository: [github.com/npct/pct-shiny](https://github.com/npct/pct-shiny)
+
 ## Example: Trinity Way, Manchester
 
 ```{r, echo=FALSE}
@@ -253,6 +290,7 @@ grid.raster(readPNG("../figures/fast-quiet-man.png"))
 > - The PCT will provide evidence-based guidance of cycle infrastructure worldwide
 
 > - Questions?
+> - Feedback? Email npct@npct.org.uk to get involved
 
 ```{r, echo=FALSE}
 # ## Running the app for different cities

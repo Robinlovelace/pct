@@ -392,10 +392,12 @@ las$pcycle_cdp <- las$pcycle + las$pcycle_exp
 las$Bicycle_exp <- las$All_All * las$pcycle_exp / 100000
 fixedBreaks2 <- c(0,2,3,5)
 fixedBreaks3 <- c(0,1,2,20)
-qtm(las, c("pcycle_exp", "Bicycle_exp"),
+(p2 <- qtm(las, c("pcycle_exp", "Bicycle_exp"),
   fill.style = c("fixed", "fixed"),
   fill.breaks = list(fixedBreaks2, fixedBreaks3), fill.title = c("Growth in cycling (%)",
-    "Growth in cycling\n(1000 commuters)"))
+    "Growth in cycling\n(1000 commuters)"), scale = 0.8))
+
+save_tmap(p2, "figures/cuas_las.png")
 ```
 
 
@@ -440,20 +442,28 @@ growth potential. See [github.com/npct/pct-data/blob/master/cuas_dat.csv](https:
 library(rgdal)
 cuas <- raster::shapefile("pct-bigdata/national/cuas.shp")
 lasp <- rgeos::gCentroid(las, byid = T)
-ldf <- las@data
-output_data <- select(ldf, Bicycle_exp, All_All)
+output_data <- select(las@data, Bicycle_exp)
 lasp <- SpatialPointsDataFrame(lasp, output_data)
 library(sp)
 cuasp <- aggregate(lasp, cuas, FUN = sum)
 # head(cuasp)
 cuas$Bicycle_exp <- cuasp@data$Bicycle_exp / 1000
-qtm(cuas, "Bicycle_exp", fill.title = "Growth in commuter\ncyclists (1000)")
+# qtm(cuas, "Bicycle_exp", fill.title = "Growth in commuter\ncyclists (1000)")
+
+(p7 <- tm_shape(cuas) +
+  tm_fill("Bicycle_exp", title = "Growth in commuter\ncyclists (1000)", breaks = c(0, 3000, 6000, 12000, 20000)) +
+  tm_borders(lwd = 0.1))
+
+# save_tmap(p7, "figures/cuas_growth_abs.png")
+  
+
 # cuas@data$CTYUA12NM[order(cuas@data$Bicycle_exp, decreasing = T)]
-output_data <- select(ldf, All_All)
+output_data <- select(las@data, All_All)
 lasp <- SpatialPointsDataFrame(lasp, output_data)
 library(sp)
 cuasp <- aggregate(lasp, cuas, FUN = sum)
 # head(cuasp)
+head(cuasp@data)
 cuas$All <- cuasp@data$All_All / 1000
 cuas$All_All <- cuasp@data$All_All
 cuas$Bicycle_exp <- cuas$Bicycle_exp * 1000
@@ -461,7 +471,14 @@ cuas$Bicycle_exp <- cuas$Bicycle_exp * 1000
 
 ```{r, echo=FALSE, fig.cap="Potential growth in cycle commuters in percentage points across highway authorities in England. The full dataset can be viewed online: github.com/npct/pct-data/blob/master/cuas_dat.csv", message=FALSE}
 cuas$`Growth in commuter cycling (%)` <- cuas@data$Bicycle_exp  / cuas@data$All_All * 100
-qtm(cuas, "Growth in commuter cycling (%)", fill.style = "fixed", fill.breaks = c(0,2.5,3,5))
+
+(p1 <- tm_shape(cuas) + 
+  tm_fill("Growth in commuter cycling (%)", fill.style = "fixed", breaks = c(1, 2.2, 2.5, 3, 4)) +
+  tm_borders(lwd = 0.1))
+
+save_tmap(p1, "figures/cuas_growth_perc.png")
+# save_tmap(p1, "percentage_national_prelim.pdf")
+
 cuasdat <- select(cuas@data, Name = CTYUA12NM, `All commutes (n)` = All_All, `Growth in cycling (n)` = Bicycle_exp, `Growth in commuter cycling (%)`)
 # summary(cuasdat)
 # summary(head(cuas@data$All[order(cuas@data$Bicycle_exp, decreasing = T)], 10))

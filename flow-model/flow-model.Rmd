@@ -1,18 +1,26 @@
 ---
 title: 'The Propensity to Cycle Tool: An open source online system for sustainable
   transport planning'
+author:
+- Robin Lovelace (University of Leeds)
+- Anna Goodman (London School of Health and Tropical Medicine)
+- Rachel Aldred (University of Westminster)
+- Nikolai Berkoff (independent web developer)
+- Ali Abbas (University of Cambridge)
+- James Woodcock (University of Cambridge)
 csl: elsevier-harvard.csl
-header-includes: \usepackage{amsmath} \usepackage{longtable} \usepackage{booktabs}
-output:
-  pdf_document:
-    fig_caption: yes
-    keep_tex: yes
-    number_sections: yes
-  word_document: default
 bibliography: ../documents/Transport.bib
 ---
 
 ```{r, echo=FALSE, include=FALSE}
+# date: '`r format(Sys.time(), ''%d %B %Y'')`'
+# output:
+#   word_document: default
+#   pdf_document:
+#     fig_caption: yes
+#     keep_tex: yes
+#     number_sections: yes
+# header-includes: \usepackage{amsmath} \usepackage{longtable} \usepackage{booktabs}
 # output: word_document
     # fig_caption: yes
 
@@ -92,7 +100,7 @@ the model, which estimates cycling potential as a function of route distance,
 hilliness and other factors at the OD and area level. Multiple scenarios were
 generated and interactively displayed. These were: 'Government Target', in which
 the rate of cycling doubles in England; 'Gender Equality', in which women cycle
-as much as men; ‘Go Dutch’, in which English people cycle as much as people in 
+as much as men; 'Go Dutch', in which English people cycle as much as people in 
 the Netherlands; and 'E-bikes', an exploratory analysis of increasing the
 distance people are willing to cycle due to new technology. The model is freely
 available online and can be accessed at
