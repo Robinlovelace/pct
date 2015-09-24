@@ -10,6 +10,7 @@ output:
 ---
 
 ```{r, include=FALSE}
+# TODO: Make clc_m appear in cua data
 start_time <- Sys.time() # for timing the script
 source("set-up.R") # pull in packages needed
 ```
@@ -33,7 +34,7 @@ The preset values used to select the study area and filter the origin destinatio
 
 ```{r, echo=FALSE}
 if(!exists("la"))
-  la <- "manchester" # create default LA name if none exists
+  la <- "norfolk" # create default LA name if none exists
 ```
 
 
@@ -44,7 +45,7 @@ la_path <- file.path("pct-data", la)
 if(!dir.exists(la_path)) dir.create(la_path) # create data directory
 
 # Minimum flow between od pairs, subsetting lines. High means fewer lines.
-mflow <- 30
+mflow <- 150
 mdist <- 15 # maximum euclidean distance (km) for subsetting lines
 min_zones <- 60 # minumum number of zones in study area before buffer used
 buff_dist <- 3 # buffer (km) used to select additional zones (often redundant)
@@ -62,9 +63,14 @@ cents <- readOGR("pct-bigdata/national/cents.geojson", layer = "OGRGeoJSON")
 cents$geo_code <- as.character(cents$geo_code)
 
 # Load local authorities and districts
-las <- readOGR(dsn = "pct-bigdata/national/las-pcycle.geojson", layer = "OGRGeoJSON")
-sel_la <- grepl(pattern = la, x = las$NAME, ignore.case = T)
+# las <- readOGR(dsn = "pct-bigdata/national/las-pcycle.geojson", layer = "OGRGeoJSON")
+las <- readOGR(dsn = "pct-bigdata/national/cuas.geojson", layer = "OGRGeoJSON")
+
+proj4string(cents) <- proj4string(las) # assign correct CRS
+sel_la <- grepl(pattern = la, x = las$CTYUA12NM, ignore.case = T)
 ```
+
+The selected region was `r as.character(las$CTYUA12NM[sel_la ])`.
 
 
 ```{r, include=FALSE}
@@ -74,10 +80,9 @@ sel_la <- grepl(pattern = la, x = las$NAME, ignore.case = T)
 # cuas <- readOGR(dsn = "pct-bigdata/national/cuas.geojson", layer = "OGRGeoJSON")
 # proj4string(lasdat) <- proj4string(cuas)
 # cuas <- aggregate(lasdat, cuas, mean, na.action = na.omit()) # todo: fix data
-# cua_shape <- cuas[grep(pattern = la, x = cuas@data$NAME)] # todo: fix
 # # tmap::qtm(cuas2,fill = "clc")
 
-la_shape <- las[grep(pattern = la, x = las@data$NAME, ignore.case = T),]
+la_shape <- las[grep(pattern = la, x = las$CTYUA12NM, ignore.case = T),]
 
 # select the cents of interest: by char string (above) or geography (below)
 if(grepl(pattern = "cov", x = la) > 0){
@@ -86,7 +91,7 @@ if(grepl(pattern = "cov", x = la) > 0){
   cents_la <- cents[la_shape,]
 }
 
-zones <- ukmsoas[ukmsoas@data$geo_code %in% cents_la@data$geo_code, ]
+zones <- ukmsoas[ukmsoas@data$geo_code %in% cents_la$geo_code, ]
 zbuf <- gBuffer(zones, width = buff_dist * 1000) # create la zone outline
 
 # convert to osbg
@@ -268,9 +273,9 @@ if(length(grep("rf.Rds|rq.Rds", list.files(paste0("pct-data/", la)))) >= 2){
 
 ```{r plot-rlines, warning=FALSE, echo = FALSE, fig.cap="Sample of the straight and route-lines allocated to the travel network"}
 library(sp)
-plot(l[1:300,])
-lines(rf[1:300,], col = "red")
-lines(rq[1:300,], col = "green")
+plot(l[1:100,])
+lines(rf[1:100,], col = "red")
+lines(rq[1:100,], col = "green")
 ```
 
 ```{r, echo=FALSE}
