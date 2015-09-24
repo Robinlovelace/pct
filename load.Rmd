@@ -607,6 +607,16 @@ The values for the coefficients are presented in the table below.
 kable(dfcos, digits = 3)
 ```
 
+Now we aggregate the overlapping routes to create a route network.  
+The value of each segment in the network corresponds to the total number of cyclists who we estimate to use the segment.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+rf$clc <- l$clc
+ntw <- gOverline(rf, "clc")
+rf$clc <- NULL
+```
+
+
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
 # # # # # # # # #
 # Save the data #
@@ -626,6 +636,7 @@ saveRDS(cents, paste0("pct-data/", la, "/c.Rds"))
 saveRDS(l, paste0("pct-data/", la, "/l.Rds"))
 saveRDS(rf, paste0("pct-data/", la, "/rf.Rds"))
 saveRDS(rq, paste0("pct-data/", la, "/rq.Rds"))
+saveRDS(ntw, paste0("pct-data/", la, "/ntw.Rds"))
 saveRDS(mod_logsqr, paste0("pct-data/", la, "/model.Rds"))
 # 
 # # # Save data for wider ttwz area
