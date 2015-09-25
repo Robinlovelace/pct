@@ -34,7 +34,7 @@ The preset values used to select the study area and filter the origin destinatio
 
 ```{r, echo=FALSE}
 if(!exists("la"))
-  la <- "norfolk" # create default LA name if none exists
+  la <- "devon" # create default LA name if none exists
 ```
 
 

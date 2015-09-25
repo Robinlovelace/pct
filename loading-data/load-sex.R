@@ -1,4 +1,4 @@
-# Load gender equality
+# Load gender equality for zones
 source("set-up.R")
 
 library(downloader)
@@ -70,7 +70,6 @@ grid.arrange(p1, p2)
 lasf <- fortify(las)
 geom_polygon(data = lasf, )
 head(lasf)
-lasf <-
 
 qplot(las$pcycle, las$pmale) +
   geom_smooth() +
@@ -81,6 +80,27 @@ qplot(las$pcycle, las$pmale) +
 las <- spTransform(las, CRS("+init=epsg:4326"))
 
 # geojson_write(input = las, file = "pct-bigdata/national/las-pcycle.geojson")
-# las_pcycle <- geojson_read("pct-bigdata/national/las-pcycle.geojson") # fail
+# las_pcycle <- geojson_read("pct-bigdata/national/las-pcycle.geojson", what = "sp") # fail
+las <- readOGR(dsn = "pct-bigdata/national/las-pcycle.geojson", layer = "OGRGeoJSON")
 
-tmap::qtm(shp = las, "pcycle")
+
+
+tmap::qtm(shp = las, "clc_m")
+
+## Allocate age/sex split to cuas
+
+cuas <- geojsonio::geojson_read("pct-bigdata/national/cuas.geojson", what = "sp")
+las_c <- gCentroid(las, byid = T)
+las_c <- SpatialPointsDataFrame(las_c, las@data)
+isnum <- sapply(las_c@data, is.numeric)
+las_c@data <- las_c@data[isnum]
+las_c@data <- las_c@data["clc_m"]
+
+library(sp)
+cuas_m <- aggregate(las_c, cuas, mean)
+head(cuas_m)
+cuas$clc_m <- cuas_m$clc_m
+
+tmap::qtm(cuas, "clc_m")
+
+geojsonio::geojson_write(cuas, file = "pct-bigdata/national/cuas-mf.geojson")
