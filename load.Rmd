@@ -10,7 +10,7 @@ output:
 ---
 
 ```{r, include=FALSE}
-# TODO: Make clc_m appear in cua data
+# TODO: Fix buildmaster so it works for Devon AND Norfolk
 start_time <- Sys.time() # for timing the script
 source("set-up.R") # pull in packages needed
 ```
