@@ -64,7 +64,7 @@ cents$geo_code <- as.character(cents$geo_code)
 
 # Load local authorities and districts
 # las <- readOGR(dsn = "pct-bigdata/national/las-pcycle.geojson", layer = "OGRGeoJSON")
-las <- readOGR(dsn = "pct-bigdata/national/cuas.geojson", layer = "OGRGeoJSON")
+las <- readOGR(dsn = "pct-bigdata/national/cuas-mf.geojson", layer = "OGRGeoJSON")
 
 proj4string(cents) <- proj4string(las) # assign correct CRS
 sel_la <- grepl(pattern = la, x = las$CTYUA12NM, ignore.case = T)
@@ -166,20 +166,28 @@ flowsex <- dplyr::select(flowsex, Male, Female, id)
 flow <- left_join(flow, flowsex, by = "id")
 
 l <- gFlow2line(flow = flow, zones = cents)
-plot(zones, col = "lightgrey")
-plot(las, add = T)
-plot(zbuf, lwd = 5, add = T)
-plot(la_shape, border = "red", add = T, lwd = 3)
-lines(l[l$All > 100,])
-```
 
-```{r, echo=FALSE}
+# Calculate line lengths
 proj4string(l) <- proj4string(cents)
 l$dist <- gLength(l, byid = T) / 1000 # Euclidean distance
 dsel <- l$dist < mdist
 
+# Transform CRS to WGS84 for plotting
+zones <- spTransform(zones, CRS("+init=epsg:4326"))
+cents <- spTransform(cents, CRS("+init=epsg:4326"))
+l <- spTransform(l, CRS("+init=epsg:4326"))
+
+plot(zones, col = "lightgrey")
+plot(las, add = T)
+plot(zbuf, lwd = 5, add = T)
+plot(la_shape, border = "red", add = T, lwd = 3)
+lines(l[l$All > 100,], col = "green")
+```
+
+```{r, echo=FALSE}
 l <- l[dsel,]
 l <- l[l$dist > 0, ] # to remove OD pairs of 0 length
+# l <- l[1:30,] # warning: subset lines arbitrarily
 ```
 
 ## Hilliness of OD pairs
@@ -208,8 +216,7 @@ tm_shape(zones) +
 
 ## Lines allocated to the road network
 
-We use CycleStreets.net to
-estimate optimal routes. 
+We use CycleStreets.net to estimate optimal routes. 
 An illustration of these routes is presented below.
 
 ```{r flow-vars, echo=FALSE}
@@ -219,12 +226,6 @@ An illustration of these routes is presented below.
 # # # # # # # # # # # # # # # # # #
 
 # Calculate distances (eventually use route distance)
-
-
-# Transform CRS to WGS84 for plotting
-zones <- spTransform(zones, CRS("+init=epsg:4326"))
-cents <- spTransform(cents, CRS("+init=epsg:4326"))
-l <- spTransform(l, CRS("+init=epsg:4326"))
 
 # # # # # # # # # # # # # # #
 # Allocate OD pairs to network #
@@ -257,8 +258,13 @@ if(length(grep("rf.Rds|rq.Rds", list.files(paste0("pct-data/", la)))) >= 2){
   # l <- readRDS(paste0("pct-data/", la, "/l.Rds"))
   nrow(rf) == nrow(l)
 } else{
-  rf <- gLines2CyclePath(l[ l$dist > 0, ])
-  rq <- gLines2CyclePath(l[ l$dist > 0, ], plan = "quietest")
+  rf <- line2route(l[ l$dist > 0, ], silent = T)
+  rq <- line2route(l[ l$dist > 0, ], plan = "quietest", silent = T)
+  
+  path_fail <- !1:nrow(l) %in% as.numeric(row.names(rf)) | 
+    !1:nrow(l) %in% as.numeric(row.names(rq))
+  
+  l <- l[!path_fail,]
 
   # Process route data
   rf$length <- rf$length / 1000
@@ -273,10 +279,12 @@ if(length(grep("rf.Rds|rq.Rds", list.files(paste0("pct-data/", la)))) >= 2){
 
 ```{r plot-rlines, warning=FALSE, echo = FALSE, fig.cap="Sample of the straight and route-lines allocated to the travel network"}
 library(sp)
-plot(l[1:100,])
-lines(rf[1:100,], col = "red")
-lines(rq[1:100,], col = "green")
+plot(l[1:20,])
+lines(rf[1:20,], col = "red")
+lines(rq[1:20,], col = "green")
 ```
+
+Of the lines allocated to the route network, `length(!path_fail)` failed.
 
 ```{r, echo=FALSE}
 
@@ -604,6 +612,8 @@ The correlation between fitted and observed cycling in the model is
 The values for the coefficients are presented in the table below.
 
 ```{r, echo=FALSE}
+dfcos <- data.frame(dfcos)
+names(dfcos) <- c("Model", "Alpha", "Distance", "Dist^0.5", "Hills", "Dist/Hills")
 kable(dfcos, digits = 3)
 ```
 
@@ -621,6 +631,11 @@ rf$clc <- NULL
 # # # # # # # # #
 # Save the data #
 # # # # # # # # #
+
+# Rename columns
+l <- rename(l, Home = Area.of.residence, Work = Area.of.workplace)
+names(zones@data)
+
 
 # Transfer cents data to zones
 c_in_z <- names(cents) == "avslope"
