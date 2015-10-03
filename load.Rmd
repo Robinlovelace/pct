@@ -272,6 +272,8 @@ if(length(grep("rf.Rds|rq.Rds", list.files(paste0("pct-data/", la)))) >= 2){
   rq$length <- rq$length / 1000
   rf$id <- l$id
   rq$id <- l$id
+  proj4string(rf) <- proj4string(l)
+  proj4string(rq) <- proj4string(l)
   saveRDS(rf, paste0("pct-data/", la, "/rf_ttwa.Rds")) # save the routes
   saveRDS(rq, paste0("pct-data/", la, "/rq_ttwa.Rds"))
   saveRDS(l, paste0("pct-data/", la, "/l.Rds"))
