@@ -45,7 +45,7 @@ la_path <- file.path("pct-data", la)
 if(!dir.exists(la_path)) dir.create(la_path) # create data directory
 
 # Minimum flow between od pairs, subsetting lines. High means fewer lines.
-mflow <- 150
+mflow <- 30
 mdist <- 15 # maximum euclidean distance (km) for subsetting lines
 min_zones <- 60 # minumum number of zones in study area before buffer used
 buff_dist <- 3 # buffer (km) used to select additional zones (often redundant)
@@ -83,6 +83,7 @@ The selected region was `r as.character(las$CTYUA12NM[sel_la ])`.
 # # tmap::qtm(cuas2,fill = "clc")
 
 la_shape <- las[grep(pattern = la, x = las$CTYUA12NM, ignore.case = T),]
+la_shape <- la_shape <- gBuffer(la_shape, width = 0)
 
 # select the cents of interest: by char string (above) or geography (below)
 if(grepl(pattern = "cov", x = la) > 0){
@@ -92,7 +93,7 @@ if(grepl(pattern = "cov", x = la) > 0){
 }
 
 zones <- ukmsoas[ukmsoas@data$geo_code %in% cents_la$geo_code, ]
-zbuf <- gBuffer(zones, width = buff_dist * 1000) # create la zone outline
+zbuf <- gBuffer(zones, width = buff_dist * 0) # create la zone outline
 
 # convert to osbg
 cents <- spTransform(cents, CRSobj = proj4string(ukmsoas))
@@ -165,7 +166,7 @@ flow$id <- paste(flow$Area.of.residence, flow$Area.of.workplace)
 flowsex <- dplyr::select(flowsex, Male, Female, id)
 flow <- left_join(flow, flowsex, by = "id")
 
-l <- gFlow2line(flow = flow, zones = cents)
+l <- od2line(flow = flow, zones = cents)
 
 # Calculate line lengths
 proj4string(l) <- proj4string(cents)
@@ -633,7 +634,7 @@ rf$clc <- NULL
 # # # # # # # # #
 
 # Rename columns
-l <- rename(l, Home = Area.of.residence, Work = Area.of.workplace)
+l@data <- rename(l@data, Home = Area.of.residence, Work = Area.of.workplace)
 names(zones@data)
 
 
