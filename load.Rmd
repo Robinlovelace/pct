@@ -33,8 +33,8 @@ Both the [pct](https://github.com/npct/pct) and [pct-shiny](https://github.com/n
 The preset values used to select the study area and filter the origin destination data are described in this section.
 
 ```{r, echo=FALSE}
-if(!exists("la"))
-  la <- "Blackpool" # create default LA name if none exists
+# Create default LA name if none exists
+if(!exists("la")) la <- "Barking-and-Dagenham" 
 ```
 
 
@@ -45,7 +45,7 @@ la_path <- file.path("pct-data", la)
 if(!dir.exists(la_path)) dir.create(la_path) # create data directory
 
 # Minimum flow between od pairs, subsetting lines. High means fewer lines.
-mflow <- 30
+mflow <- 80
 mdist <- 15 # maximum euclidean distance (km) for subsetting lines
 min_zones <- 60 # minumum number of zones in study area before buffer used
 buff_dist <- 3 # buffer (km) used to select additional zones (often redundant)
@@ -99,9 +99,6 @@ zbuf <- gBuffer(zones, width = buff_dist * 0) # create la zone outline
 # convert to osbg
 cents <- spTransform(cents, CRSobj = proj4string(ukmsoas))
 la_shape <- spTransform(la_shape, CRSobj = proj4string(ukmsoas))
-
-# Extract zones to plot
-zones <- ukmsoas[ grep(la, ukmsoas$geo_label, ignore.case = T), ] # extract by name
 
 if(nrow(zones) < min_zones){
   cents_la <- cents[zbuf, ]
@@ -271,11 +268,11 @@ if(file.exists(paste0("pct-data/", la, "/rf_ttwa.Rds"))){
   }
 ```
 
-```{r plot-rlines, warning=FALSE, echo = FALSE, fig.cap="Sample of the straight and route-lines allocated to the travel network"}
+```{r plot-rlines, warning=FALSE, echo = FALSE, fig.cap="Straight and route-lines allocated to the travel network"}
 library(sp)
-plot(l[1:20,])
-lines(rf[1:20,], col = "red")
-lines(rq[1:20,], col = "green")
+plot(l)
+lines(rf, col = "red")
+lines(rq, col = "green")
 ```
 
 Of the lines allocated to the route network, `length(!path_fail)` failed.
@@ -667,7 +664,7 @@ saveRDS(mod_logsqr, paste0("pct-data/", la, "/model.Rds"))
 file.copy("load.Rmd", paste0("pct-data/", la, "/load.Rmd"))
 
 # Create folder in shiny app folder (assuming it's next to pct)
-mess <- paste0("cp -r ../pct-shiny/coventry ../pct-shiny/", la)
+mess <- paste0("cp -r ../pct-shiny/coventry/ ../pct-shiny/", la)
 system(mess)
 server_text <- readLines("../pct-shiny/coventry/server.R")
 server_text <- gsub(pattern = "coventry", replacement = la, x = server_text)
