@@ -1,6 +1,7 @@
 library(knitr)
 
-la_all <- c("Barnet", "Barnsley", "Bath and North East Somerset", "Bedford")
+la_all <- c("Barking-and-Dagenham", "Barnet",
+            "Barnsley", "Bath-and-North-East-Somerset")
 
 for(i in la_all){
   la <- i
@@ -17,9 +18,9 @@ for(i in la_all){
 }
 
 
-# las <- readOGR(dsn = "pct-bigdata/national/cuas-mf.geojson", layer = "OGRGeoJSON")
-# las_names <- las$CTYUA12NM
-# las_names <- las_names[order(las_names)]
-# las_names <- as.character(las_names)
-# head(las_names)
-# dput(las_names[2:5])
+las <- readOGR(dsn = "pct-bigdata/national/cuas-mf.geojson", layer = "OGRGeoJSON")
+las_names <- las$CTYUA12NM
+las_names <- las_names[order(las_names)]
+las_names <- as.character(las_names)
+head(las_names)
+dput(las_names[1:4])

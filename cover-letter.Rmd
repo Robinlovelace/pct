@@ -1,0 +1,31 @@
+---
+date: "August 23, 2015"
+output: word_document
+---
+
+<div style="float: right">
+
+Dr Robin Lovelace
+
+Leeds Institute for Data Analytics
+
+University of Leeds
+
+Leeds, LS2 9JT
+
+0113 343 0691
+</div>
+
+Dear Professor Ortúzar,
+
+Please consider the manuscript, entitled 'The Propensity to Cycle Tool: An open source online system for sustainable transport planning', for publication in Transportation Research Part A: Policy and Practice. The manuscript consists of approximately 6,000 words excluding references, eight figures and two tables.
+
+We think this paper is ideally suited to Transportation Part A because of high policy relevance and its framing from a policy perspective. Transportation Part A has a long history of methodological advance in transport policy evaluation which this paper seeks to extend in the field of strategic planning for new cycling infrastructure.
+
+The policy relevance of the research presented stems from its source of funding. The research was funded by the UK's Department for Transport (DfT), which intends to use the Propensity to Cycle Tool (PCT) to inform its investment strategies. This policy context, of increased interest and funding for cycling, is not unique to the UK. Indeed, we believe the PCT method will be of interest and potential use for transport planners and researchers in many countries. We have emphasised the potential re-use of the methods and code underlying the PCT internationally. The international reach and high impact of Transportation Part A makes it an ideal platform to communicate this research and make it available to researchers worldwide.
+
+We look forward to feedback from the reviewers and hope for a fast turn-around due to the policy-relevant nature of this research.
+
+Yours sincerely
+
+Robin
