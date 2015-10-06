@@ -37,6 +37,8 @@ line_widths <- line_widths + 0.3
 summary(line_widths)
 line_widths[line_widths > 8] <- 8
 
+library(leaflet)
+rg <
 leaflet() %>% addTiles() %>% addPolylines(data = rg, weight = line_widths, popup = rg@data$gov_target)
 
 plot(rg, lwd = rg@data$gov_target / 500)

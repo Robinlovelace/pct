@@ -2,7 +2,6 @@
 # NB: devtools allows installation of the latest packages
 if(!require(devtools)) install.packages("devtools")
 if(!require(stplanr)) install_github("robinlovelace/stplanr")
-if(!require(geojsonio)) install_github("ropensci/geojsonio")
 pkgs <- c(
   "ggmap",
   "tmap",
@@ -16,14 +15,15 @@ pkgs <- c(
   "geojsonio", # loads geojsons
   "tidyr", # tidies up your data!
   "readr", # reads your data fast
-  "knitr" # for knitting it all together
+  "knitr", # for knitting it all together
+  "geojsonio"
   )
 # Which packages do we require?
 # lapply(pkgs, library, character.only = T)
 reqs <- as.numeric(lapply(pkgs, require, character.only = TRUE))
 # Install packages we require
 if(sum(!reqs) > 0) install.packages(pkgs[!reqs])
-# Load publicly available test data
+ # Load publicly available test data
 
 # Option 1: clone the repository directly - if you have git installed
 # system2("git", args=c("clone", "git@github.com:Robinlovelace/pct-data.git", "--depth=1"))

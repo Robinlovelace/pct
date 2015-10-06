@@ -16,7 +16,7 @@ bibliography: Transport.bib
 
 ```{r, include=FALSE}
 pkgs <- c("grid", "png", "knitr", "tmap", "dplyr", "ggmap", "pander")
-lapply(pkgs, library, character.only = T)
+pload <- lapply(pkgs, require, character.only = T)
 opts_knit$set(root.dir = "../")
 # source("analysis/la-analysis.R", print.eval = T)
 ```

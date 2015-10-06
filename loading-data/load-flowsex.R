@@ -63,3 +63,24 @@ abline(a = 0, b = 1)
 
 plot(flow$Bicycle, flow$gendereq)
 abline(a = 0, b = 1)
+
+# joining flow with flowsex:
+flow <- readRDS("pct-bigdata/national/flow_eng_avlslope.Rds")
+flowsex <- read_csv("private-data/wu01bew_msoa_v1.csv", col_names=F, skip=12)
+names(flowsex) <- c("Area.of.residence", "Area.of.workplace", "All.fs", "Male", "Female")
+flowsex$id <- paste(flowsex$Area.of.residence, flowsex$Area.of.workplace)
+# Subset by zones in the study area
+o <- flow$Area.of.residence %in% cents$geo_code
+d <- flow$Area.of.workplace %in% cents$geo_code
+flow <- flow[o & d, ] # subset OD pairs with o and d in study area
+sel <- flow$All > mflow # subset OD pairs by n. people using it
+flow <- readRDS("pct-bigdata/national/flow_eng_avlslope.Rds")
+names(flowsex) <- c("Area.of.residence", "Area.of.workplace", "All.fs", "Male", "Female")
+flowsex$id <- paste(flowsex$Area.of.residence, flowsex$Area.of.workplace)
+# Subset by zones in the study area
+o <- flow$Area.of.residence %in% cents$geo_code
+d <- flow$Area.of.workplace %in% cents$geo_code
+flow$id <- paste(flow$Area.of.residence, flow$Area.of.workplace)
+flowsex <- dplyr::select(flowsex, Male, Female, id)
+flow <- left_join(flow, flowsex, by = "id")
+saveRDS(flow, "private-data/flowsex-merged.Rds")
