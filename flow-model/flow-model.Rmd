@@ -430,9 +430,11 @@ Table: Sample of the OD input dataset, representing the number of people who
 commute from locations within and between administrative zones (MSOAs)
 
 ```{r tflow, echo=FALSE, results='asis'}
+# devtools::install_github("robinlovelace/stplanr")
 # For latex version: use xtable:
 # t1 <- xtable(head(flow[c(1:3, 12)]), caption = "Sample of the 'flow' input dataset, representing the number of people who commute from locations within and between administrative zones (MSOAs)", label = "tbl:flow")
 # print(t1, type = "latex", comment = FALSE, caption.placement = "top")
+library(stplanr)
 
 # For docx and latex: use kable
 flow <- cbind(id = rownames(flow), flow)
