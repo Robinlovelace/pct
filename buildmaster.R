@@ -10,11 +10,6 @@ for(i in la_all){
     output = file.path("pct-data/", la, "/model-output.html"),
     envir = globalenv()
   )
-  # Note: copy directories into pct-shiny (commented out as in load.Rmd)
-  # mess <- paste0("cp -r ../pct-shiny/coventry ../pct-shiny/", la)
-  # server_text <- readLines("../pct-shiny/coventry/server.R")
-  # server_text <- gsub(pattern = "coventry", replacement = la, x = server_text)
-  # writeLines(server_text, con = paste0("../pct-shiny/", la, "/server.R"))
 }
 
 
