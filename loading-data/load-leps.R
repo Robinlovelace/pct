@@ -19,8 +19,8 @@ lep_names <- gsub("&", "and", lep_names)
 
 # Download and simplify for 1 lep
 i <- 1
-downloader::download(url = lep_links[i],
-                     destfile = paste0(lep_names[i], ".zip"))
+# downloader::download(url = lep_links[i],
+#                      destfile = paste0(lep_names[i], ".zip"))
 unzip(paste0(lep_names[i], ".zip"))
 # gMapshape(dsn = list.files(pattern = ".shp"), percent = 0.3)
 lep <- shapefile(list.files(pattern = ".shp"))
@@ -54,18 +54,35 @@ for(i in 2:length(lep_links)){
 
 leps <- spTransform(leps, CRS("+init=epsg:4326"))
 plot(leps) # it's still very detailed, and big
-write_shape(leps, "leps.shp")
+write_shape(leps, "leps-premapshape.shp")
 
+leps <- shapefile()
 gMapshape("leps.shp", percent = 5)
+gMapshape("leps-premapshape.shp", percent = 0.1)
+
 
 leps_small <- read_shape("lepsmapshaped_5%.shp")
-geojson_write(leps, file = "pct-bigdata/national/leps.geojson")
+leps_small <- read_shape("leps-premapshapemapshaped_0.1%.shp")
+
+object.size(leps_small) / 1000000
+plot(leps_small)
+geojson_write(leps_small, file = "pct-bigdata/national/leps.geojson")
 
 to_remove <- list.files(pattern = ".zip")
 file.remove(to_remove)
 file.remove(list.files(pattern = ".dbf|.prj|.sbn|.sbx|.shp|.shx"))
-plot(leps)
 
 leps <- geojson_read("pct-bigdata/national/leps.geojson", what = "sp")
 plot(leps)
+qtm(leps)
 
+lepss <- gSimplify(leps, tol = 0.02, topologyPreserve = T)
+plot(lepss)
+qtm(lepss)
+
+lep_dif <- gOverlaps(leps, leps, byid = T) # fail
+leps[rowSums(lep_dif)]
+
+lep_dif <- gUnion(leps, leps, byid = T)
+lep_dif <- gDifference(leps, leps, byid = T)
+plot(lep_dif)
