@@ -106,8 +106,8 @@ distance people are willing to cycle due to new technology. The model is freely
 available online and can be accessed at
 [geo8.webarch.net/master/](http://geo8.webarch.net/master/). This paper also
 explains how the PCT's open source approach allows it to be
-deployed in new cities and countries. We conclude that the method presented has potential to
-assist with planning for cycling-dominated cities worldwide, which can in turn 
+deployed in new cities and countries. We conclude that the method can help
+plan for modal shift to active travel, which can in turn improve citizen health and
 assist with the global transition away from fossil fuels.
 
 # Introduction
