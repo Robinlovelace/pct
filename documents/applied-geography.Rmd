@@ -1,0 +1,31 @@
+---
+title: 'Interactive online mapping for transport planning: the case study of the Propensity
+  to Cycle Tool'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+
+# Existing tools
+
+You can also embed plots, for example:
+
+# Method
+
+## Design philosphy
+
+## Workflow and teamwork
+
+## Data processing
+
+## Web technologies
+
+## 'Genius features'
+
+## Deployment
+
+# Discussion and conclusion

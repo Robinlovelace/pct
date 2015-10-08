@@ -98,5 +98,5 @@ geojson_write(las, file = "pct-bigdata/national/las-pcycle-region.geojson")
 slot(las, "polygons") <- lapply(slot(las, "polygons"), checkPolygonsHoles)
 regions <- gUnionCascaded(las, id = las$Region)
 plot(regions)
-geojson_write(las, file = "pct-bigdata/national/regions.geojson")
+geojson_write(regions, file = "pct-bigdata/national/regions.geojson")
 
