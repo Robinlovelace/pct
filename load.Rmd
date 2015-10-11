@@ -615,7 +615,7 @@ The value of each segment in the network corresponds to the total number of cycl
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="The route network, with widths proportional to the current estimated number of commuter cyclists"}
 # Scenario names - may need updating
-nrow(l) == nrow(rf)
+# nrow(l) == nrow(rf)
 rf@data["base_olc"] <- l@data["base_olc"]
 rnet <- gOverline(rf, "base_olc")
 rf$clc <- NULL

@@ -1,51 +1,51 @@
 source("set-up.R")
 
 
-downloader::download("http://census.edina.ac.uk/ukborders/easy_download/prebuilt/shape/infuse_cnty_lyr_2011.zip",
-                     destfile = "counties.zip")
-unzip("counties.zip")
-counties <- shapefile("infuse_cnty_lyr_2011.shp")
-plot(counties)
-
-
-downloader::download("http://census.edina.ac.uk/ukborders/easy_download/prebuilt/shape/England_nhsat_2013_gen_clipped.zip",
-                     destfile = "counties.zip")
-unzip("counties.zip")
-gMapshape("england_nhsat_2013_gen_clipped.shp", 3)
-nhs_teams <- shapefile("england_nhsat_2013_gen_clippedmapshaped_3%.shp")
-plot(nhs_teams)
-nrow(nhs_teams)
-geojson_write(nhs_teams, file = "pct-bigdata/national/nhs-teams.geojson")
-
-
-downloader::download("http://census.edina.ac.uk/ukborders/easy_download/prebuilt/shape/England_ccg_2013_gen_clipped.zip",
-                     destfile = "counties.zip")
-unzip("counties.zip")
-gMapshape("england_ccg_2013_gen_clipped.shp", 5)
-nhs_teams <- shapefile("england_ccg_2013_gen_clippedmapshaped_5%.shp")
-plot(nhs_teams)
-nrow(nhs_teams)
-geojson_write(nhs_teams, file = "pct-bigdata/national/ccgs.geojson")
-
-downloader::download("http://census.edina.ac.uk/ukborders/easy_download/prebuilt/shape/England_nhscr_2013_gen_clipped.zip",
-                     destfile = "counties.zip")
-unzip("counties.zip")
-gMapshape("england_nhscr_2013_gen_clipped.shp", 5)
-nhs_teams <- shapefile("england_nhscr_2013_gen_clippedmapshaped_5%.shp")
-plot(nhs_teams)
-nrow(nhs_teams)
-
-downloader::download("http://census.edina.ac.uk/ukborders/easy_download/prebuilt/shape/England_fct_2011_gen_clipped.zip",
-                     destfile = "counties.zip")
-unzip("counties.zip")
-gMapshape("England_fct_2011_gen_clipped.shp", 5)
-counties <- shapefile("England_fct_2011_gen_clippedmapshaped_5%.shp")
-plot(counties)
-nrow(counties)
-
-counties <- spTransform(counties, CRS("+init=epsg:4326"))
-geojson_write(counties, file = "pct-bigdata/national/former-counties.geojson")
-bbox(counties)
+# downloader::download("http://census.edina.ac.uk/ukborders/easy_download/prebuilt/shape/infuse_cnty_lyr_2011.zip",
+#                      destfile = "counties.zip")
+# unzip("counties.zip")
+# counties <- shapefile("infuse_cnty_lyr_2011.shp")
+# plot(counties)
+#
+#
+# downloader::download("http://census.edina.ac.uk/ukborders/easy_download/prebuilt/shape/England_nhsat_2013_gen_clipped.zip",
+#                      destfile = "counties.zip")
+# unzip("counties.zip")
+# gMapshape("england_nhsat_2013_gen_clipped.shp", 3)
+# nhs_teams <- shapefile("england_nhsat_2013_gen_clippedmapshaped_3%.shp")
+# plot(nhs_teams)
+# nrow(nhs_teams)
+# geojson_write(nhs_teams, file = "pct-bigdata/national/nhs-teams.geojson")
+#
+#
+# downloader::download("http://census.edina.ac.uk/ukborders/easy_download/prebuilt/shape/England_ccg_2013_gen_clipped.zip",
+#                      destfile = "counties.zip")
+# unzip("counties.zip")
+# gMapshape("england_ccg_2013_gen_clipped.shp", 5)
+# nhs_teams <- shapefile("england_ccg_2013_gen_clippedmapshaped_5%.shp")
+# plot(nhs_teams)
+# nrow(nhs_teams)
+# geojson_write(nhs_teams, file = "pct-bigdata/national/ccgs.geojson")
+#
+# downloader::download("http://census.edina.ac.uk/ukborders/easy_download/prebuilt/shape/England_nhscr_2013_gen_clipped.zip",
+#                      destfile = "counties.zip")
+# unzip("counties.zip")
+# gMapshape("england_nhscr_2013_gen_clipped.shp", 5)
+# nhs_teams <- shapefile("england_nhscr_2013_gen_clippedmapshaped_5%.shp")
+# plot(nhs_teams)
+# nrow(nhs_teams)
+#
+# downloader::download("http://census.edina.ac.uk/ukborders/easy_download/prebuilt/shape/England_fct_2011_gen_clipped.zip",
+#                      destfile = "counties.zip")
+# unzip("counties.zip")
+# gMapshape("England_fct_2011_gen_clipped.shp", 5)
+# counties <- shapefile("England_fct_2011_gen_clippedmapshaped_5%.shp")
+# plot(counties)
+# nrow(counties)
+#
+# counties <- spTransform(counties, CRS("+init=epsg:4326"))
+# geojson_write(counties, file = "pct-bigdata/national/former-counties.geojson")
+# bbox(counties)
 
 downloader::download("http://census.edina.ac.uk/ukborders/easy_download/prebuilt/shape/England_ct_1991.zip",
                      destfile = "counties.zip")
@@ -70,7 +70,6 @@ for(i in (1:nrow(las))[-c(54)]){
 
 las$Region[grep("London", las$Region)] <- "London"
 
-geojson_write(las, file = "pct-bigdata/national/las-pcycle-region.geojson")
 # Outlier
 las$Region[las$CTYUA12NM == "Torbay"] <- "Devon"
 las$Region[las$CTYUA12NM == "Plymouth"] <- "Devon"
@@ -90,13 +89,40 @@ wy <- "Bradford|Calderdale|Kirklees|Leeds|Wakefield"
 las$Region[grep(wy, las$CTYUA12NM)] <- "West Yorkshire"
 las$Region[grep("Darl", las$CTYUA12NM)] <- "North East"
 
+
 length(unique(las$Region))
 write_shape(las, "/tmp/las-pcycle-region")
-geojson_write(las, file = "pct-bigdata/national/las-pcycle-region.geojson")
+geojson_write(las, file = "pct-bigdata/national/cuas-mf.geojson")
+
+las <- las[!is.na(las$Region),]
 
 # fix holes
 slot(las, "polygons") <- lapply(slot(las, "polygons"), checkPolygonsHoles)
-regions <- gUnionCascaded(las, id = las$Region)
+regions <- gUnaryUnion(las, id = las$Region)
+las$Region <- gsub(pattern = " ", replacement = "-", las$Region)
+lasp2 <- SpatialPointsDataFrame(gCentroid(las, byid = T), data = data.frame(n = 1:nrow(las)))
+lasp2@data <- las@data
+regions <- aggregate(lasp2["Region"], regions, FUN = function(x) x[1])
+
+regions$url <- paste0("http://geo8.webarch.net/", regions$Region)
+
+library(shiny)
+
+a(regions$Region[1], href = regions$url[1])
+
+regions$url_text <- NA
+for(i in 1:nrow(regions)){
+  regions$url_text[i] <- as.character(a(regions$Region[i], href = regions$url[i]))
+  regions$url_text[i] <- gsub('">', '" target ="_top">', regions$url_text[i])
+}
+
+library(tmap)
+shapefile(regions, file = "/tmp/regions")
 plot(regions)
+text(coordinates(regions), label = regions$url_text)
 geojson_write(regions, file = "pct-bigdata/national/regions.geojson")
+
+leaflet() %>% addTiles() %>% addPolygons(data = regions, popup = regions$url_text)
+
+
 
