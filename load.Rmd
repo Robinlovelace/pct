@@ -34,21 +34,21 @@ The preset values used to select the study area and filter the origin destinatio
 
 ```{r, echo=FALSE}
 # Create default LA name if none exists
-if(!exists("la")) la <- "Barking-and-Dagenham" 
+if(!exists("region")) region <- "Avon" 
 ```
 
 
 ```{r, warning=FALSE}
 # Set local authority and ttwa zone names
-la # name of the local authority
-la_path <- file.path("pct-data", la)
-if(!dir.exists(la_path)) dir.create(la_path) # create data directory
+region # name of the region
+region_path <- file.path("pct-data", region)
+if(!dir.exists(region_path)) dir.create(region_path) # create data directory
 
 # Minimum flow between od pairs, subsetting lines. High means fewer lines.
-mflow <- 80
+mflow <- 100
 mdist <- 15 # maximum euclidean distance (km) for subsetting lines
 min_zones <- 60 # minumum number of zones in study area before buffer used
-buff_dist <- 3 # buffer (km) used to select additional zones (often redundant)
+buff_dist <- 0 # buffer (km) used to select additional zones (often zero = ok)
 ```
 
 ## Input zone data
@@ -56,21 +56,32 @@ buff_dist <- 3 # buffer (km) used to select additional zones (often redundant)
 The input zones area are summarised in this section.
 
 ```{r plotzones, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
-ukmsoas <- shapefile("pct-bigdata/national/msoas.shp")
+# ukmsoas <- shapefile("pct-bigdata/national/msoas.shp")
+# gMapshape("pct-bigdata/national/msoas.shp", 8)
+# ukmsoas <- shapefile("pct-bigdata/national/msoasmapshaped_8%.shp")
+# ukmsoas <- spTransform(ukmsoas, CRS("+init=epsg:4326"))
+# geojson_write(ukmsoas, file = "pct-bigdata/national/msoas.geojson")
+ukmsoas <- geojson_read("pct-bigdata/national/msoas.geojson", what = "sp")
 
 # Load population-weighted centroids
 cents <- readOGR("pct-bigdata/national/cents.geojson", layer = "OGRGeoJSON")
 cents$geo_code <- as.character(cents$geo_code)
 
 # Load local authorities and districts
-# las <- readOGR(dsn = "pct-bigdata/national/las-pcycle.geojson", layer = "OGRGeoJSON")
-las <- readOGR(dsn = "pct-bigdata/national/cuas-mf.geojson", layer = "OGRGeoJSON")
+las <- readOGR(dsn = "pct-bigdata/national/las-pcycle.geojson", layer = "OGRGeoJSON")
+# las <- readOGR(dsn = "pct-bigdata/national/cuas-mf.geojson", layer = "OGRGeoJSON")
+regions <- geojson_read("pct-bigdata/national/regions.geojson", what = "sp")
+las_cents <- SpatialPoints(coordinates(las))
+las_in_region <- rgeos::gIntersects(las_cents, region_shape, byid = T)
+las_in_region <- las_in_region[1,]
+summary(las_in_region)
+las_in_region <- las[las_in_region,]
 
-proj4string(cents) <- proj4string(las) # assign correct CRS
-sel_la <- grepl(pattern = la, x = las$CTYUA12NM, ignore.case = T)
+proj4string(cents) <- proj4string(regions) # assign correct CRS
+sel_region <- grepl(pattern = region, x = regions$Region, ignore.case = T)
 ```
 
-The selected region was `r as.character(las$CTYUA12NM[sel_la ])`.
+The selected region was `r as.character(regions$Region[sel_region ])`.
 
 
 ```{r, include=FALSE}
@@ -82,30 +93,16 @@ The selected region was `r as.character(las$CTYUA12NM[sel_la ])`.
 # cuas <- aggregate(lasdat, cuas, mean, na.action = na.omit()) # todo: fix data
 # # tmap::qtm(cuas2,fill = "clc")
 
-la_shape <- las[grep(pattern = la, x = las$CTYUA12NM, ignore.case = T),]
-la_shape <- la_shape <- gBuffer(la_shape, width = 0)
+# create region shape (and add buffer in m)
+region_shape <- region_orig <- 
+  regions[grep(pattern = region, x = regions$Region, ignore.case = T),]
+region_shape <- spTransform(region_shape, CRS("+init=epsg:27700"))
+region_shape <- region_shape <- gBuffer(region_shape, width = buff_dist)
+region_shape <- spTransform(region_shape, proj4string(cents))
 
-# # select the cents of interest: by char string (above) or geography (below)
-# if(grepl(pattern = "Coventry", x = la) > 0){
-#   cents_la <- cents[grepl(la, cents$MSOA11NM, ignore.case = T), ]
-# } else{
-#   cents_la <- cents[la_shape,]
-# }
-cents_la <- cents[la_shape,]
-
-zones <- ukmsoas[ukmsoas@data$geo_code %in% cents_la$geo_code, ]
-zbuf <- gBuffer(zones, width = buff_dist * 0) # create la zone outline
-
-# convert to osbg
-cents <- spTransform(cents, CRSobj = proj4string(ukmsoas))
-la_shape <- spTransform(la_shape, CRSobj = proj4string(ukmsoas))
-
-if(nrow(zones) < min_zones){
-  cents_la <- cents[zbuf, ]
-  zones <- ukmsoas[ukmsoas@data$geo_code %in% cents_la@data$geo_code , ]
-}
-
-cents <- cents_la
+# select msoas of interest
+cents <- cents[region_shape,]
+zones <- ukmsoas[ukmsoas@data$geo_code %in% cents$geo_code, ]
 ```
 
 The characteristics of zones are as follows:
@@ -132,6 +129,31 @@ flow <- flow[o & d, ] # subset OD pairs with o and d in study area
 sel <- flow$All > mflow # subset OD pairs by n. people using it
 ```
 
+```{r distance-dist, echo=FALSE, fig.cap="The study region (thick black border), selected zones (grey), the administrative zone region (red line) and local authorities (blue line). The black straight green represent the most intensive commuting OD pairs.", echo=FALSE, message=FALSE, warning=FALSE}
+flow <- flow[sel, ]
+
+l <- od2line(flow = flow, zones = cents)
+
+# Calculate line lengths
+l <- spTransform(l, CRS("+init=epsg:27700"))
+l$dist <- gLength(l, byid = T) / 1000 # Euclidean distance
+dsel <- l$dist < mdist
+l <- spTransform(l, proj4string(cents))
+
+plot(zones, col = "lightgrey")
+plot(regions, add = T)
+plot(las_in_region, border = "blue", add = T, lwd = 2)
+plot(region_orig, lwd = 5, add = T)
+plot(region_shape, border = "red", add = T, lwd = 2)
+lines(l[l$All > 100,], col = "green")
+```
+
+```{r, echo=FALSE}
+l <- l[dsel,]
+l <- l[l$dist > 0, ] # to remove OD pairs of 0 length
+# l <- l[1:30,] # warning: subset lines arbitrarily
+```
+
 ```{r, echo=FALSE}
 # nrow(flow) # how many OD pairs in the study area?
 # proportion of OD pairs in min-flow based subset
@@ -141,39 +163,10 @@ pmflowa <- round(sum(flow$All[sel]) / sum(flow$All) * 100, 1)
 ```
 
 There are **`r nrow(flow)`** OD pairs with origins and destinations in the study
-area. Of these, **`r sum(sel)`** meet the criteria that `r mflow` people 
-reported travelling between these two areas in the 2011 Census (a modifiable parameter used
-to reduce the computational requirements
-of the model). That is  **`r pmflow`%** of OD pairs, accounting for
+area. Of these, **`r sum(sel)`** meet the criteria that at least `r mflow` people 
+reported travelling between these two areas in the 2011 Census.
+That is  **`r pmflow`%** of OD pairs, accounting for
 **`r pmflowa`%** of commutes in the study area.
-
-```{r distance-dist, echo=FALSE, fig.cap="The study area (dark line), selected zones for training the model (grey) and the administrative zone of interest (red line). The black straight lines represent the most intensive commuting OD pairs.", echo=FALSE, message=FALSE, warning=FALSE}
-flow <- flow[sel, ]
-
-l <- od2line(flow = flow, zones = cents)
-
-# Calculate line lengths
-proj4string(l) <- proj4string(cents)
-l$dist <- gLength(l, byid = T) / 1000 # Euclidean distance
-dsel <- l$dist < mdist
-
-# Transform CRS to WGS84 for plotting
-zones <- spTransform(zones, CRS("+init=epsg:4326"))
-cents <- spTransform(cents, CRS("+init=epsg:4326"))
-l <- spTransform(l, CRS("+init=epsg:4326"))
-
-plot(zones, col = "lightgrey")
-plot(las, add = T)
-plot(zbuf, lwd = 5, add = T)
-plot(la_shape, border = "red", add = T, lwd = 3)
-lines(l[l$All > 100,], col = "green")
-```
-
-```{r, echo=FALSE}
-l <- l[dsel,]
-l <- l[l$dist > 0, ] # to remove OD pairs of 0 length
-# l <- l[1:30,] # warning: subset lines arbitrarily
-```
 
 ## Hilliness of OD pairs
 
@@ -218,54 +211,41 @@ An illustration of these routes is presented below.
 # Needs CycleStreet.net API #
 # # # # # # # # # # # # # # #
 
-# Create local version of lines; if there are too many in the TTWA, sample!
-l_local_sel <- l@data$Area.of.residence %in% zones$geo_code &
-  l@data$Area.of.workplace %in% zones$geo_code
-if(nrow(l) > 2 * sum(l_local_sel) & nrow(l) > 5000){ # sample if too many lines
-  l_all <- l
-  f <- list.files(paste0("pct-data/", la, "/"))
-  if(sum(grepl("l_all", f)) == 0) saveRDS(l, paste0("pct-data/", la, "/l_all.Rds"))
-#   l <- readRDS(paste0("pct-data/", la, "/l_all.Rds")) # restart point
-  set.seed(2050)
-  # sample from all routes in the TTWZ - change 1 for different % outside zone
-  lsel <- sample(which(!l_local_sel), size = sum(l_local_sel) * 1)
-  lsel <- c(lsel, which(l_local_sel))
-  length(lsel)
-  l <- l_all[lsel, ] # subset the lines
-  # plot(l)
-  # lines(l[2000:2600,], col = "blue") # ensure we have all the local ones
+
+f <- list.files(paste0("pct-data/", region, "/"))
+if(sum(grepl("l", f)) == 0){
+  saveRDS(l, paste0("pct-data/", region, "/l_all.Rds"))
 }
 
 # Create or load route allocated lines (depending on past loading)
-if(file.exists(paste0("pct-data/", la, "/rf_ttwa.Rds"))){
-  rf <- readRDS(paste0("pct-data/", la, "/rf_ttwa.Rds")) # if you've loaded them
-  rq <- readRDS(paste0("pct-data/", la, "/rq_ttwa.Rds"))
-  # l <- readRDS(paste0("pct-data/", la, "/l.Rds"))
-  nrow(rf) == nrow(l)
-} else{
-  # see ?gLine2CyclePath from stplanr package
+if(file.exists(paste0("pct-data/", region, "/rf_ttwa.Rds"))){
+  rf <- readRDS(paste0("pct-data/", region, "/rf_ttwa.Rds")) # if you've loaded them
+  rq <- readRDS(paste0("pct-data/", region, "/rq_ttwa.Rds"))
+  # l <- readRDS(paste0("pct-data/", region, "/l.Rds"))
+  # nrow(rf) == nrow(l)
+} else {
+  # see ?line2route from stplanr package
   # mytoken <- "f3fe3d078ac34737" # warning: not a real key 
   mytoken <- readLines("~/Dropbox/dotfiles/cyclestreets-api-key-rl")
   Sys.setenv(CYCLESTREET = mytoken)
   rf <- line2route(l[ l$dist > 0, ], silent = T)
   rq <- line2route(l[ l$dist > 0, ], plan = "quietest", silent = T)
+}
+saveRDS(rf, paste0("pct-data/", region, "/rf_ttwa.Rds")) # save the routes
+saveRDS(rq, paste0("pct-data/", region, "/rq_ttwa.Rds"))
   
-  path_fail <- !1:nrow(l) %in% as.numeric(row.names(rf)) | 
-    !1:nrow(l) %in% as.numeric(row.names(rq))
+path_fail <- !1:nrow(l) %in% as.numeric(row.names(rf)) | 
+  !1:nrow(l) %in% as.numeric(row.names(rq))
   
-  l <- l[!path_fail,]
+l <- l[!path_fail,]
 
-  # Process route data
-  rf$length <- rf$length / 1000
-  rq$length <- rq$length / 1000
-  rf$id <- l$id
-  rq$id <- l$id
-  proj4string(rf) <- proj4string(l)
-  proj4string(rq) <- proj4string(l)
-  saveRDS(rf, paste0("pct-data/", la, "/rf_ttwa.Rds")) # save the routes
-  saveRDS(rq, paste0("pct-data/", la, "/rq_ttwa.Rds"))
-  saveRDS(l, paste0("pct-data/", la, "/l.Rds"))
-  }
+# Process route data
+rf$length <- rf$length / 1000
+rq$length <- rq$length / 1000
+rf$id <- l$id
+rq$id <- l$id
+proj4string(rf) <- proj4string(l)
+proj4string(rq) <- proj4string(l)
 ```
 
 ```{r plot-rlines, warning=FALSE, echo = FALSE, fig.cap="Straight and route-lines allocated to the travel network"}
@@ -282,7 +262,7 @@ Of the lines allocated to the route network, `length(!path_fail)` failed.
 # Allocate route factors to OD pairs
 # nz <- which(l$dist > 0) # non-zero lengths = nz
 l$dist_quiet <- l$dist_fast <- l$cirquity <- l$distq_f <- NA
-if(nrow(rf) == nrow(l)) print("Warning, lines and routes are different lengths")
+if(!nrow(rf) == nrow(l)) print("Warning, lines and routes are different lengths")
   l$dist_fast <- rf$length
   l$dist_quiet <- rq$length
   l$cirquity <- rf$length / l$dist
@@ -398,8 +378,7 @@ l$cdp_slc <-l$All * (l$clc + l$npred) # may be more that 1
 l$cdp_sic <- l$cdp_slc - l$Bicycle
 
 # gendereq scenario
-area_pcycle <- las@data[sel_la,]
-p_trips_male <- area_pcycle$clc_m # proportion of bicycle trips  by males
+p_trips_male <- mean(las_in_region$clc_m) # proportion of bicycle trips by males
 
 clc_m <- l$Bicycle * p_trips_male
 pmale_c <- clc_m / l$Male
@@ -651,24 +630,24 @@ zones@data <- left_join(zones@data, cents@data[,!c_in_z])
 # 
 # # Save objects
 # Save objects # uncomment these lines to save model output
-saveRDS(zones, paste0("pct-data/", la, "/z.Rds"))
-saveRDS(cents, paste0("pct-data/", la, "/c.Rds"))
-saveRDS(l, paste0("pct-data/", la, "/l.Rds"))
-saveRDS(rf, paste0("pct-data/", la, "/rf.Rds"))
-saveRDS(rq, paste0("pct-data/", la, "/rq.Rds"))
-saveRDS(rnet, paste0("pct-data/", la, "/rnet.Rds"))
-saveRDS(mod_logsqr, paste0("pct-data/", la, "/model.Rds"))
+saveRDS(zones, paste0("pct-data/", region, "/z.Rds"))
+saveRDS(cents, paste0("pct-data/", region, "/c.Rds"))
+saveRDS(l, paste0("pct-data/", region, "/l.Rds"))
+saveRDS(rf, paste0("pct-data/", region, "/rf.Rds"))
+saveRDS(rq, paste0("pct-data/", region, "/rq.Rds"))
+saveRDS(rnet, paste0("pct-data/", region, "/rnet.Rds"))
+saveRDS(mod_logsqr, paste0("pct-data/", region, "/model.Rds"))
 
 # 
 # # Save the script that loaded the lines into the data directory
-file.copy("load.Rmd", paste0("pct-data/", la, "/load.Rmd"))
+file.copy("load.Rmd", paste0("pct-data/", region, "/load.Rmd"))
 
 # Create folder in shiny app folder (assuming it's next to pct)
-mess <- paste0("cp -r ../pct-shiny/coventry/ ../pct-shiny/", la)
+mess <- paste0("cp -r ../pct-shiny/coventry/ ../pct-shiny/", region)
 system(mess)
 server_text <- readLines("../pct-shiny/coventry/server.R")
-server_text <- gsub(pattern = "coventry", replacement = la, x = server_text)
-writeLines(server_text, con = paste0("../pct-shiny/", la, "/server.R"))
+server_text <- gsub(pattern = "coventry", replacement = region, x = server_text)
+writeLines(server_text, con = paste0("../pct-shiny/", region, "/server.R"))
 ```
 
  ## Time taken
