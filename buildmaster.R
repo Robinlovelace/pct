@@ -7,7 +7,7 @@ for(i in la_all){
   print(i)
   knitr::knit2html(
     input = "load.Rmd",
-    output = file.path("pct-data/", la, "/model-output.html"),
+    output = file.path("pct-data/", region, "/model-output.html"),
     envir = globalenv()
   )
 }
