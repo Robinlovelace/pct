@@ -1,7 +1,7 @@
 ---
 title: "The National Propensity to Cycle Tool"
-author: "Robin Lovelace for Cycling and Society. Slides: speaderdeck/robinlovelace"
-date: "Manchester Town Hall 14th September 2015"
+author: "Robin Lovelace, University of Leeds. Slides: robinlovelace.net"
+date: "CIVE 3707 Integrated Design Project, Civil Engineering, 14th October 2015"
 output:
   ioslides_presentation:
     transition: slower
@@ -13,22 +13,129 @@ logo: /home/robin/Dropbox/Public/img/logos/cdrc-square.png
 pkgs <- c("grid", "png", "knitr")
 lapply(pkgs, library, character.only = T)
 # bibliography: "~/Documents/R.bib"
+# Notes for Judith's talk
+# Add paper on replacing car trips with bike trips
+# Add stuff on QGIS
+# 
 ```
 
 ## Presentation structure
 
-> - The software (tools of the trade)
-> - Context (motivations)
-> - National Propensity to Cycle Tool (NPCT) in action
-> - Hopes and dreams
+> - Introduction
+> - Software
+> - Context
+> - The Propensity to Cycle Tool (PCT)
+> - Study ideas
 
-# I: The software
+# Introduction
 
-## Transport planning tools: pricey
+## A little about me
+
+![](http://groups.energyshare.com/var/uploads/1307616612-windturbine7.jpg)
+
+http://groups.energyshare.com/ewb-sheffield-wind/
+
+## Career progression
+
+> - Geography
+> - Bicycle mechanic
+> - Environmental science
+> - Some engineering!
+> - Energy studies
+> - Geography (with computers!)
+> - Transport studies
+
+## Engineering as a discipline
+
+![](http://i.ytimg.com/vi/6a8QLiC4LV8/hqdefault.jpg)
+
+> - I love engineering!
+
+## Engineering as magic
+
+![](https://upload.wikimedia.org/wikipedia/en/thumb/1/12/Fantasia-poster-1940.jpg/220px-Fantasia-poster-1940.jpg)
+
+> - How do you want to use your magic wand?
+
+## Engineering as art
+
+![](https://upload.wikimedia.org/wikipedia/commons/1/1e/Tanjor_bicycle_trailer.jpg)
+
+> - We learn best when we play!
+
+## You can build the future
+
+![](http://www.theoildrum.com/files/Robin_Figure7_500.JPG)
+
+http://campfire.theoildrum.com/node/5976
+
+# I: Software
+
+## Transport planning tools: expensive!
 
 ```{r, echo=FALSE}
 grid.raster(readPNG("~/Pictures/Selection_327.png"))
 ```
+
+## And difficult
+
+Proprietary software cannot:
+
+> -  be changed
+> - modified by the user
+> - extended by the user
+> - shared
+> - updated
+
+## The solution
+
+> - Go Open Source!
+
+![](https://themodernmonk.files.wordpress.com/2012/03/open-source28129.jpg)
+
+
+## Jobs
+
+> - The global transition away from fossil fuels is big business
+> - Many cities are scrambling to make their cities healthier and cleaner
+> - Check out some of the jobs that are available, decide which one YOU want
+
+Good transport companies - ready for a transition away from fossil fuels:
+
+- [Arup](http://www.arup.com/Services/Transport_Consulting.aspx)
+- [Steer Davies Gleave](http://www.steerdaviesgleave.com/)
+
+## Exciting opportunities
+
+![](http://cyclecityconnect.co.uk/images/schematic-big.jpg)
+
+## New tools (toys) to play with
+
+> - QGIS
+> - GRASS
+> - R
+> - Python
+> -  C
+
+## Program or be programmed
+
+![](http://www.socialmemorycomplex.net/images/porbp-199x300.jpg)
+
+## R's spatial ecosystem
+
+![](http://www.maths.lancs.ac.uk/~rowlings/Teaching/UseR2012/Intro2Export/img6.png)
+
+http://www.maths.lancs.ac.uk/~rowlings/Teaching/UseR2012/introduction2Talk.html
+
+## QGIS
+
+![](http://www.northrivergeographic.com/wp-content/uploads/2012/10/nationalmap.png)
+
+## New software: aequilibrae
+
+![](/home/robin/Selection_004.png)
+
+http://www.aequilibrae.com/ 
 
 ## Why R?
 
@@ -181,14 +288,19 @@ grid.raster(readPNG("~/Pictures/Selection_114.png"))
 grid.raster(readPNG("~/Pictures/Selection_115.png"))
 ```
 
-# III: Features and capabilities
+# III: The propensity to cycle tool
+
+## The underlying theory
+
+> - Check out our academic paper:
+http://arxiv.org/abs/1509.04425
 
 ## Live demo!
 
 See here: [geo8.webarch.net/master](http://geo8.webarch.net/manchester/)
 
 ```{r, echo=FALSE}
-grid.raster(readPNG("~/Dropbox/DfT bid/figures/coventry-centroids.png"))
+grid.raster(readPNG("../figures/coventry-centroids.png"))
 ```
 
 
@@ -201,14 +313,13 @@ grid.raster(readPNG("~/Pictures/Selection_156.png"))
 ## Model output tab I: Coventry
 
 ```{r, echo=FALSE}
-grid.raster(readPNG("~/Dropbox/DfT bid/figures/coventry-output.png"))
+grid.raster(readPNG("../figures/mod-output-cov.png"))
 ```
-
 
 ## Model output tab II: Manchester
 
 ```{r, echo=FALSE}
-grid.raster(readPNG("~/Dropbox/DfT bid/figures/manchester-output.png"))
+grid.raster(readPNG("../figures/man-cov-output.png"))
 ```
 
 ## Planned feature: network tab
@@ -259,6 +370,36 @@ grid.raster(readPNG("~/Dropbox/DfT bid/figures/manchester-output.png"))
 grid.raster(readPNG("../figures/fast-quiet-man.png"))
 ```
 
+# Study ideas
+
+## 1: identify what you're motivated by
+
+![](http://www.chrissopa.com/wp-content/uploads/2013/04/trust-higher-power-300x238.jpg)
+
+## How could transport infrastructure change if people worked from home?
+
+![](http://recruiterbox.com/blog/wp-content/uploads/2012/08/telecommute3.jpg)
+
+## How best to reallocate space away from cars?
+
+![](http://www.pps.org/wp-content/uploads/2014/02/NYC-before-after-copy.jpg)
+
+## How transport engineers can encourage car sharing?
+
+![](http://www.ferrytoll.org/liftsharelogo.jpg)
+
+## Links and references
+
+- R vs QGIS for transport planning: http://robinlovelace.net/r/2015/04/20/r-vs-qgis-for-transport.html
+
+- Aequillibrea: transport planning toolbox - http://www.aequilibrae.com/ 
+
+- Lovelace, R., Goodman, A., Aldred, R., Berkoff, N., Abbas, A., & Woodcock, J. (2015). The Propensity to Cycle Tool: An open source online system for sustainable transport planning. arXiv preprint arXiv:1509.04425.
+
+- Use Google and your imagination
+
+- Code is good but start with a pen and paper!
+
 
 ```{r, echo=FALSE}
 # ## The master app 
@@ -282,16 +423,6 @@ grid.raster(readPNG("../figures/fast-quiet-man.png"))
 # ```
 ```
 
-## Hopes and dreams
-
-> - The PCT will encourage long-term sustainable investment and planning for a 'post-carbon' future
-> - The PCT will be of use to researchers as well as policy makers
-> - One day strategic transport decisions will be made using open access data and open source software, ensuring transparency and encouraging citizen science
-> - The PCT will provide evidence-based guidance of cycle infrastructure worldwide
-
-> - Questions?
-> - Feedback? Email npct@npct.org.uk to get involved
-
 ```{r, echo=FALSE}
 # ## Running the app for different cities
 # 
@@ -300,6 +431,17 @@ grid.raster(readPNG("../figures/fast-quiet-man.png"))
 # runApp("~/repos/pct-shiny/cambridge/", launch.browser = T)
 # runApp("~/repos/pct-shiny/manchester/", launch.browser = T)
 # ```
+
+# ## Hopes and dreams
+# 
+# > - The PCT will encourage long-term sustainable investment and planning for a 'post-carbon' future
+# > - The PCT will be of use to researchers as well as policy makers
+# > - One day strategic transport decisions will be made using open access data and open source software, ensuring transparency and encouraging citizen science
+# > - The PCT will provide evidence-based guidance of cycle infrastructure worldwide
+# 
+# > - Questions?
+# > - Feedback? Email npct@npct.org.uk to get involved
+
 
 # # IV: Sustainable transport planning with R (stplanr)
 # 
@@ -417,5 +559,11 @@ grid.raster(readPNG("../figures/fast-quiet-man.png"))
 # 
 # # V: Esperanzas y sueños
 # 
+file.copy("/minidocs/pct-pres.html", "~/repos/robinlovelace.github.io/presentations/pct-pres-civil-engineers.html")
+
+library(shiny)
+runExample("01_hello")
 ```
+
+
 
