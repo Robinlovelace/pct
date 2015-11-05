@@ -4,9 +4,9 @@
 
 library(stplanr)
 
-l <- readRDS("~/repos/pct/pct-data/leeds/l.Rds")
-rfall <- readRDS("~/repos/pct/pct-data/leeds/rf.Rds")
-l <- readRDS("~/repos/pct/pct-data/leeds/l.Rds")
+l <- readRDS("~/repos/pct/pct-data/West-Yorkshire/l.Rds")
+rfall <- readRDS("~/repos/pct/pct-data/West-Yorkshire/rf.Rds")
+l <- readRDS("~/repos/pct/pct-data/West-Yorkshire/l.Rds")
 nrow(l)
 nrow(rfall)
 
@@ -25,21 +25,28 @@ head(t10@data)
 rg <- gOverline(t10, attrib = "gov_target")
 
 # plot with width proportional to olc
-leaflet()  %>% addPolylines(data = t10, weight = t10$current/1.5, opacity = 0.2)
+leaflet()  %>% addPolylines(data = rnet, weight = rnet$ /1.5, opacity = 0.2)
 
 # rg <- gOverline(rfall, attrib = "gov_target")
-# rg <- readRDS("~/repos/pct/pct-data/leeds/rnet.RData")
+rg <- readRDS("~/repos/pct/pct-data/West-Yorkshire/rnet.Rds")
 
 summary(rg)
-line_widths <- rg$gov_target / mean(rg$gov_target) * 3
+line_widths <- rg$dutch_slc / mean(rg$dutch_slc) * 3
 summary(line_widths)
 line_widths <- line_widths + 0.3
 summary(line_widths)
 line_widths[line_widths > 8] <- 8
 
 library(leaflet)
-rg <
 leaflet() %>% addTiles() %>% addPolylines(data = rg, weight = line_widths, popup = rg@data$gov_target)
 
+# Add Bradford data
+opts <- raster::shapefile("~/Desktop/bradford/HS2 options W2L_polyline.shp")
+bbox(opts)
+opts <- spTransform(opts, CRSobj = CRS("+init=epsg:4326"))
+
+leaflet() %>% addTiles() %>% addPolylines(data = rg, weight = line_widths, popup = rg@data$gov_target) %>%
+  addPolylines(data = opts, color = "black")
+
 plot(rg, lwd = rg@data$gov_target / 500)
-# saveRDS(rg, "~/repos/pct/pct-data/leeds/rnet.RData")
+# saveRDS(rg, "~/repos/pct/pct-data/West-Yorkshire/rnet.RData")
