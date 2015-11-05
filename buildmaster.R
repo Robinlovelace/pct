@@ -1,6 +1,8 @@
+source("set-up.R")
 library(knitr)
 
-la_all <- c("Bedfordshire", "Berkshire", "Buckinghamshire")
+
+la_all <- c("West-Yorkshire")
 
 for(i in la_all){
   region <- i
@@ -12,9 +14,14 @@ for(i in la_all){
   )
 }
 
-regions$Region[1:10]
-dput(as.character(regions$Region[2:4]))
-
+# regions <- geojson_read("pct-bigdata/national/regions.geojson", what = "sp")
+# regions$Region
+#
+# regions$Region[1:10]
+# dput(as.character(regions$Region[2:4]))
+#
+#
+#
 # las <- readOGR(dsn = "pct-bigdata/national/cuas-mf.geojson", layer = "OGRGeoJSON")
 # las_names <- las$CTYUA12NM
 # las_names <- las_names[order(las_names)]

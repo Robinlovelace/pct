@@ -1,7 +1,7 @@
 # Purpose: to generate the network analysis layer from l and rf objects
 library(stplanr)
 
-la <- "norwich"
+la <- "devon"
 
 l <- readRDS(paste0("pct-data/", la, "/l.Rds"))
 rf <- readRDS(paste0("pct-data/", la, "/rf.Rds"))

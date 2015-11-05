@@ -99,7 +99,7 @@ rgdal::getGDALVersionInfo()
 
 ```
 
-It is possible to use the following Personal Package Archive (PPA) to get the latest version of gdal
+It is possible to use the following Personal Package Archive (PPA) to get the latest version of gdal on Ubuntu.
 
 ```{r, engine='bash', eval = FALSE}
 sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable && sudo apt-get update

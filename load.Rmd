@@ -34,7 +34,7 @@ The preset values used to select the study area and filter the origin destinatio
 
 ```{r, echo=FALSE}
 # Create default LA name if none exists
-if(!exists("region")) region <- "Avon" 
+if(!exists("region")) region <- "West-Yorkshire" 
 ```
 
 
@@ -72,6 +72,14 @@ las <- readOGR(dsn = "pct-bigdata/national/las-pcycle.geojson", layer = "OGRGeoJ
 # las <- readOGR(dsn = "pct-bigdata/national/cuas-mf.geojson", layer = "OGRGeoJSON")
 regions <- geojson_read("pct-bigdata/national/regions.geojson", what = "sp")
 las_cents <- SpatialPoints(coordinates(las))
+
+# create region shape (and add buffer in m)
+region_shape <- region_orig <- 
+  regions[grep(pattern = region, x = regions$Region, ignore.case = T),]
+region_shape <- spTransform(region_shape, CRS("+init=epsg:27700"))
+region_shape <- region_shape <- gBuffer(region_shape, width = buff_dist)
+region_shape <- spTransform(region_shape, proj4string(cents))
+
 las_in_region <- rgeos::gIntersects(las_cents, region_shape, byid = T)
 las_in_region <- las_in_region[1,]
 summary(las_in_region)
@@ -92,13 +100,6 @@ The selected region was `r as.character(regions$Region[sel_region ])`.
 # proj4string(lasdat) <- proj4string(cuas)
 # cuas <- aggregate(lasdat, cuas, mean, na.action = na.omit()) # todo: fix data
 # # tmap::qtm(cuas2,fill = "clc")
-
-# create region shape (and add buffer in m)
-region_shape <- region_orig <- 
-  regions[grep(pattern = region, x = regions$Region, ignore.case = T),]
-region_shape <- spTransform(region_shape, CRS("+init=epsg:27700"))
-region_shape <- region_shape <- gBuffer(region_shape, width = buff_dist)
-region_shape <- spTransform(region_shape, proj4string(cents))
 
 # select msoas of interest
 cents <- cents[region_shape,]
@@ -499,7 +500,7 @@ addids <- which(names(l) %in% addidsn)
 # nrow(l)
 
 # 4: by aggregating 2 way OD pairs
-l <- gOnewayid(l, attrib = c(addids))
+l <- onewayid(l, attrib = c(addids))
 
 l$clc <- l$Bicycle / l$All
 l$slc <- l$base_slc / l$All
@@ -519,7 +520,7 @@ cents_ttwa <- cents # copy cents data (we'll overwrite cents)
 ```
 
 ```{r, echo=FALSE, results='hide', fig.cap="Illustration of OD pairs on travel network"}
-zbuf <- spTransform(zbuf, CRS("+init=epsg:4326"))
+zbuf <- spTransform(region_shape, CRS("+init=epsg:4326"))
 plot(zbuf)
 plot(zones, add = T)
 points(cents_ttwa, col = "red")
@@ -596,14 +597,14 @@ The value of each segment in the network corresponds to the total number of cycl
 # Scenario names - may need updating
 # nrow(l) == nrow(rf)
 rf@data["base_olc"] <- l@data["base_olc"]
-rnet <- gOverline(rf, "base_olc")
+rnet <- overline(rf, "base_olc")
 rf$clc <- NULL
 # test the resulting plot
 plot(rnet, lwd = rnet$base_olc / mean(rnet$base_olc))
 scens <- c("cdp_slc", "gendereq_slc", "dutch_slc", "ebike_slc")
 for(i in scens){
   rf@data[i] <- l@data[i]
-  rnet_tmp <- gOverline(rf, i)
+  rnet_tmp <- overline(rf, i)
   rnet@data[i] <- rnet_tmp@data[i]
   rf@data[i] <- NULL
 }
