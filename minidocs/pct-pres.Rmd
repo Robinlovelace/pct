@@ -74,7 +74,7 @@ http://campfire.theoildrum.com/node/5976
 ## Transport planning tools: expensive!
 
 ```{r, echo=FALSE}
-grid.raster(readPNG("~/Pictures/Selection_327.png"))
+grid.raster(readPNG("figures/software-costs.png"))
 ```
 
 ## And difficult
@@ -561,8 +561,8 @@ grid.raster(readPNG("../figures/fast-quiet-man.png"))
 # 
 file.copy("/minidocs/pct-pres.html", "~/repos/robinlovelace.github.io/presentations/pct-pres-civil-engineers.html")
 
-library(shiny)
-runExample("01_hello")
+# library(shiny)
+# runExample("01_hello")
 ```
 
 
