@@ -74,7 +74,7 @@ http://campfire.theoildrum.com/node/5976
 ## Transport planning tools: expensive!
 
 ```{r, echo=FALSE}
-grid.raster(readPNG("figures/software-costs.png"))
+grid.raster(readPNG("../figures/software-costs.png"))
 ```
 
 ## And difficult
@@ -141,10 +141,7 @@ http://www.aequilibrae.com/
 
 See the free, open source, online tutorial [github.com/robinlovelace/Creating-maps-in-R](https://github.com/Robinlovelace/Creating-maps-in-R).
 
-```{r, echo=FALSE}
-f <- "/home/robin/repos/Creating-maps-in-R/figure/facet_london.png"
-grid.raster(readPNG(f))
-```
+![](https://raw.githubusercontent.com/Robinlovelace/Creating-maps-in-R/master/figure/facet_london.png)
 
 ## The packages used
 
@@ -163,10 +160,7 @@ lapply(c(pkgs, "leaflet", "stplanr"), library, character.only = T) # load all
 
 RStudio Desktop is highly recommended for Shiny development.
 
-```{r, echo=FALSE}
-img <- readPNG("/home/robin/repos/robinlovelace.github.io/img/rstudio-shiny-button.png")
-grid.raster(img)
-```
+![](http://robinlovelace.net/img/rstudio-shiny-button.png)
 
 ```{r, echo=FALSE, include=FALSE}
 pkgs <- c("devtools", "shiny", "rgdal", "rgeos", "ggmap") # official packages
